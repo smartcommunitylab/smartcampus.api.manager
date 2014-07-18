@@ -18,7 +18,6 @@ package eu.trentorise.smartcampus.api.manager.repository;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import java.lang.String;
@@ -38,5 +37,21 @@ public interface ApiRepository extends MongoRepository<Api,String>{
 	 * @return list of {@link Api}
 	 */
 	public List<Api> findById(String id);
+	
+	/**
+	 * Retrieves Api data searching by id.
+	 * 
+	 * @param basepath : String
+	 * @return list of {@link Api}
+	 */
+	public List<Api> findByBasePath(String basepath);
+	
+	/**
+	 * Retrieves Api data searching by owner id.
+	 * 
+	 * @param ownerid : String
+	 * @return list of {@link Api}
+	 */
+	public List<Api> findByOwnerId(String ownerid);
 	
 }

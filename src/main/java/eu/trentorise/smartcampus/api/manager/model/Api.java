@@ -42,10 +42,13 @@ public class Api implements Serializable{
 	private String id;
 	@Field("name")
 	private String name;
-	@Field("url")
-	private String backendServiceURL;
-	@Field("path")
-	private String projectBasePath;
+	@Field("basePath")
+	private String basePath;
+	private String resource[];
+	private String policy[];
+	private String ownerId;
+	private String creationTime;
+	private String updateTime;
 	/**
 	 * 
 	 * @return id : String
@@ -76,32 +79,86 @@ public class Api implements Serializable{
 	}
 	/**
 	 * 
-	 * @return backend service url : String
-	 */
-	public String getBackendServiceURL() {
-		return backendServiceURL;
-	}
-	/**
-	 * 
-	 * @param backendServiceURL : String
-	 */
-	public void setBackendServiceURL(String backendServiceURL) {
-		this.backendServiceURL = backendServiceURL;
-	}
-	/**
-	 * 
 	 * @return project base path : String
 	 */
-	public String getProjectBasePath() {
-		return projectBasePath;
+	public String getBasePath() {
+		return basePath;
 	}
 	/**
 	 * 
 	 * @param projectBasePath : String
 	 */
-	public void setProjectBasePath(String projectBasePath) {
-		this.projectBasePath = projectBasePath;
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
 	}
-	
-	
+	/**
+	 * 
+	 * @return resource : String[]
+	 */
+	public String[] getResource() {
+		return resource;
+	}
+	/**
+	 * 
+	 * @param resource : String[]
+	 */
+	public void setResource(String[] resource) {
+		this.resource = resource;
+	}
+	/**
+	 * 
+	 * @return policy : String[]
+	 */
+	public String[] getPolicy() {
+		return policy;
+	}
+	/**
+	 * 
+	 * @param policy : String[]
+	 */
+	public void setPolicy(String[] policy) {
+		this.policy = policy;
+	}
+	/**
+	 * 
+	 * @return owner id : String
+	 */
+	public String getOwnerId() {
+		return ownerId;
+	}
+	/**
+	 * 
+	 * @param ownerId : String
+	 */
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
+	}
+	/**
+	 * 
+	 * @return creation time : String
+	 */
+	public String getCreationTime() {
+		return creationTime;
+	}
+	/**
+	 * 
+	 * @param creationTime : String
+	 */
+	public void setCreationTime(String creationTime) {
+		this.creationTime = creationTime;
+	}
+	/**
+	 * 
+	 * @return update time : String
+	 */
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	/**
+	 * 
+	 * @param updateTime : String
+	 */
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
 }

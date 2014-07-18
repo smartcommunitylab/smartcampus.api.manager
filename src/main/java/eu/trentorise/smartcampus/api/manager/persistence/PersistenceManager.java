@@ -15,8 +15,10 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.persistence;
 
+import java.util.Date;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,12 +42,34 @@ public class PersistenceManager {
 	private ApiRepository apirepository;
 	
 	/**
+	 * Generates an id for Api data when id string is not set or is empty.
+	 * 
+	 * @param api : instance of {@link Api}
+	 * @return instance of {@link Api} with MongoDB id
+	 */
+	public Api generateApiId(Api api){
+		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
+			api.setId(new ObjectId().toString());
+		}
+		return api;
+	}
+	
+	/**
 	 * Create a new Api data and save it in db.
+	 * Before this method checks if Api object
+	 * is filled correctly, otherwise
+	 * it throws IllegalArgumentException.
+	 * The required fields are: name, basePath and ownerId.
 	 * 
 	 * @param api : instance of {@link Api}
 	 * @return new instance of {@link Api}
 	 */
 	public Api addApi(Api api){
+		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
+			throw new IllegalArgumentException("Api name, base path and owner id are required.");
+		}
+		Date today = new Date();
+		api.setCreationTime(today.toString());
 		return apirepository.save(api);
 	}
 	
@@ -66,6 +90,45 @@ public class PersistenceManager {
 	 */
 	public Api getApiById(String id){
 		return (Api) apirepository.findById(id).get(0);
+	}
+	
+	/**
+	 * Retries Api data searching by base path.
+	 * 
+	 * @param basePath : String
+	 * @return list of instance of {@link Api}
+	 */
+	public List<Api> getApiByBasePath(String basePath){
+		return (List<Api>) apirepository.findByBasePath(basePath);
+	}
+	
+	/**
+	 * Retrieves Api data searching by owner id.
+	 * 
+	 * @param ownerId : String
+	 * @return list of instance of {@link Api}
+	 */
+	public List<Api> getApiByOwnerId(String ownerId){
+		return (List<Api>) apirepository.findByOwnerId(ownerId);
+	}
+	
+	/**
+	 * Update an existing Api instance.
+	 * Before this method checks if Api object
+	 * is filled correctly, otherwise
+	 * it throws IllegalArgumentException.
+	 * The required fields are: name, basePath and ownerId.
+	 * 
+	 * @param api : instance of {@link Api}
+	 * @return updated instance of {@link Api}
+	 */
+	public Api updateApi(Api api){
+		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
+			throw new IllegalArgumentException("Api name, base path and owner id are required.");
+		}
+		Date today = new Date();
+		api.setUpdateTime(today.toString());
+		return apirepository.save(api);
 	}
 	
 	/**
