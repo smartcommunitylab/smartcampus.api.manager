@@ -5,4 +5,8 @@
 /bin
 /home
 /LICENSE-2.0.html
+/src/main/resources
+/src/test/resources
+/.springBeans
 /.externalToolBuilders
+/src/test
