@@ -42,12 +42,11 @@ public class PersistenceManager {
 	private ApiRepository apirepository;
 	
 	/**
-	 * Generates an id for Api data when id string is not set or is empty.
+	 * Generates an id for data when id string is not set or is empty.
 	 * 
-	 * @param api : instance of {@link Api}
-	 * @return instance of {@link Api} with MongoDB id
+	 * @return String MongoDB id
 	 */
-	private String generateApiId(){
+	private String generateId(){
 		return new ObjectId().toString();
 	}
 	
@@ -66,7 +65,7 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Api name, base path and owner id are required.");
 		}
 		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
-			api.setId(generateApiId());
+			api.setId(generateId());
 		}
 		Date today = new Date();
 		api.setCreationTime(today.toString());
