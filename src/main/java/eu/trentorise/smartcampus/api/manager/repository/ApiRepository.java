@@ -13,34 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package eu.trentorise.smartcampus.api.manager.controller;
+package eu.trentorise.smartcampus.api.manager.repository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.List;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+import eu.trentorise.smartcampus.api.manager.model.Api;
+import java.lang.String;
 
 /**
- * Handles requests for the application home page.
+ * Api repository add, find and remove api collections.
+ * 
+ * @author Giulia Canobbio
+ *
  */
-@Controller
-public class HomeController {
-	/**
-	 * Instance of {@link Logger}
-	 */
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+public interface ApiRepository extends MongoRepository<Api,String>{
 	
 	/**
-	 * Return "HelloWorld" string
+	 * Retrieves Api data searching by id.
+	 * 
+	 * @param id : String
+	 * @return list of {@link Api}
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	@ResponseBody
-	public String home() {
-		logger.info("Hello World!");
-		
-		return "Hello World";
-	}
+	public List<Api> findById(String id);
 	
 }
