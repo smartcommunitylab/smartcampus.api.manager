@@ -32,7 +32,7 @@ import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
  */
 @Component
 @Transactional
-public class ApiManager {
+public class PersistenceManager {
 	/**
 	 * Instance of {@link ApiRepository}.
 	 */
