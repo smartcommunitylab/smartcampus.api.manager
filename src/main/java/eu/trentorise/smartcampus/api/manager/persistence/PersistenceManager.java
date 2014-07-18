@@ -47,11 +47,8 @@ public class PersistenceManager {
 	 * @param api : instance of {@link Api}
 	 * @return instance of {@link Api} with MongoDB id
 	 */
-	public Api generateApiId(Api api){
-		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
-			api.setId(new ObjectId().toString());
-		}
-		return api;
+	private String generateApiId(){
+		return new ObjectId().toString();
 	}
 	
 	/**
@@ -67,6 +64,9 @@ public class PersistenceManager {
 	public Api addApi(Api api){
 		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
 			throw new IllegalArgumentException("Api name, base path and owner id are required.");
+		}
+		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
+			api.setId(generateApiId());
 		}
 		Date today = new Date();
 		api.setCreationTime(today.toString());
