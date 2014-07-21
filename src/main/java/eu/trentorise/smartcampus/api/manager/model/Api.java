@@ -16,6 +16,7 @@
 package eu.trentorise.smartcampus.api.manager.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,9 +27,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * id: String,
  * name: String,
  * base path: String,
- * resource: String[],
- * policy: String[],
- * app : String[],
+ * resource: list of resources,
+ * policy: list of policies,
+ * app : list of app,
  * owner id : String,
  * creationTime : String,
  * updateTime : String.
@@ -45,16 +46,16 @@ public class Api implements Serializable{
 	
 	@Id
 	private String id;
-	@Field("name")
+	@Field
 	private String name;
-	@Field("basePath")
+	@Field
 	private String basePath;
 	@Field
-	private String resource[];
+	private List<Resource> resource;
 	@Field
-	private String policy[];
+	private List<Policy> policy;
 	@Field
-	private String app[];
+	private List<App> app;
 	@Field
 	private String ownerId;
 	@Field
@@ -105,44 +106,44 @@ public class Api implements Serializable{
 	}
 	/**
 	 * 
-	 * @return resource : String[]
+	 * @return resource : list of {@link Resource} instances
 	 */
-	public String[] getResource() {
+	public List<Resource> getResource() {
 		return resource;
 	}
 	/**
 	 * 
-	 * @param resource : String[]
+	 * @param resource : {@link Resource} instance
 	 */
-	public void setResource(String[] resource) {
+	public void setResource(List<Resource> resource) {
 		this.resource = resource;
 	}
 	/**
 	 * 
-	 * @return policy : String[]
+	 * @return policy : list of {@link Policy} instances
 	 */
-	public String[] getPolicy() {
+	public List<Policy> getPolicy() {
 		return policy;
 	}
 	/**
 	 * 
-	 * @param policy : String[]
+	 * @param policy : {@link Policy} instance
 	 */
-	public void setPolicy(String[] policy) {
+	public void setPolicy(List<Policy> policy) {
 		this.policy = policy;
 	}
 	/**
 	 * 
-	 * @return app : String[]
+	 * @return app : list of {@link App} instances
 	 */
-	public String[] getApp() {
+	public List<App> getApp() {
 		return app;
 	}
 	/**
 	 * 
-	 * @param app : String[]
+	 * @param app :{@link Resource} instance
 	 */
-	public void setApp(String[] app) {
+	public void setApp(List<App> app) {
 		this.app = app;
 	}
 	/**
