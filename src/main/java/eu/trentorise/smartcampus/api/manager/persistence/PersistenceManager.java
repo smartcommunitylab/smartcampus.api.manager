@@ -26,9 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
+import eu.trentorise.smartcampus.api.manager.repository.ResourceRepository;
 
 /**
  * Persistence manager for all entity.
@@ -56,6 +58,11 @@ public class PersistenceManager {
 	 */
 	@Autowired
 	private PolicyRepository policyrepository;
+	/**
+	 * Instance of {@link ResourceRepository}.
+	 */
+	@Autowired
+	private ResourceRepository resourcerepository;
 	
 	/**
 	 * Generates an id for data when id string is not set or is empty.
@@ -328,5 +335,84 @@ public class PersistenceManager {
 	public void deletePolicy(Policy p){
 		policyrepository.delete(p);
 	}
+	
+	/*
+	 * Resource
+	 */
+	
+	/**
+	 * Retrieves all resources saved in db.
+	 * 
+	 * @return list of {@link Resource} instances
+	 */
+	public List<Resource> listResource(){
+		return resourcerepository.findAll();
+	}
+	
+	/**
+	 * Retrieves resource data searching by id.
+	 * 
+	 * @param id : String
+	 * @return instance of {@link Resource}
+	 */
+	public Resource getResourceById(String id){
+		return (Resource) resourcerepository.findById(id).get(0);
+	}
+	
+	/**
+	 * Retrieves resource data searching by name.
+	 * 
+	 * @param name : String
+	 * @return list of {@link Resource} instances
+	 */
+	public List<Resource> getResourceByName(String name){
+		return (List<Resource>) resourcerepository.findByName(name);
+	}
+	
+	/**
+	 * Create a new resource and saved it in db.
+	 * If name, uri or verb are undefined then it throws IllegalArgumentException,
+	 * because they are required.
+	 * 
+	 * @param r : instance of {@link Resource}
+	 * @return saved instance of {@link Resource}
+	 */
+	public Resource addResource(Resource r){
+		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
+			throw new IllegalArgumentException("Resource name, uri and verb are required.");
+		}
+		if(r.getId()==null || r.getId().equalsIgnoreCase("")){
+			r.setId(generateId());
+		}
+		Date today = new Date();
+		r.setCreationTime(today.toString());
+		return resourcerepository.save(r);
+	}
+	
+	/**
+	 * Update a resource in db.
+	 * 
+	 * @param r : instance of {@link Resource}
+	 * @return updated instance of {@link Resource}
+	 */
+	public Resource updateResource(Resource r){
+		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
+			throw new IllegalArgumentException("Resource name, uri and verb are required.");
+		}
+		Date today = new Date();
+		r.setUpdateTime(today.toString());
+		return resourcerepository.save(r);
+	}
+	
+	/**
+	 * Delete an existing resource in db.
+	 * 
+	 * @param r : instance of {@link Resource}
+	 */
+	public void deleteResource(Resource r){
+		resourcerepository.delete(r);
+	}
+	
+	
 
 }
