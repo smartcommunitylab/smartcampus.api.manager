@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.trentorise.smartcampus.api.manager.Constants;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
@@ -381,9 +382,27 @@ public class PersistenceManager {
 		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
 		}
+		
 		if(r.getId()==null || r.getId().equalsIgnoreCase("")){
 			r.setId(generateId());
 		}
+		
+		if(r.getVerb().equalsIgnoreCase("GET")){
+			r.setVerb(Constants.VERB.GET.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("POST")){
+			r.setVerb(Constants.VERB.POST.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("PUT")){
+			r.setVerb(Constants.VERB.PUT.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("DELETE")){
+			r.setVerb(Constants.VERB.DELETE.toString());
+		}
+		else{
+			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
+		}
+		
 		Date today = new Date();
 		r.setCreationTime(today.toString());
 		return resourcerepository.save(r);
@@ -399,6 +418,23 @@ public class PersistenceManager {
 		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
 		}
+		
+		if(r.getVerb().equalsIgnoreCase("GET")){
+			r.setVerb(Constants.VERB.GET.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("POST")){
+			r.setVerb(Constants.VERB.POST.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("PUT")){
+			r.setVerb(Constants.VERB.PUT.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("DELETE")){
+			r.setVerb(Constants.VERB.DELETE.toString());
+		}
+		else{
+			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
+		}
+		
 		Date today = new Date();
 		r.setUpdateTime(today.toString());
 		return resourcerepository.save(r);
