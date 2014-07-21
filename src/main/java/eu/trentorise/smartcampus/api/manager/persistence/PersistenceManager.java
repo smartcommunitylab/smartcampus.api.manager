@@ -15,8 +15,6 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.persistence;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -658,6 +656,180 @@ public class PersistenceManager {
 		return rs;
 	}
 	
+	/**
+	 * Add policy to an Api instance.
+	 * First this method checks if name and type are undefined, otherwise it 
+	 * throws IllegalArgumentException.
+	 * After that it retrieves api data searching by id and update it, adding
+	 * the new policy.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Policy}
+	 * @return instance of {@link Api}
+	 */
+	public Api addPolicyApi(String apiId, Policy p){
+		//checks policy fields
+		if(p.getName()==null || p.getType()==null){
+			throw new IllegalArgumentException("Policy name and type are required.");
+		}
+		if(p.getId()==null || p.getId().equalsIgnoreCase("")){
+			p.setId(generateId());
+		}
+		// get api and add policy
+		Api api = getApiById(apiId);
+		List<Policy> plist = api.getPolicy();
+		if (plist != null) {
+			plist.add(p);
+		} else {
+			List<Policy> ps = new ArrayList<Policy>();
+			ps.add(p);
+			api.setPolicy(ps);
+		}
+
+		// update api
+		return updateApi(api);
+	}
+	
+	/**
+	 * Updates a resource in Api instance.
+	 * First this method checks if name and type are undefined, otherwise it 
+	 * throws IllegalArgumentException.
+	 * After that it retrieves api data searching by id and update it, adding
+	 * the new policy.
+	 * Then it retrieves the wanted policy by its id and sets fields.
+	 * It updates api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Policy}
+	 * @return updated instance of {@link Api}
+	 */
+	public Api updatePolicyApi(String apiId, Policy p){
+		//checks policy fields
+		if(p.getName()==null || p.getType()==null){
+			throw new IllegalArgumentException("Policy name and type are required.");
+		}
+		//retrieve api searching by id
+		Api api = getApiById(apiId);
+		//retrieve policy
+		List<Policy> plist = api.getPolicy();
+		Policy oldp = null;
+		for(int i=0;i<plist.size();i++){
+			if(plist.get(i).getId().equalsIgnoreCase(p.getId())){
+				oldp = plist.get(i);
+			}
+		}
+		if(oldp!=null){
+			oldp.setName(p.getName());
+			oldp.setNotes(p.getNotes());
+			oldp.setCategory(p.getCategory());
+			oldp.setType(p.getType());
+		}
+		//update api
+		return updateApi(api);
+	}
+	
+	/**
+	 * Deletes policy from Api.
+	 * 
+	 * @param apiId : String
+	 * @param policyId : String
+	 * @return instance of {@link Api} without deleted Policy
+	 */
+	public Api deletePolicyApi(String apiId, String policyId){
+		// retrieves api
+		Api api = getApiById(apiId);
+		// retrieves policy
+		List<Policy> plist = api.getPolicy();
+
+		for (int i = 0; i < plist.size(); i++) {
+			if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+				// delete resource
+				plist.remove(i);
+			}
+		}
+
+		return updateApi(api);
+	}
+	
+	/**
+	 * Retrieves policy data from Api searching by policy id.
+	 * 
+	 * @param apiId : String
+	 * @param policyId : String
+	 * @return instance of {@link Policy}
+	 */
+	public Policy getPolicyApiByPolicyId(String apiId, String policyId){
+		Api api = getApiById(apiId);
+		List<Policy> plist = api.getPolicy();
+		Policy p = null;
+		
+		for(int i=0; i<plist.size();i++){
+			if(plist.get(i).getId().equalsIgnoreCase(policyId)){
+				p = plist.get(i);
+			}
+		}
+		return p;
+	}
+	
+	/**
+	 * Retrieves policy data from Api searching by policy name.
+	 * 
+	 * @param apiId : String
+	 * @param policyName : String
+	 * @return list of {@link Policy} instances
+	 */
+	public List<Policy> getPolicyApiByPolicyName(String apiId, String policyName){
+		Api api = getApiById(apiId);
+		List<Policy> plist = api.getPolicy();
+		List<Policy> ps = new ArrayList<Policy>();
+		
+		for(int i=0; i<plist.size();i++){
+			if(plist.get(i).getName().equalsIgnoreCase(policyName)){
+				ps.add(plist.get(i));
+			}
+		}
+		return ps;
+	}
+	
+	/**
+	 * Retrieves policy data from Api searching by policy category.
+	 * 
+	 * @param apiId : String
+	 * @param policyCategory : String
+	 * @return list of {@link Policy} instances
+	 */
+	public List<Policy> getPolicyApiByPolicyCategory(String apiId, String policyCategory){
+		Api api = getApiById(apiId);
+		List<Policy> plist = api.getPolicy();
+		List<Policy> ps = new ArrayList<Policy>();
+		
+		for(int i=0; i<plist.size();i++){
+			if(plist.get(i).getCategory().equalsIgnoreCase(policyCategory)){
+				ps.add(plist.get(i));
+			}
+		}
+		return ps;
+	}
+	
+	/**
+	 * Retrieves policy data from Api searching by policy type.
+	 * 
+	 * @param apiId : String
+	 * @param policyType : String
+	 * @return list of {@link Policy} instances
+	 */
+	public List<Policy> getPolicyApiByPolicyType(String apiId, String policyType){
+		Api api = getApiById(apiId);
+		List<Policy> plist = api.getPolicy();
+		List<Policy> ps = new ArrayList<Policy>();
+		
+		for(int i=0; i<plist.size();i++){
+			if(plist.get(i).getType().equalsIgnoreCase(policyType)){
+				ps.add(plist.get(i));
+			}
+		}
+		return ps;
+	}
 	
 
 }
