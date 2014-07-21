@@ -16,6 +16,7 @@
 package eu.trentorise.smartcampus.api.manager.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,7 +28,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * name : String,
  * uri : String,
  * verb : String,
- * policy : String[],
+ * policy : list of policies,
  * creation time : String,
  * update time : String.
  * 
@@ -50,7 +51,7 @@ public class Resource implements Serializable{
 	@Field
 	private String verb;
 	@Field
-	private String policy[];
+	private List<Policy> policy;
 	@Field
 	private String creationTime;
 	@Field
@@ -114,16 +115,16 @@ public class Resource implements Serializable{
 	}
 	/**
 	 * 
-	 * @return policy : String[]
+	 * @return policy : list of {@link Policy} instances
 	 */
-	public String[] getPolicy() {
+	public List<Policy> getPolicy() {
 		return policy;
 	}
 	/**
 	 * 
-	 * @param policy : String[]
+	 * @param policy : list of {@link Policy} instances
 	 */
-	public void setPolicy(String[] policy) {
+	public void setPolicy(List<Policy> policy) {
 		this.policy = policy;
 	}
 	/**
