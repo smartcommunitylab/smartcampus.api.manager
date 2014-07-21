@@ -15,6 +15,7 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.scenario;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -105,6 +106,25 @@ public class ScenarioApi {
 		apiManager.addResourceApi("api1", r2);
 		
 		log.info("Add api test terminated.");
+	}
+	
+	/**
+	 * Retrieves resource data from api. 
+	 * Searching first by id and then by name.
+	 */
+	@Test
+	public void retrieveResources(){
+		log.info("Find resource api by resource id..");
+		Resource r = apiManager.getResourceApiByResourceId("api1", "resource1");
+		assertNotNull("Error in finding by resource id",r);
+		assertTrue("Incorrect id",r.getId().equalsIgnoreCase("resource1"));
+		
+		log.info("Find resource api by resource name..");
+		List<Resource> rlist = apiManager.getResourceApiByResourceName("api1", "Like");
+		assertNotNull("Error in finding by resource name",rlist);
+		assertTrue("Incorrect name",rlist.get(0).getName().equalsIgnoreCase("Like"));
+		
+		log.info("Search terminated.");
 	}
 	
 	/**

@@ -463,6 +463,7 @@ public class PersistenceManager {
 		resourcerepository.delete(r);
 	}
 	
+	
 	/*
 	 * API retrieves Resource and Policy data
 	 */
@@ -615,6 +616,46 @@ public class PersistenceManager {
 		}
 
 		return updateApi(api);
+	}
+	
+	/**
+	 * Retrieves resource data from Api searching by resource id.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @return instance of {@link Resouce}
+	 */
+	public Resource getResourceApiByResourceId(String apiId, String resourceId){
+		Api api = getApiById(apiId);
+		List<Resource> rlist = api.getResource();
+		Resource r = null;
+		
+		for(int i=0; i<rlist.size();i++){
+			if(rlist.get(i).getId().equalsIgnoreCase(resourceId)){
+				r = rlist.get(i);
+			}
+		}
+		return r;
+	}
+	
+	/**
+	 * Retrieves resource data from Api searching by resource name.
+	 * 
+	 * @param apiId : String
+	 * @param resourceName : String
+	 * @return list of {@link Resource} instances
+	 */
+	public List<Resource> getResourceApiByResourceName(String apiId, String resourceName){
+		Api api = getApiById(apiId);
+		List<Resource> rlist = api.getResource();
+		List<Resource> rs = new ArrayList<Resource>();
+		
+		for(int i=0; i<rlist.size();i++){
+			if(rlist.get(i).getName().equalsIgnoreCase(resourceName)){
+				rs.add(rlist.get(i));
+			}
+		}
+		return rs;
 	}
 	
 	
