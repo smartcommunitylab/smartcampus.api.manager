@@ -24,10 +24,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
+import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
+import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 
 /**
- * Persistence manager for Api entity.
+ * Persistence manager for all entity.
+ * It retrieves, remove, update and save data for 
+ * Api, App, Policy and Resource.
  * 
  * @author Giulia Canobbio
  *
@@ -40,6 +44,11 @@ public class PersistenceManager {
 	 */
 	@Autowired
 	private ApiRepository apirepository;
+	/**
+	 * Instance of {@link AppRepository}.
+	 */
+	@Autowired
+	private AppRepository apprepository;
 	
 	/**
 	 * Generates an id for data when id string is not set or is empty.
@@ -50,27 +59,9 @@ public class PersistenceManager {
 		return new ObjectId().toString();
 	}
 	
-	/**
-	 * Create a new Api data and save it in db.
-	 * Before this method checks if Api object
-	 * is filled correctly, otherwise
-	 * it throws IllegalArgumentException.
-	 * The required fields are: name, basePath and ownerId.
-	 * 
-	 * @param api : instance of {@link Api}
-	 * @return new instance of {@link Api}
+	/* 
+	 *  Api
 	 */
-	public Api addApi(Api api){
-		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
-			throw new IllegalArgumentException("Api name, base path and owner id are required.");
-		}
-		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
-			api.setId(generateId());
-		}
-		Date today = new Date();
-		api.setCreationTime(today.toString());
-		return apirepository.save(api);
-	}
 	
 	/**
 	 * Retrieve all Api data saved in db.
@@ -112,6 +103,28 @@ public class PersistenceManager {
 	}
 	
 	/**
+	 * Create a new Api data and save it in db.
+	 * Before this method checks if Api object
+	 * is filled correctly, otherwise
+	 * it throws IllegalArgumentException.
+	 * The required fields are: name, basePath and ownerId.
+	 * 
+	 * @param api : instance of {@link Api}
+	 * @return new instance of {@link Api}
+	 */
+	public Api addApi(Api api){
+		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
+			throw new IllegalArgumentException("Api name, base path and owner id are required.");
+		}
+		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
+			api.setId(generateId());
+		}
+		Date today = new Date();
+		api.setCreationTime(today.toString());
+		return apirepository.save(api);
+	}
+	
+	/**
 	 * Update an existing Api instance.
 	 * Before this method checks if Api object
 	 * is filled correctly, otherwise
@@ -137,6 +150,86 @@ public class PersistenceManager {
 	 */
 	public void deleteApi(Api api){
 		apirepository.delete(api);
+	}
+	
+	/* 
+	 *  App
+	 */
+	
+	/**
+	 * Retrieves all App data saved in db.
+	 * 
+	 * @return list of {@link App} instances
+	 */
+	public List<App> listApp(){
+		return apprepository.findAll();
+	}
+	
+	/**
+	 * Retrieves App data searching by id.
+	 * 
+	 * @param id : String
+	 * @return instance of {@link App}
+	 */
+	public App getAppById(String id){
+		return (App) apprepository.findById(id).get(0);
+	}
+	
+	/**
+	 * Retrieves App data searching by key.
+	 * 
+	 * @param key : String
+	 * @return list of {@link App} instances
+	 */
+	public List<App> getAppByKey(String key){
+		return (List<App>) apprepository.findByKey(key);
+	}
+	
+	/**
+	 * Retrieves App data searching by name.
+	 * 
+	 * @param name : String
+	 * @return list of {@link App}
+	 */
+	public List<App> getAppByName(String name){
+		return (List<App>) apprepository.findByName(name);
+	}
+	
+	/**
+	 * Create a new App and save it in db.
+	 * If name field is null then throws IllegalArgumentException, because
+	 * name is required.
+	 * 
+	 * @param app : instance of {@link App}
+	 * @return saved instance of {@link App}
+	 */
+	public App addApp(App app){
+		if(app.getName()==null){
+			throw new IllegalArgumentException("App name is required.");
+		}
+		if(app.getId()==null || app.getId().equalsIgnoreCase("")){
+			app.setId(generateId());
+		}
+		return apprepository.save(app);
+	}
+	
+	/**
+	 * Update an existing App.
+	 * 
+	 * @param app : instance of {@link App}
+	 * @return updated instace of {@link App}
+	 */
+	public App updateApp(App app){
+		return addApp(app);
+	}
+	
+	/**
+	 * Deletes an App from db.
+	 * 
+	 * @param app : instance of {@link App}
+	 */
+	public void deleteApp(App app){
+		apprepository.delete(app);
 	}
 
 }
