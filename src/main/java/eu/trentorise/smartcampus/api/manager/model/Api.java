@@ -25,8 +25,13 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * Api model
  * id: String,
  * name: String,
- * backend service URL: String,
- * project base path: String.
+ * base path: String,
+ * resource: String[],
+ * policy: String[],
+ * app : String[],
+ * owner id : String,
+ * creationTime : String,
+ * updateTime : String.
  * 
  * @author Giulia Canobbio
  *
@@ -44,10 +49,17 @@ public class Api implements Serializable{
 	private String name;
 	@Field("basePath")
 	private String basePath;
+	@Field
 	private String resource[];
+	@Field
 	private String policy[];
+	@Field
+	private String app[];
+	@Field
 	private String ownerId;
+	@Field
 	private String creationTime;
+	@Field
 	private String updateTime;
 	/**
 	 * 
@@ -118,6 +130,20 @@ public class Api implements Serializable{
 	 */
 	public void setPolicy(String[] policy) {
 		this.policy = policy;
+	}
+	/**
+	 * 
+	 * @return app : String[]
+	 */
+	public String[] getApp() {
+		return app;
+	}
+	/**
+	 * 
+	 * @param app : String[]
+	 */
+	public void setApp(String[] app) {
+		this.app = app;
 	}
 	/**
 	 * 
