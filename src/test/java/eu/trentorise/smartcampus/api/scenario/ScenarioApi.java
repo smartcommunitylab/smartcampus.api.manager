@@ -29,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
+import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
@@ -104,6 +105,99 @@ public class ScenarioApi {
 		
 		log.info("Add api test terminated.");
 	}
+	
+	/**
+	 * Add api and two policies.
+	 */
+	@Test
+	public void addPolicy(){
+		log.info("Add policy api test...");
+		
+		//POlicy list
+		log.info("Add policy 1...");
+		Policy p1 = new Policy();
+		p1.setId("api-p1");
+		p1.setName("SpikeArrest-1");
+		p1.setNotes("Some notes bla bla bla bla");
+		p1.setCategory("quality");
+		p1.setType("policy");
+		
+		log.info("Add policy 2..");
+		Policy p2 = new Policy();
+		p2.setName("Quota-1");
+		p2.setNotes("Some notes of quota bla bla bla bla");
+		p2.setCategory("quality");
+		p2.setType("policy");
+		
+		apiManager.addPolicyApi("api1", p1);
+		Api api = apiManager.addPolicyApi("api1", p2);
+		assertNotNull("Error in finding by api",api);
+		
+		log.info("Add policy api test terminated.");
+	}
+	
+	/**
+	 * Retrieves policy data from api. 
+	 * Searching first by id, name, category and then type.
+	 */
+	@Test
+	public void retrievePolicies(){
+		log.info("Find policies api by policies id..");
+		Policy p= apiManager.getPolicyApiByPolicyId("api1", "api-p1");
+		assertNotNull("Error in finding by resource id",p);
+		assertTrue("Incorrect id",p.getId().equalsIgnoreCase("api-p1"));
+		
+		log.info("Find policies api by policies name..");
+		List<Policy> plist = apiManager.getPolicyApiByPolicyName("api1", "Quota-1");
+		assertNotNull("Error in finding by resource name",plist);
+		assertTrue("Incorrect name",plist.get(0).getName().equalsIgnoreCase("Quota-1"));
+		
+		log.info("Find policies api by policies category..");
+		List<Policy> pclist = apiManager.getPolicyApiByPolicyCategory("api1", "quality");
+		assertNotNull("Error in finding by resource name",pclist);
+		assertTrue("Incorrect category",pclist.get(0).getCategory().equalsIgnoreCase("quality"));
+		
+		log.info("Find policies api by policies type..");
+		List<Policy> ptlist = apiManager.getPolicyApiByPolicyName("api1", "policy");
+		assertNotNull("Error in finding by resource name",ptlist);
+		//assertTrue("Incorrect type",ptlist.get(0).getType().equalsIgnoreCase("policy"));
+		
+		log.info("Search terminated.");
+	}
+	
+	/**
+	 * Update one of api policies
+	 */
+	@Test
+	public void updatePolicy1(){
+		log.info("Update policy 1 of api...");
+		
+		Policy p1 = new Policy();
+		p1.setId("api-p1");
+		p1.setName("SpikeArrest-1");
+		p1.setNotes("Some notes bla bla bla bla with update");
+		p1.setCategory("quality");
+		p1.setType("policy");
+		apiManager.updatePolicyApi("api1", p1);
+		
+		log.info("Update policy 1 of api terminated.");
+	}
+	
+	/**
+	 * Delete one of api policies
+	 */
+	@Test
+	public void deletePolicy1(){
+		log.info("Delete policy 1 of api...");
+		
+		//get resource 1 and delete it
+		apiManager.deletePolicyApi("api1", "api-p1");
+		
+		log.info("Delete policy 1 of api terminated.");
+		
+	}
+	
+	
 	
 	/**
 	 * Retrieves resource data from api. 
