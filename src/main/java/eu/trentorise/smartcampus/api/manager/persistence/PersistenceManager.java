@@ -25,8 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
+import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
+import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
 
 /**
  * Persistence manager for all entity.
@@ -49,6 +51,11 @@ public class PersistenceManager {
 	 */
 	@Autowired
 	private AppRepository apprepository;
+	/**
+	 * Instance of {@link PolicyRepository}.
+	 */
+	@Autowired
+	private PolicyRepository policyrepository;
 	
 	/**
 	 * Generates an id for data when id string is not set or is empty.
@@ -230,6 +237,96 @@ public class PersistenceManager {
 	 */
 	public void deleteApp(App app){
 		apprepository.delete(app);
+	}
+	
+	/* 
+	 * Policy 
+	 */
+	
+	/**
+	 * Retrieves all policy data saved in db.
+	 * 
+	 * @return list of {@link Policy} instances
+	 */
+	public List<Policy> listPolicy(){
+		return policyrepository.findAll();
+	}
+	
+	/**
+	 * Retrieves policy data searching by id.
+	 * 
+	 * @param id : String
+	 * @return instance of {@link Policy}
+	 */
+	public Policy getPolicyById(String id){
+		return (Policy) policyrepository.findById(id).get(0);
+	}
+	
+	/**
+	 * Retrieves policy data searching by name.
+	 * 
+	 * @param name : String
+	 * @return list of {@link Policy} instances
+	 */
+	public List<Policy> getPolicyByName(String name){
+		return (List<Policy>) policyrepository.findByName(name);
+	}
+	
+	/**
+	 * Retrieves policy data searching by category.
+	 * 
+	 * @param category : String
+	 * @return list of {@link Policy} instances
+	 */
+	public List<Policy> getPolicyByCategory(String category){
+		return (List<Policy>) policyrepository.findByCategory(category);
+	}
+	
+	/**
+	 * Retrieves policy data searching by type.
+	 * 
+	 * @param type : String
+	 * @return list of {@link Policy} instances
+	 */
+	public List<Policy> getPolicyByType(String type){
+		return (List<Policy>) policyrepository.findByType(type);
+	}
+	
+	/**
+	 * Create a new Policy in db.
+	 * If name or type field are undefined then it throws 
+	 * IllegalArgumentException, because they are required.
+	 * 
+	 * @param p : instance of {@link Policy}
+	 * @return saved instance of {@link Policy}
+	 */
+	public Policy addPolicy(Policy p){
+		if(p.getName()==null || p.getType()==null){
+			throw new IllegalArgumentException("Policy name and type are required.");
+		}
+		if(p.getId()==null || p.getId().equalsIgnoreCase("")){
+			p.setId(generateId());
+		}
+		return policyrepository.save(p);
+	}
+	
+	/**
+	 * Update a policy saved in db.
+	 * 
+	 * @param p : instance of {@link Policy}
+	 * @return updated instance of {@link Policy}
+	 */
+	public Policy updatePolicy(Policy p){
+		return addPolicy(p);
+	}
+	
+	/**
+	 * Delete a policy from db.
+	 * 
+	 * @param p : instance of {@link Policy}
+	 */
+	public void deletePolicy(Policy p){
+		policyrepository.delete(p);
 	}
 
 }
