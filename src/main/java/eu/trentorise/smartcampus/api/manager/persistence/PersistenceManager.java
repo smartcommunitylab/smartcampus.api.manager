@@ -18,6 +18,7 @@ package eu.trentorise.smartcampus.api.manager.persistence;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -403,6 +404,11 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
 		}
 		
+		UrlValidator urlValidator = new UrlValidator();
+		if(!urlValidator.isValid(r.getUri())){
+			throw new IllegalArgumentException("Uri is not valid.");
+		}
+		
 		Date today = new Date();
 		r.setCreationTime(today.toString());
 		return resourcerepository.save(r);
@@ -433,6 +439,11 @@ public class PersistenceManager {
 		}
 		else{
 			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
+		}
+		
+		UrlValidator urlValidator = new UrlValidator();
+		if(!urlValidator.isValid(r.getUri())){
+			throw new IllegalArgumentException("Uri is not valid.");
 		}
 		
 		Date today = new Date();
