@@ -15,6 +15,9 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.persistence;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -458,6 +461,160 @@ public class PersistenceManager {
 	 */
 	public void deleteResource(Resource r){
 		resourcerepository.delete(r);
+	}
+	
+	/*
+	 * API retrieves Resource and Policy data
+	 */
+	
+	/**
+	 * Add resource to an Api instance.
+	 * First this method checks if name, uri and verb are undefined, otherwise it 
+	 * throws IllegalArgumentException.
+	 * Then it checks if uri resource is valid otherwise it throws the same exception with different
+	 * message.
+	 * After that it retrieves api data searching by id and update it, adding
+	 * the new resource.
+	 * 
+	 * @param apiId : String
+	 * @param r : instance of {@link Resource}
+	 * @return updated instance of {@link Api}
+	 */
+	public Api addResourceApi(String apiId, Resource r){
+		//check resource fields
+		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
+			throw new IllegalArgumentException("Resource name, uri and verb are required.");
+		}
+		
+		if(r.getId()==null || r.getId().equalsIgnoreCase("")){
+			r.setId(generateId());
+		}
+		
+		if(r.getVerb().equalsIgnoreCase("GET")){
+			r.setVerb(Constants.VERB.GET.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("POST")){
+			r.setVerb(Constants.VERB.POST.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("PUT")){
+			r.setVerb(Constants.VERB.PUT.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("DELETE")){
+			r.setVerb(Constants.VERB.DELETE.toString());
+		}
+		else{
+			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
+		}
+		
+		UrlValidator urlValidator = new UrlValidator();
+		if(!urlValidator.isValid(r.getUri())){
+			throw new IllegalArgumentException("Uri is not valid.");
+		}
+		
+		Date today = new Date();
+		r.setCreationTime(today.toString());
+		
+		//get api and add resource
+		Api api = getApiById(apiId);
+		List<Resource> rlist = api.getResource();
+		if(rlist!=null){
+			rlist.add(r);
+		}else{
+			List<Resource> rs = new ArrayList<Resource>();
+			rs.add(r);
+			api.setResource(rs);
+		}
+		
+		//update api
+		return updateApi(api);
+		
+	}
+	
+	/**
+	 * Updates a resource in Api instance.
+	 * First this method checks if name, uri and verb are undefined, otherwise it 
+	 * throws IllegalArgumentException.
+	 * Then it checks if uri resource is valid otherwise it throws the same exception with different
+	 * message.
+	 * After that it retrieves api data searching by id and update it, adding
+	 * the new resource.
+	 * Then it retrieves the wanted resource by its id and sets fields.
+	 * The it updates api.
+	 * 
+	 * @param apiId : String 
+	 * @param r : instance of {@link Resource}
+	 * @return updated instance of {@link Api}
+	 */
+	public Api updateResourceApi(String apiId, Resource r){
+		//check resource fields
+		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
+			throw new IllegalArgumentException("Resource name, uri and verb are required.");
+		}
+		
+		if(r.getVerb().equalsIgnoreCase("GET")){
+			r.setVerb(Constants.VERB.GET.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("POST")){
+			r.setVerb(Constants.VERB.POST.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("PUT")){
+			r.setVerb(Constants.VERB.PUT.toString());
+		}
+		else if(r.getVerb().equalsIgnoreCase("DELETE")){
+			r.setVerb(Constants.VERB.DELETE.toString());
+		}
+		else{
+			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
+		}
+		
+		UrlValidator urlValidator = new UrlValidator();
+		if(!urlValidator.isValid(r.getUri())){
+			throw new IllegalArgumentException("Uri is not valid.");
+		}
+		
+		//retrieve api searching by id
+		Api api = getApiById(apiId);
+		//retrieve resource
+		List<Resource> rlist = api.getResource();
+		Resource oldr = null;
+		for(int i=0;i<rlist.size();i++){
+			if(rlist.get(i).getId().equalsIgnoreCase(r.getId())){
+				oldr = rlist.get(i);
+			}
+		}
+		if(oldr!=null){
+			oldr.setName(r.getName());
+			oldr.setUri(r.getUri());
+			oldr.setVerb(r.getVerb());
+			oldr.setPolicy(r.getPolicy());
+			Date today = new Date();
+			oldr.setUpdateTime(today.toString());
+		}
+		//update api
+		return updateApi(api);
+	}
+	
+	/**
+	 * Deletes a resource from Api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @return instance of {@link Api} without deleted resource.
+	 */
+	public Api deleteResourceApi(String apiId, String resourceId){
+		//retrieves api
+		Api api = getApiById(apiId);
+		//retrieves resource
+		List<Resource> rlist = api.getResource();
+
+		for(int i=0; i<rlist.size();i++){
+			if(rlist.get(i).getId().equalsIgnoreCase(resourceId)){
+				//delete resource
+				rlist.remove(i);
+			}
+		}
+
+		return updateApi(api);
 	}
 	
 	

@@ -83,19 +83,12 @@ public class ScenarioApi {
 		r1.setName("Counter");
 		r1.setUri("http://www.mydomain.it/resource1");
 		r1.setVerb("GET");
-		apiManager.addResource(r1);
 		
 		log.info("Add Resource 2..");
 		Resource r2 = new Resource();
 		r2.setName("Like");
 		r2.setUri("http://www.mydomain.it/resource2");
 		r2.setVerb("GET");
-		apiManager.addResource(r2);
-		
-		log.info("Prepare resource list...");
-		List<Resource> rlist = new ArrayList<Resource>();
-		rlist.add(r1);
-		rlist.add(r2);
 		
 		//api
 		log.info("Add api...");
@@ -104,9 +97,12 @@ public class ScenarioApi {
 		api.setName("Geocoding");
 		api.setBasePath("/v0/geocoding");
 		api.setOwnerId("g1shjfdj");
-		api.setResource(rlist);
+
 		Api nApi = apiManager.addApi(api);
 		assertNotNull("Error in saving a new api..",nApi);
+		
+		apiManager.addResourceApi("api1", r1);
+		apiManager.addResourceApi("api1", r2);
 		
 		log.info("Add api test terminated.");
 	}
@@ -117,33 +113,15 @@ public class ScenarioApi {
 	@Test
 	public void updateResource1(){
 		log.info("Update resource 1 of api...");
-		//retrieve api by id
-		log.info("Retrieve api");
-		Api api = apiManager.getApiById("api1");
-		//get resource 1 and modify it
-		log.info("Retrieve resource");
-		List<Resource> rlist = api.getResource();
-		Resource r1 = null;
-		for(int i=0; i<rlist.size();i++){
-			if(rlist.get(i).getId().equalsIgnoreCase("resource1")){
-				r1 = rlist.get(i);
-			}
-		}
-		if(r1!=null){
-			r1.setVerb("POST");
-			
-			log.info("Update api and resource");
-			Api uapi = apiManager.updateApi(api);
-			assertNotNull("Error in update api..",uapi);
-			
-			Resource ur1 = apiManager.updateResource(r1);
-			assertNotNull("Error in update resource..",ur1);
-		}else{
-			log.info("No such resource");
-		}
+		
+		Resource r1 = new Resource();
+		r1.setId("resource1");
+		r1.setName("Counter");
+		r1.setUri("http://www.mydomain.it/resource1");
+		r1.setVerb("POST");
+		apiManager.updateResourceApi("api1", r1);
 		
 		log.info("Update resource 1 of api terminated.");
-		
 	}
 	
 	/**
@@ -152,29 +130,9 @@ public class ScenarioApi {
 	@Test
 	public void deleteResource1(){
 		log.info("Delete resource 1 of api...");
-		//retrieve api by id
-		log.info("Retrieve api");
-		Api api = apiManager.getApiById("api1");
+		
 		//get resource 1 and delete it
-		log.info("Retrieve resource");
-		List<Resource> rlist = api.getResource();
-		Resource r1 = null;
-		for(int i=0; i<rlist.size();i++){
-			if(rlist.get(i).getId().equalsIgnoreCase("resource1")){
-				r1 = rlist.get(i);
-				rlist.remove(i);
-			}
-		}
-		if(r1!=null){
-			log.info("Update api and resource");
-			Api uapi = apiManager.updateApi(api);
-			assertNotNull("Error in update api..",uapi);
-			
-			apiManager.deleteResource(r1);
-			
-		}else{
-			log.info("No such resource");
-		}
+		apiManager.deleteResourceApi("api1", "resource1");
 		
 		log.info("Delete resource 1 of api terminated.");
 		
@@ -189,18 +147,8 @@ public class ScenarioApi {
 		//retrieve api by id
 		log.info("Retrieve api");
 		Api api = apiManager.getApiById("api1");
-		//get resource 1 and delete it
-		log.info("Retrieve resources and remove them");
-		List<Resource> rlist = api.getResource();
-		if(rlist!=null){
-			for(int i=0; i<rlist.size();i++){
-				apiManager.deleteResource(rlist.get(i));
-				rlist.remove(i);
-			}
 
-			log.info("Remove api");
-			apiManager.deleteApi(api);
-		}
+		apiManager.deleteApi(api);
 		
 		log.info("Delete resources and api terminated.");
 	}
