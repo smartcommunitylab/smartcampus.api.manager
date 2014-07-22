@@ -831,5 +831,155 @@ public class PersistenceManager {
 		return ps;
 	}
 	
+	/**
+	 * Add app to an Api instance.
+	 * First this method checks if name is undefined, otherwise it 
+	 * throws IllegalArgumentException.
+	 * After that it retrieves api data searching by id and update it, adding
+	 * the new app.
+	 * 
+	 * @param apiId : String
+	 * @param app : instance of {@link App}
+	 * @return instance of {@link Api} with new app data
+	 */
+	public Api addAppApi(String apiId, App app){
+		if(app.getName()==null){
+			throw new IllegalArgumentException("App name is required.");
+		}
+		if(app.getId()==null || app.getId().equalsIgnoreCase("")){
+			app.setId(generateId());
+		}
+		// get api and add app
+		Api api = getApiById(apiId);
+		List<App> alist = api.getApp();
+		if (alist != null) {
+			alist.add(app);
+		} else {
+			List<App> as = new ArrayList<App>();
+			as.add(app);
+			api.setApp(as);
+		}
+
+		// update api
+		return updateApi(api);
+	}
+	
+	/**
+	 * Updates an app in Api instance.
+	 * First this method checks if name is undefined, otherwise it 
+	 * throws IllegalArgumentException.
+	 * After that it retrieves api data searching by id and update it, adding
+	 * the new app.
+	 * Then it retrieves the wanted app by its id and sets fields.
+	 * It updates api.
+	 * 
+	 * @param apiId : String
+	 * @param app : instance of {@link App}
+	 * @return instance of {@link Api} with update App
+	 */
+	public Api updateAppApi(String apiId, App app){
+		if(app.getName()==null){
+			throw new IllegalArgumentException("App name is required.");
+		}
+		//retrieve api searching by id
+		Api api = getApiById(apiId);
+		//retrieve app
+		List<App> alist = api.getApp();
+		App oldapp = null;
+		for(int i=0;i<alist.size();i++){
+			if(alist.get(i).getId().equalsIgnoreCase(app.getId())){
+				oldapp = alist.get(i);
+			}
+		}
+		if(oldapp!=null){
+			oldapp.setName(app.getName());
+			oldapp.setKey(app.getKey());
+		}
+		// update api
+		return updateApi(api);
+	}
+	
+	/**
+	 * Deletes an app from Api.
+	 * 
+	 * @param apiId : String
+	 * @param appId : String
+	 * @return instance of {@link Api} without deleted app
+	 */
+	public Api deleteAppApi(String apiId, String appId){
+		// retrieves api
+		Api api = getApiById(apiId);
+		// retrieves app
+		List<App> alist = api.getApp();
+
+		for (int i = 0; i < alist.size(); i++) {
+			if (alist.get(i).getId().equalsIgnoreCase(appId)) {
+				// delete resource
+				alist.remove(i);
+			}
+		}
+
+		return updateApi(api);
+	}
+	
+	/**
+	 * Retrieves app from Api searching by app id.
+	 * 
+	 * @param apiId : String
+	 * @param appId : String
+	 * @return instance of {@link App}
+	 */
+	public App getAppApiByAppId(String apiId, String appId){
+		Api api = getApiById(apiId);
+		List<App> alist = api.getApp();
+		App app = null;
+		
+		for(int i=0; i<alist.size();i++){
+			if(alist.get(i).getId().equalsIgnoreCase(appId)){
+				app = alist.get(i);
+			}
+		}
+		return app;
+	}
+	
+	/**
+	 * Retrieves apps from Api searching by app name.
+	 * 
+	 * @param apiId : String
+	 * @param appName : String
+	 * @return list of {@link App} instances
+	 */
+	public List<App> getAppApiByAppName(String apiId, String appName){
+		Api api = getApiById(apiId);
+		List<App> alist = api.getApp();
+		List<App> apps = new ArrayList<App>();
+		
+		for(int i=0; i<alist.size();i++){
+			if(alist.get(i).getName().equalsIgnoreCase(appName)){
+				apps.add(alist.get(i));
+			}
+		}
+		return apps;
+	}
+	
+	/**
+	 * Retrieves apps from Api searching by app key.
+	 * 
+	 * @param apiId
+	 * @param appKey
+	 * @return
+	 */
+	public List<App> getAppApiByAppKey(String apiId, String appKey){
+		Api api = getApiById(apiId);
+		List<App> alist = api.getApp();
+		List<App> apps = new ArrayList<App>();
+		
+		for(int i=0; i<alist.size();i++){
+			if(alist.get(i).getKey().equalsIgnoreCase(appKey)){
+				apps.add(alist.get(i));
+			}
+		}
+		return apps;
+	}
 
 }
