@@ -175,6 +175,15 @@ public class PersistenceManager {
 		apirepository.delete(api);
 	}
 	
+	/**
+	 * Deletes Api data from db using api id.
+	 * 
+	 * @param apiId : String
+	 */
+	public void deleteApi(String apiId){
+		apirepository.delete(apiId);
+	}
+	
 	/* 
 	 *  App
 	 */
