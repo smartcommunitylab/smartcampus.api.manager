@@ -76,7 +76,7 @@ public class ApiManagerTest {
 		api.setId("ndkdhfkdifuret94860936093");
 		api.setName("Geocoding");
 		api.setBasePath("/v0/geocoding");
-		api.setOwnerId("g1shjfdj");
+		api.setOwnerId("junit-test");
 		Api nApi = apiManager.addApi(api);
 		assertNotNull("Error in saving a new api..",nApi);
 		
@@ -84,14 +84,14 @@ public class ApiManagerTest {
 		Api api2 = new Api();
 		api2.setName("Transportation System Information");
 		api2.setBasePath("/v1/mobility");
-		api2.setOwnerId("sdfghytree");
+		api2.setOwnerId("junit-test");
 		Api n2Api = apiManager.addApi(api2);
 		assertNotNull("Error in saving a new api..",n2Api);
 		
 		Api api3 = new Api();
 		api3.setName("Without key");
 		api3.setBasePath("/v3/noKey");
-		api3.setOwnerId("ertyui");
+		api3.setOwnerId("junit-test");
 		Api n3Api = apiManager.addApi(api3);
 		assertNotNull("Error in saving a new api..",n3Api);
 		log.info("Add a new Api terminated.");
@@ -154,7 +154,7 @@ public class ApiManagerTest {
 	@Test
 	public void getApiByOwnerId(){
 		log.info("Find api by id..");
-		List<Api> api = apiManager.getApiByOwnerId("g1shjfdj");
+		List<Api> api = apiManager.getApiByOwnerId("junit-test");
 		assertNotNull("Api not found", api);
 		log.info("Found api by id terminated.");
 	}
@@ -170,6 +170,12 @@ public class ApiManagerTest {
 		api.setName("Geocoding");
 		api.setBasePath("/v0/geocoding");
 		apiManager.deleteApi(api);
+		
+		List<Api> apilist = apiManager.getApiByOwnerId("junit-test");
+		for(int i=0;i<apilist.size();i++){
+			apiManager.deleteApi(apilist.get(i));
+		}
+		
 		log.info("Delete api terminated.");
 	}
 

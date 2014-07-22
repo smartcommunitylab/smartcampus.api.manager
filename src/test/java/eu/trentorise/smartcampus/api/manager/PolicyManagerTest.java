@@ -70,7 +70,7 @@ public class PolicyManagerTest {
 		log.info("Add Policy data..");
 		Policy p1 = new Policy();
 		p1.setId("sa1");
-		p1.setName("SpikeArrest");
+		p1.setName("SpikeArrest-junit-test");
 		p1.setCategory("quality");
 		p1.setType("t1");
 		apiManager.addPolicy(p1);
@@ -78,7 +78,7 @@ public class PolicyManagerTest {
 		log.info("Add Policy 2..");
 		Policy p2 = new Policy();
 		p2.setId("sa2");
-		p2.setName("Quota");
+		p2.setName("Quota-junit-test");
 		p2.setCategory("quality");
 		p2.setType("q1");
 		apiManager.addPolicy(p2);
@@ -108,7 +108,7 @@ public class PolicyManagerTest {
 		log.info("Update Policy ..");
 		Policy p1 = new Policy();
 		p1.setId("sa1");
-		p1.setName("SpikeArrest_update");
+		p1.setName("SpikeArrest-junit-test_update");
 		p1.setCategory("quality");
 		p1.setType("t1");
 		Policy np = apiManager.updatePolicy(p1);
@@ -133,7 +133,7 @@ public class PolicyManagerTest {
 	@Test
 	public void getPolicyByName(){
 		log.info("Find Policy by name..");
-		List<Policy> plist = apiManager.getPolicyByName("SpikeArrest_update");
+		List<Policy> plist = apiManager.getPolicyByName("SpikeArrest-junit-test_update");
 		assertNotNull("Policy not found", plist);
 		for(int i=0;i<plist.size();i++){
 			log.info("Policy name {}, ",plist.get(i).getName());
@@ -177,10 +177,14 @@ public class PolicyManagerTest {
 		log.info("Delete Policy..");
 		Policy p1 = new Policy();
 		p1.setId("sa1");
-		p1.setName("SpikeArrest_update");
+		p1.setName("SpikeArrest-junit-test_update");
 		p1.setCategory("quality");
 		p1.setType("t1");
 		apiManager.deletePolicy(p1);
+		
+		Policy p2 = apiManager.getPolicyByName("Quota-junit-test").get(0);
+		apiManager.deletePolicy(p2);
+		
 		log.info("Delete Policy terminated.");
 	}
 }

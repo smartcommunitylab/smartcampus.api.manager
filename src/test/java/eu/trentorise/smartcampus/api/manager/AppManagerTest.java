@@ -65,13 +65,13 @@ public class AppManagerTest {
 		log.info("Add App data..");
 		App app1 = new App();
 		app1.setId("ue45fght");
-		app1.setName("Openservice app");
+		app1.setName("Openservice app junit-test");
 		app1.setKey("openservice.98jhgndl.app");
 		apiManager.addApp(app1);
 		
 		log.info("Add App 2..");
 		App app2 = new App();
-		app2.setName("Smartcampus app");
+		app2.setName("Smartcampus app junit-test");
 		app2.setKey("smartcampus.app.2");
 		apiManager.addApp(app2);
 		
@@ -100,7 +100,7 @@ public class AppManagerTest {
 		log.info("Update App ..");
 		App app = new App();
 		app.setId("ue45fght");
-		app.setName("Openservice app");
+		app.setName("Openservice app junit-test");
 		app.setKey("openservice.98jhgndl.app.upd");
 		App nApp = apiManager.updateApp(app);
 		assertNotNull("Error in saving a new app..",nApp);
@@ -124,7 +124,7 @@ public class AppManagerTest {
 	@Test
 	public void getAppByName(){
 		log.info("Find App by name..");
-		List<App> lapp = apiManager.getAppByName("Openservice app");
+		List<App> lapp = apiManager.getAppByName("Openservice app junit-test");
 		assertNotNull("App not found", lapp);
 		for(int i=0;i<lapp.size();i++){
 			log.info("App name {}, ",lapp.get(i).getName());
@@ -154,9 +154,13 @@ public class AppManagerTest {
 		log.info("Delete App..");
 		App app = new App();
 		app.setId("ue45fght");
-		app.setName("Openservice app");
+		app.setName("Openservice app junit-test");
 		app.setKey("openservice.98jhgndl.app.upd");
 		apiManager.deleteApp(app);
+		
+		App app2 = apiManager.getAppByName("Smartcampus app junit-test").get(0);
+		apiManager.deleteApp(app2);
+		
 		log.info("Delete App terminated.");
 	}
 

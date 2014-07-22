@@ -65,14 +65,14 @@ public class ResourceManagerTest {
 		log.info("Add Resource data..");
 		Resource r1 = new Resource();
 		r1.setId("resource1");
-		r1.setName("Counter");
+		r1.setName("Counter-junit-test");
 		r1.setUri("http://www.mydomain.it/resource1");
 		r1.setVerb("GET");
 		apiManager.addResource(r1);
 		
 		log.info("Add Resource 2..");
 		Resource r2 = new Resource();
-		r2.setName("Counter");
+		r2.setName("Like-junit-test");
 		r2.setUri("http://www.mydomain.it/resource2");
 		r2.setVerb("GET");
 		apiManager.addResource(r2);
@@ -102,7 +102,7 @@ public class ResourceManagerTest {
 		log.info("Update Resource ..");
 		Resource r1 = new Resource();
 		r1.setId("resource1");
-		r1.setName("Counter");
+		r1.setName("Counter-junit-test");
 		r1.setUri("http://www.mydomain.it/resource1update");
 		r1.setVerb("GET");
 		Resource np = apiManager.updateResource(r1);
@@ -127,7 +127,7 @@ public class ResourceManagerTest {
 	@Test
 	public void getResourceByName(){
 		log.info("Find Resource by name..");
-		List<Resource> rlist = apiManager.getResourceByName("Counter");
+		List<Resource> rlist = apiManager.getResourceByName("Like-junit-test");
 		assertNotNull("Resource not found", rlist);
 		for(int i=0;i<rlist.size();i++){
 			log.info("Resource name {}, ",rlist.get(i).getName());
@@ -143,10 +143,14 @@ public class ResourceManagerTest {
 		log.info("Delete Resource..");
 		Resource r1 = new Resource();
 		r1.setId("resource1");
-		r1.setName("Counter");
+		r1.setName("Counter-junit-test");
 		r1.setUri("http://www.mydomain.it/resource1update");
 		r1.setVerb("GET");
 		apiManager.deleteResource(r1);
+		
+		Resource r2 = apiManager.getResourceByName("Like-junit-test").get(0);
+		apiManager.deleteResource(r2);
+		
 		log.info("Delete Resource terminated.");
 	}
 
