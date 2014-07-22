@@ -58,8 +58,10 @@ public class ApiController {
 	 * Rest service that adding an Api to database.
 	 * 
 	 * @param api : instance of {@link Api}
-	 * @return string message : "Saved Successfully" if it is ok, otherwise "Problem in saving data".
-	 * 				If exception is threw then it returns exception message.
+	 * @return instance of {@link ResultData} with api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Saved Successfully" if it is ok, otherwise "Problem in saving data".
+	 * 			If exception is threw then it is the exception message.
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
@@ -78,6 +80,15 @@ public class ApiController {
 		}
 	}
 	
+	/**
+	 * Rest service that updating an Api in database.
+	 * 
+	 * @param api : instance of {@link Api}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData update(@RequestBody Api api) {
@@ -95,6 +106,13 @@ public class ApiController {
 		}
 	}
 	
+	/**
+	 * Rest service that deleting an Api from database by passing its id.
+	 * 
+	 * @param apiId
+	 * @return instance of {@link ResultData} with updated api data, status (OK) and a string message : 
+	 * 			"Delete done!".
+	 */
 	@RequestMapping(value = "/delete/{apiId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResultData delete(@PathVariable String apiId) {
@@ -105,6 +123,14 @@ public class ApiController {
 			
 	}
 	
+	/**
+	 * Rest service that retrieving api data having a specific owner id.
+	 * 
+	 * @param ownerId : String, path variable
+	 * @return instance of {@link ResultData} with api data having the given owner id, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"All data" if it is ok, otherwise "There is no api data for this owner.".
+	 */
 	@RequestMapping(value = "/{ownerId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
 	public ResultData getApiByOwnerId(@PathVariable String ownerId) {
