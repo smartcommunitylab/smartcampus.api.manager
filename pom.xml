@@ -175,6 +175,14 @@
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- jackson map for return data of rest -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		
 	</dependencies>
 	
     <build>
