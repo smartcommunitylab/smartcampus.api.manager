@@ -488,6 +488,10 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
 		}
 		
+		if(resourceApiExists(apiId, r.getName())){
+			throw new IllegalArgumentException("Resource already exists. Change name.");
+		}
+
 		if(r.getId()==null || r.getId().equalsIgnoreCase("")){
 			r.setId(generateId());
 		}
@@ -585,6 +589,11 @@ public class PersistenceManager {
 			}
 		}
 		if(oldr!=null){
+			if(!oldr.getName().equalsIgnoreCase(r.getName())){
+				if(resourceApiExists(apiId, r.getName())){
+					throw new IllegalArgumentException("Resource already exists. Change name.");
+				}
+			}
 			oldr.setName(r.getName());
 			oldr.setUri(r.getUri());
 			oldr.setVerb(r.getVerb());
@@ -727,6 +736,11 @@ public class PersistenceManager {
 			}
 		}
 		if(oldp!=null){
+			if(!oldp.getName().equalsIgnoreCase(p.getName())){
+				if(policyApiExists(apiId, p.getName())){
+					throw new IllegalArgumentException("Policy with this name already exists.");
+				}
+			}
 			oldp.setName(p.getName());
 			oldp.setNotes(p.getNotes());
 			oldp.setCategory(p.getCategory());
@@ -854,6 +868,9 @@ public class PersistenceManager {
 		if(app.getName()==null){
 			throw new IllegalArgumentException("App name is required.");
 		}
+		if(appApiExists(apiId, app.getName())){
+			throw new IllegalArgumentException("App with this name already exists.");
+		}
 		if(app.getId()==null || app.getId().equalsIgnoreCase("")){
 			app.setId(generateId());
 		}
@@ -900,6 +917,11 @@ public class PersistenceManager {
 			}
 		}
 		if(oldapp!=null){
+			if(!oldapp.getName().equalsIgnoreCase(app.getName())){
+				if(appApiExists(apiId, app.getName())){
+					throw new IllegalArgumentException("App with this name already exists.");
+				}
+			}
 			oldapp.setName(app.getName());
 			oldapp.setKey(app.getKey());
 		}
@@ -1027,6 +1049,36 @@ public class PersistenceManager {
 	public boolean policyApiExists(String apiId, String policyName){
 		List<Policy> plist = getPolicyApiByPolicyName(apiId, policyName);
 		if(plist!=null && plist.size()>0){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if an app with a given name is already saved in db.
+	 * 
+	 * @param apiId : String
+	 * @param appName : String
+	 * @return true if an app with a given name exists, false otherwise
+	 */
+	public boolean appApiExists(String apiId, String appName){
+		List<App> applist = getAppApiByAppName(apiId, appName);
+		if(applist!=null && applist.size()>0){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if a resource with a given name is already saved in db.
+	 * 
+	 * @param apiId : String
+	 * @param resourceName : String
+	 * @return true if a resource with a given name exists, false otherwise
+	 */
+	public boolean resourceApiExists(String apiId, String resourceName){
+		List<Resource> rlist = getResourceApiByResourceName(apiId, resourceName);
+		if(rlist!=null && rlist.size()>0){
 			return true;
 		}
 		return false;
