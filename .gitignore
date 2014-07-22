@@ -6,6 +6,7 @@
 /home
 /LICENSE-2.0.html
 /src/main/resources/META-INF
+/src/main/webapp/WEB-INF/classes
 /src/test/resources
 /.springBeans
 /.externalToolBuilders
