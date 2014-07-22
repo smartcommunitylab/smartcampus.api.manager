@@ -29,7 +29,9 @@ import eu.trentorise.smartcampus.api.manager.Constants;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
@@ -314,6 +316,7 @@ public class PersistenceManager {
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
 		}
+		isPolicyInstanceOf(p);
 		if(p.getId()==null || p.getId().equalsIgnoreCase("")){
 			p.setId(generateId());
 		}
@@ -672,6 +675,7 @@ public class PersistenceManager {
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
 		}
+		isPolicyInstanceOf(p);
 		if(p.getId()==null || p.getId().equalsIgnoreCase("")){
 			p.setId(generateId());
 		}
@@ -708,6 +712,7 @@ public class PersistenceManager {
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
 		}
+		isPolicyInstanceOf(p);
 		//retrieve api searching by id
 		Api api = getApiById(apiId);
 		//retrieve policy
@@ -980,6 +985,34 @@ public class PersistenceManager {
 			}
 		}
 		return apps;
+	}
+	
+	/**
+	 * Check parameter value for policy.
+	 * Spike Arrest : name and rate are required.
+	 * Quota : name, interval, timeunit and allow count are required.
+	 * 
+	 * @param p : instance of {@link Policy}
+	 */
+	public void isPolicyInstanceOf(Policy p){
+		// check fields of Spike Arrest
+		if (p instanceof SpikeArrest) {
+			//name and rate are required
+			if(((SpikeArrest) p).getsName()==null || 
+			((SpikeArrest) p).getRate()==null ){
+				throw new IllegalArgumentException("For policy spike arrest, name and rate are required.");
+			}
+		}
+		// check fields of Quota
+		if (p instanceof Quota) {
+			//name, interval, timeunit, allow count are required
+			if( ((Quota) p).getqName()==null || ((Quota) p).getInterval()==null ||
+			((Quota) p).getTimeUnit()==null || ((Quota) p).getAllowCount()==null ){
+				throw new IllegalArgumentException("For policy quota, name, interval, timeunit and " +
+						"allow count are required.");
+			}
+		}
+				
 	}
 
 }

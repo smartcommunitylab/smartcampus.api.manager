@@ -21,9 +21,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Policy model of Spike Arrest
- * name : name of policy instance. The name must be unique in the organization.
- * rate : specifies the rate at which to limit the traffic spike (or burst). Valid value: integer per min or sec.
- * identifier : (optional) variable used for uniquely identifying the client.
+ * name : String, name of policy instance. The name must be unique in the organization.
+ * rate : String, specifies the rate at which to limit the traffic spike (or burst). Valid value: integer per min or sec.
+ * identifier : (optional) String, variable used for uniquely identifying the client.
  * 
  * @author Giulia Canobbio
  *
@@ -36,11 +36,11 @@ public class SpikeArrest extends Policy{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Field("spike-arrest-name")
-	@Indexed
+	@Indexed(unique=true)
 	public String sName;
-	@Field("spike-arrest-rate")
+	@Field("spike-arrest-Rate")
 	public String rate;
-	@Field("spike-arrest-identifier")
+	@Field("spike-arrest-Identifier")
 	public String identifier;
 	
 	/**
