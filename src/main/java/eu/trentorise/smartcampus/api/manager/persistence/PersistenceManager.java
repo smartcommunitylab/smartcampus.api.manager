@@ -98,7 +98,11 @@ public class PersistenceManager {
 	 * @return instance of {@link Api}
 	 */
 	public Api getApiById(String id){
-		return (Api) apirepository.findById(id).get(0);
+		List<Api> api = apirepository.findById(id);
+		if(api!=null){
+			return api.get(0);
+		}
+		return null;
 	}
 	
 	/**
@@ -191,7 +195,11 @@ public class PersistenceManager {
 	 * @return instance of {@link App}
 	 */
 	public App getAppById(String id){
-		return (App) apprepository.findById(id).get(0);
+		List<App> apps = apprepository.findById(id);
+		if(apps!=null){
+			return apps.get(0);
+		}
+		return null;
 	}
 	
 	/**
@@ -271,7 +279,11 @@ public class PersistenceManager {
 	 * @return instance of {@link Policy}
 	 */
 	public Policy getPolicyById(String id){
-		return (Policy) policyrepository.findById(id).get(0);
+		List<Policy> ps = policyrepository.findById(id);
+		if(ps!=null){
+			return ps.get(0);
+		}
+		return null;
 	}
 	
 	/**
@@ -362,7 +374,11 @@ public class PersistenceManager {
 	 * @return instance of {@link Resource}
 	 */
 	public Resource getResourceById(String id){
-		return (Resource) resourcerepository.findById(id).get(0);
+		List<Resource> rs = resourcerepository.findById(id);
+		if(rs!=null){
+			return rs.get(0);
+		}
+		return null;
 	}
 	
 	/**
@@ -618,14 +634,17 @@ public class PersistenceManager {
 		//retrieves resource
 		List<Resource> rlist = api.getResource();
 
-		for(int i=0; i<rlist.size();i++){
-			if(rlist.get(i).getId().equalsIgnoreCase(resourceId)){
+		if(rlist!=null){
+			for(int i=0; i<rlist.size();i++){
+				if(rlist.get(i).getId().equalsIgnoreCase(resourceId)){
 				//delete resource
 				rlist.remove(i);
+				}
 			}
+			return updateApi(api);
 		}
-
-		return updateApi(api);
+		return api;
+		
 	}
 	
 	/**
@@ -640,9 +659,11 @@ public class PersistenceManager {
 		List<Resource> rlist = api.getResource();
 		Resource r = null;
 		
-		for(int i=0; i<rlist.size();i++){
-			if(rlist.get(i).getId().equalsIgnoreCase(resourceId)){
-				r = rlist.get(i);
+		if (rlist != null) {
+			for (int i = 0; i < rlist.size(); i++) {
+				if (rlist.get(i).getId().equalsIgnoreCase(resourceId)) {
+					r = rlist.get(i);
+				}
 			}
 		}
 		return r;
@@ -660,9 +681,11 @@ public class PersistenceManager {
 		List<Resource> rlist = api.getResource();
 		List<Resource> rs = new ArrayList<Resource>();
 		
-		for(int i=0; i<rlist.size();i++){
-			if(rlist.get(i).getName().equalsIgnoreCase(resourceName)){
-				rs.add(rlist.get(i));
+		if (rlist != null) {
+			for (int i = 0; i < rlist.size(); i++) {
+				if (rlist.get(i).getName().equalsIgnoreCase(resourceName)) {
+					rs.add(rlist.get(i));
+				}
 			}
 		}
 		return rs;
@@ -763,14 +786,17 @@ public class PersistenceManager {
 		// retrieves policy
 		List<Policy> plist = api.getPolicy();
 
-		for (int i = 0; i < plist.size(); i++) {
-			if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
-				// delete resource
-				plist.remove(i);
+		if (plist != null) {
+			for (int i = 0; i < plist.size(); i++) {
+				if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+					// delete resource
+					plist.remove(i);
+				}
 			}
+			return updateApi(api);
 		}
-
-		return updateApi(api);
+		return api;
+		
 	}
 	
 	/**
@@ -785,9 +811,11 @@ public class PersistenceManager {
 		List<Policy> plist = api.getPolicy();
 		Policy p = null;
 		
-		for(int i=0; i<plist.size();i++){
-			if(plist.get(i).getId().equalsIgnoreCase(policyId)){
-				p = plist.get(i);
+		if (plist != null) {
+			for (int i = 0; i < plist.size(); i++) {
+				if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+					p = plist.get(i);
+				}
 			}
 		}
 		return p;
@@ -805,9 +833,11 @@ public class PersistenceManager {
 		List<Policy> plist = api.getPolicy();
 		List<Policy> ps = new ArrayList<Policy>();
 		
-		for(int i=0; i<plist.size();i++){
-			if(plist.get(i).getName().equalsIgnoreCase(policyName)){
-				ps.add(plist.get(i));
+		if(plist!=null){
+			for(int i=0; i<plist.size();i++){
+				if(plist.get(i).getName().equalsIgnoreCase(policyName)){
+					ps.add(plist.get(i));
+				}
 			}
 		}
 		return ps;
@@ -825,9 +855,11 @@ public class PersistenceManager {
 		List<Policy> plist = api.getPolicy();
 		List<Policy> ps = new ArrayList<Policy>();
 		
-		for(int i=0; i<plist.size();i++){
-			if(plist.get(i).getCategory().equalsIgnoreCase(policyCategory)){
-				ps.add(plist.get(i));
+		if (plist != null) {
+			for (int i = 0; i < plist.size(); i++) {
+				if (plist.get(i).getCategory().equalsIgnoreCase(policyCategory)) {
+					ps.add(plist.get(i));
+				}
 			}
 		}
 		return ps;
@@ -845,9 +877,11 @@ public class PersistenceManager {
 		List<Policy> plist = api.getPolicy();
 		List<Policy> ps = new ArrayList<Policy>();
 		
-		for(int i=0; i<plist.size();i++){
-			if(plist.get(i).getType().equalsIgnoreCase(policyType)){
-				ps.add(plist.get(i));
+		if(plist!=null){
+			for(int i=0; i<plist.size();i++){
+				if(plist.get(i).getType().equalsIgnoreCase(policyType)){
+					ps.add(plist.get(i));
+				}
 			}
 		}
 		return ps;
@@ -964,9 +998,11 @@ public class PersistenceManager {
 		List<App> alist = api.getApp();
 		App app = null;
 		
-		for(int i=0; i<alist.size();i++){
-			if(alist.get(i).getId().equalsIgnoreCase(appId)){
-				app = alist.get(i);
+		if (alist != null) {
+			for (int i = 0; i < alist.size(); i++) {
+				if (alist.get(i).getId().equalsIgnoreCase(appId)) {
+					app = alist.get(i);
+				}
 			}
 		}
 		return app;
@@ -984,9 +1020,11 @@ public class PersistenceManager {
 		List<App> alist = api.getApp();
 		List<App> apps = new ArrayList<App>();
 		
-		for(int i=0; i<alist.size();i++){
-			if(alist.get(i).getName().equalsIgnoreCase(appName)){
-				apps.add(alist.get(i));
+		if (alist != null) {
+			for (int i = 0; i < alist.size(); i++) {
+				if (alist.get(i).getName().equalsIgnoreCase(appName)) {
+					apps.add(alist.get(i));
+				}
 			}
 		}
 		return apps;
@@ -1004,9 +1042,11 @@ public class PersistenceManager {
 		List<App> alist = api.getApp();
 		List<App> apps = new ArrayList<App>();
 		
-		for(int i=0; i<alist.size();i++){
-			if(alist.get(i).getKey().equalsIgnoreCase(appKey)){
-				apps.add(alist.get(i));
+		if (alist != null) {
+			for (int i = 0; i < alist.size(); i++) {
+				if (alist.get(i).getKey().equalsIgnoreCase(appKey)) {
+					apps.add(alist.get(i));
+				}
 			}
 		}
 		return apps;
