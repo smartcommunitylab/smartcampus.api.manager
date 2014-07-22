@@ -679,6 +679,9 @@ public class PersistenceManager {
 		if(p.getId()==null || p.getId().equalsIgnoreCase("")){
 			p.setId(generateId());
 		}
+		if(policyApiExists(apiId, p.getName())){
+			throw new IllegalArgumentException("Policy with this name already exists.");
+		}
 		// get api and add policy
 		Api api = getApiById(apiId);
 		List<Policy> plist = api.getPolicy();
@@ -998,21 +1001,35 @@ public class PersistenceManager {
 		// check fields of Spike Arrest
 		if (p instanceof SpikeArrest) {
 			//name and rate are required
-			if(((SpikeArrest) p).getsName()==null || 
-			((SpikeArrest) p).getRate()==null ){
+			if(((SpikeArrest) p).getRate()==null ){
 				throw new IllegalArgumentException("For policy spike arrest, name and rate are required.");
 			}
 		}
 		// check fields of Quota
 		if (p instanceof Quota) {
 			//name, interval, timeunit, allow count are required
-			if( ((Quota) p).getqName()==null || ((Quota) p).getInterval()==null ||
-			((Quota) p).getTimeUnit()==null || ((Quota) p).getAllowCount()==null ){
+			if( ((Quota) p).getInterval()==null || ((Quota) p).getTimeUnit()==null || 
+					((Quota) p).getAllowCount()==null ){
 				throw new IllegalArgumentException("For policy quota, name, interval, timeunit and " +
 						"allow count are required.");
 			}
 		}
 				
+	}
+	
+	/**
+	 * Check if a policy with a given name is already saved in db.
+	 * 
+	 * @param apiId : String
+	 * @param policyName : String
+	 * @return true if a policy with a given name exists, false otherwise
+	 */
+	public boolean policyApiExists(String apiId, String policyName){
+		List<Policy> plist = getPolicyApiByPolicyName(apiId, policyName);
+		if(plist!=null && plist.size()>0){
+			return true;
+		}
+		return false;
 	}
 
 }

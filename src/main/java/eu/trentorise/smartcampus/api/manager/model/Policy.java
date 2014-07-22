@@ -18,6 +18,7 @@ package eu.trentorise.smartcampus.api.manager.model;
 import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -40,6 +41,7 @@ public class Policy implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
+	@Indexed(unique=true)
 	private String id;
 	@Field
 	private String name;

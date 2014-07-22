@@ -15,7 +15,6 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.model;
 
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -37,10 +36,7 @@ public class Quota extends Policy{
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	@Field("quota-name")
-	@Indexed(unique=true)
-	private String qName;
+
 	@Field("quota-interval")
 	private Integer interval;
 	@Field("quota-TimeUnit")
@@ -50,20 +46,6 @@ public class Quota extends Policy{
 	@Field("quota-Identifier")
 	private String identifier;
 	
-	/**
-	 * 
-	 * @return quota name : String
-	 */
-	public String getqName() {
-		return qName;
-	}
-	/**
-	 * 
-	 * @param qName : String, quota name
-	 */
-	public void setqName(String qName) {
-		this.qName = qName;
-	}
 	/**
 	 * 
 	 * @return quota Interval : Integer

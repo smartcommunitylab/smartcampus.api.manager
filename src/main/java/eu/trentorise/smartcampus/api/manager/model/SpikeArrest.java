@@ -15,7 +15,6 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.model;
 
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -35,28 +34,11 @@ public class SpikeArrest extends Policy{
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Field("spike-arrest-name")
-	@Indexed(unique=true)
-	public String sName;
 	@Field("spike-arrest-Rate")
 	public String rate;
 	@Field("spike-arrest-Identifier")
 	public String identifier;
-	
-	/**
-	 * 
-	 * @return sName : String, spike arrest name
-	 */
-	public String getsName() {
-		return sName;
-	}
-	/**
-	 * 
-	 * @param sName : String, spike arrest name
-	 */
-	public void setsName(String sName) {
-		this.sName = sName;
-	}
+
 	/**
 	 * 
 	 * @return rate : String
