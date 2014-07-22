@@ -32,6 +32,7 @@ import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
 /**
@@ -180,7 +181,19 @@ public class ScenarioApi {
 		p2.setCategory("quality");
 		p2.setType("policy");
 		
+		log.info("Add policy 3.. Spike Arrest");
+		SpikeArrest p3 = new SpikeArrest();
+		//policy parameter
+		p3.setName("SpikeArrest-3");
+		p3.setNotes("Some notes bla bla bla bla");
+		p3.setCategory("quality");
+		p3.setType("policy");
+		//spike arrest parameter
+		p3.setsName("sa3");
+		p3.setRate("10pm");
+		
 		apiManager.addPolicyApi("api1", p1);
+		apiManager.addPolicyApi("api1", p3);
 		Api api = apiManager.addPolicyApi("api1", p2);
 		assertNotNull("Error in finding by api",api);
 		
