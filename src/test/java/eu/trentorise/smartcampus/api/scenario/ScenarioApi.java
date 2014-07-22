@@ -189,7 +189,6 @@ public class ScenarioApi {
 		p3.setCategory("quality");
 		p3.setType("policy");
 		//spike arrest parameter
-		p3.setsName("sa3");
 		p3.setRate("10pm");
 		
 		apiManager.addPolicyApi("api1", p1);
