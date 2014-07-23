@@ -428,16 +428,16 @@ public class ApiController {
 	 * Rest service that deleting a Resource Api from database by passing its id.
 	 * 
 	 * @param apiId : String
-	 * @param resource : instance of {@link Resource}
+	 * @param resourceId : String
 	 * @return instance of {@link ResultData} with status (OK) and a string message : 
 	 * 			"Delete done!".
 	 */
-	@RequestMapping(value = "/delete/{apiId}/resource", method = RequestMethod.DELETE, consumes="application/json")
+	@RequestMapping(value = "/delete/{apiId}/resource/{resourceId}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public ResultData deleteResource(@PathVariable String apiId, @RequestBody Resource resource){
+	public ResultData deleteResource(@PathVariable String apiId, @PathVariable String resourceId){
 		logger.info("Delete api resource.");
 		
-		pmanager.deleteResourceApi(apiId,resource.getId());
+		pmanager.deleteResourceApi(apiId,resourceId);
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 	}
 	
@@ -445,16 +445,16 @@ public class ApiController {
 	 * Rest service that deleting an App Api from database by passing its id.
 	 * 
 	 * @param apiId : String
-	 * @param app : instance of {@link App}
+	 * @param appId : String
 	 * @return instance of {@link ResultData} with status (OK) and a string message : 
 	 * 			"Delete done!".
 	 */
-	@RequestMapping(value = "/delete/{apiId}/app", method = RequestMethod.DELETE, consumes="application/json")
+	@RequestMapping(value = "/delete/{apiId}/app/{appId}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public ResultData deleteApp(@PathVariable String apiId, @RequestBody App app){
+	public ResultData deleteApp(@PathVariable String apiId, @PathVariable String appId){
 		logger.info("Delete api resource.");
 		
-		pmanager.deleteAppApi(apiId,app.getId());
+		pmanager.deleteAppApi(apiId,appId);
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 	}
 	
@@ -462,50 +462,16 @@ public class ApiController {
 	 * Rest service that deleting an Policy Api from database by passing its id.
 	 * 
 	 * @param apiId : String
-	 * @param p : instance of {@link Policy}
+	 * @param policyId : String
 	 * @return instance of {@link ResultData} with status (OK) and a string message : 
 	 * 			"Delete done!".
 	 */
-	@RequestMapping(value = "/delete/{apiId}/policy", method = RequestMethod.DELETE, consumes="application/json")
+	@RequestMapping(value = "/delete/{apiId}/policy/{policyId}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public ResultData deletePolicy(@PathVariable String apiId, @RequestBody Policy p){
+	public ResultData deletePolicy(@PathVariable String apiId, @PathVariable String policyId){
 		logger.info("Delete api resource.");
 		
-		pmanager.deletePolicyApi(apiId,p.getId());
-		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
-	}
-	
-	/**
-	 * Rest service that deleting a spike arrest Policy Api from database by passing its id.
-	 * 
-	 * @param apiId : String
-	 * @param p : instance of {@link SpikeArrest}
-	 * @return instance of {@link ResultData} with status (OK) and a string message : 
-	 * 			"Delete done!".
-	 */
-	@RequestMapping(value = "/delete/{apiId}/policy/spikeArrest", method = RequestMethod.DELETE, consumes="application/json")
-	@ResponseBody
-	public ResultData deletePolicy(@PathVariable String apiId, @RequestBody SpikeArrest p){
-		logger.info("Delete api resource.");
-		
-		pmanager.deletePolicyApi(apiId,p.getId());
-		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
-	}
-	
-	/**
-	 * Rest service that deleting an quota Policy Api from database by passing its id.
-	 * 
-	 * @param apiId : String
-	 * @param p : instance of {@link Quota}
-	 * @return instance of {@link ResultData} with status (OK) and a string message : 
-	 * 			"Delete done!".
-	 */
-	@RequestMapping(value = "/delete/{apiId}/policy/quota", method = RequestMethod.DELETE, consumes="application/json")
-	@ResponseBody
-	public ResultData deletePolicy(@PathVariable String apiId, @RequestBody Quota p){
-		logger.info("Delete api resource.");
-		
-		pmanager.deletePolicyApi(apiId,p.getId());
+		pmanager.deletePolicyApi(apiId,policyId);
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 	}
 }

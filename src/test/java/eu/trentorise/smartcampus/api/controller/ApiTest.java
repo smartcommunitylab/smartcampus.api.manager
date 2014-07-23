@@ -225,6 +225,8 @@ public class ApiTest {
 			assertTrue("Error found", e.getMessage().contains("200"));
 		}
 		
+		//delete
+		rtemplate.delete("http://localhost:8080/apiManager/api/delete/api1/resource/"+r2.getId());
 	}
 	
 	/**
@@ -271,6 +273,9 @@ public class ApiTest {
 			log.info("Error: {}", e.getMessage());
 			assertTrue("Error found", e.getMessage().contains("200"));
 		}
+		
+		//delete
+		rtemplate.delete("http://localhost:8080/apiManager/api/delete/api1/app/"+app2.getId());
 	}
 	
 	/**
@@ -322,6 +327,9 @@ public class ApiTest {
 			log.info("Error: {}", e.getMessage());
 			assertTrue("Error found", e.getMessage().contains("200"));
 		}
+		
+		//delete
+		rtemplate.delete("http://localhost:8080/apiManager/api/delete/api1/policy/"+p1.getId());
 		
 		//Spike Arrest
 		SpikeArrest p2 = new SpikeArrest();
