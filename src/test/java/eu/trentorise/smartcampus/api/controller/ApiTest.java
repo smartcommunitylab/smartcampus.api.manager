@@ -337,7 +337,7 @@ public class ApiTest {
 		// add
 		try {
 			ResultData response = rtemplate.postForObject(
-					"http://localhost:8080/apiManager/api/add/api1/policy", p2,
+					"http://localhost:8080/apiManager/api/add/api1/policy/spikeArrest", p2,
 					ResultData.class);
 			log.info("Response: {}", response.getData());
 			log.info("Response: {}", response.getMessage());
@@ -365,7 +365,7 @@ public class ApiTest {
 		// add
 		try {
 			ResultData response = rtemplate.postForObject(
-					"http://localhost:8080/apiManager/api/add/api1/policy", p3,
+					"http://localhost:8080/apiManager/api/add/api1/policy/quota", p3,
 					ResultData.class);
 			log.info("Response: {}", response.getData());
 			log.info("Response: {}", response.getMessage());

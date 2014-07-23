@@ -32,8 +32,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
+import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
 /**
@@ -187,6 +189,62 @@ public class ApiController {
 	}
 	
 	/**
+	 * Rest service that updating a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/spikeArrest", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
+		logger.info("Update api policy.");
+		try{
+			Api updateApiP = pmanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updating a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/quota", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Quota p) {
+		logger.info("Update api policy.");
+		try{
+			Api updateApiP = pmanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+		
+	}
+	
+	/**
 	 * Rest service that updating an Api in database.
 	 * 
 	 * @param api : instance of {@link Api}
@@ -279,6 +337,62 @@ public class ApiController {
 	@RequestMapping(value = "/update/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Policy p) {
+		logger.info("Update api policy.");
+		try{
+			Api updateApiP = pmanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updating a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/spikeArrest", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
+		logger.info("Update api policy.");
+		try{
+			Api updateApiP = pmanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updating a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/quota", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Quota p) {
 		logger.info("Update api policy.");
 		try{
 			Api updateApiP = pmanager.updatePolicyApi(apiId, p);
