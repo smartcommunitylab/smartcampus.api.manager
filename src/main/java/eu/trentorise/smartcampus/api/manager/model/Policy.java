@@ -17,31 +17,29 @@ package eu.trentorise.smartcampus.api.manager.model;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * Policy model
- * id : String,
- * name : String,
- * notes : String,
- * category : String,
+ * Policy model id : String, name : String, notes : String, category : String,
  * type : String.
  * 
  * @author Giulia Canobbio
- *
+ * 
  */
 @Document
-public class Policy implements Serializable{
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Policy implements Serializable {
 
 	/**
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Indexed(unique=true)
+	@Indexed(unique = true)
 	private String id;
 	@Field
 	private String name;
@@ -51,7 +49,7 @@ public class Policy implements Serializable{
 	private String category;
 	@Field
 	private String type;
-	
+
 	/**
 	 * 
 	 * @return id : String
@@ -59,13 +57,16 @@ public class Policy implements Serializable{
 	public String getId() {
 		return id;
 	}
+
 	/**
 	 * 
-	 * @param id : String
+	 * @param id
+	 *            : String
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	/**
 	 * 
 	 * @return name : String
@@ -73,13 +74,16 @@ public class Policy implements Serializable{
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * 
-	 * @param name : String
+	 * @param name
+	 *            : String
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * 
 	 * @return notes : String
@@ -87,13 +91,16 @@ public class Policy implements Serializable{
 	public String getNotes() {
 		return notes;
 	}
+
 	/**
 	 * 
-	 * @param notes : String
+	 * @param notes
+	 *            : String
 	 */
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
+
 	/**
 	 * 
 	 * @return category : String
@@ -101,13 +108,16 @@ public class Policy implements Serializable{
 	public String getCategory() {
 		return category;
 	}
+
 	/**
 	 * 
-	 * @param category : String
+	 * @param category
+	 *            : String
 	 */
 	public void setCategory(String category) {
 		this.category = category;
 	}
+
 	/**
 	 * 
 	 * @return type : String
@@ -115,13 +125,14 @@ public class Policy implements Serializable{
 	public String getType() {
 		return type;
 	}
+
 	/**
 	 * 
-	 * @param type : String
+	 * @param type
+	 *            : String
 	 */
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	
+
 }
