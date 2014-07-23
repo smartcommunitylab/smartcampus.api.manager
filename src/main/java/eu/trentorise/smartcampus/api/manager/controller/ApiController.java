@@ -96,7 +96,7 @@ public class ApiController {
 		try {
 			Api updatedApi = pmanager.updateApi(api);
 			if (updatedApi != null) {
-				return new ResultData(null, HttpServletResponse.SC_OK, "Update successfully.");
+				return new ResultData(updatedApi, HttpServletResponse.SC_OK, "Update successfully.");
 			} else {
 				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
 						"Problem in updating data.");

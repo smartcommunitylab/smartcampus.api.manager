@@ -1071,17 +1071,17 @@ public class PersistenceManager {
 	public void isPolicyInstanceOf(Policy p){
 		// check fields of Spike Arrest
 		if (p instanceof SpikeArrest) {
-			//name and rate are required
+			//rate is required
 			if(((SpikeArrest) p).getRate()==null ){
-				throw new IllegalArgumentException("For policy spike arrest, name and rate are required.");
+				throw new IllegalArgumentException("For policy spike arrest, rate is required.");
 			}
 		}
 		// check fields of Quota
 		if (p instanceof Quota) {
-			//name, interval, timeunit, allow count are required
+			//interval, timeunit, allow count are required
 			if( ((Quota) p).getInterval()==null || ((Quota) p).getTimeUnit()==null || 
 					((Quota) p).getAllowCount()==null ){
-				throw new IllegalArgumentException("For policy quota, name, interval, timeunit and " +
+				throw new IllegalArgumentException("For policy quota, interval, timeunit and " +
 						"allow count are required.");
 			}
 		}
