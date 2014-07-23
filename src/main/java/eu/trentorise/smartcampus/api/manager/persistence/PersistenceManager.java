@@ -158,12 +158,45 @@ public class PersistenceManager {
 	 * @return updated instance of {@link Api}
 	 */
 	public Api updateApi(Api api){
+		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
+			throw new IllegalArgumentException("Api with undefined id does not exist.");
+		}
 		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
 			throw new IllegalArgumentException("Api name, base path and owner id are required.");
 		}
 		Date today = new Date();
 		api.setUpdateTime(today.toString());
 		return apirepository.save(api);
+	}
+	
+	/**
+	 * Update an existing Api instance. The only api parameters that user can modify are
+	 * name and basepath.
+	 * This method throws an exception when api id, name, base path and 
+	 * owner id are not defined, because they are required.
+	 * 
+	 * @param api : instance of {@link Api}
+	 * @return updated instance of {@link Api}
+	 */
+	public Api updateApiParameter(Api api){
+		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
+			throw new IllegalArgumentException("Api with undefined id does not exist.");
+		}
+		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
+			throw new IllegalArgumentException("Api name, base path and owner id are required.");
+		}
+		//retrieve Api
+		Api savedApi = getApiById(api.getId());
+		//set name and basepath if different
+		if(!savedApi.getName().equalsIgnoreCase(api.getName()) || 
+				!savedApi.getBasePath().equalsIgnoreCase(api.getBasePath())){
+			savedApi.setName(api.getName());
+			savedApi.setBasePath(api.getBasePath());
+		}
+		//updated time
+		Date today = new Date();
+		savedApi.setUpdateTime(today.toString());
+		return apirepository.save(savedApi);
 	}
 	
 	/**

@@ -36,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
@@ -92,7 +93,7 @@ public class ApiTest {
 		r1.setName("Counter");
 		r1.setUri("http://www.mydomain.it/resource1");
 		r1.setVerb("GET");
-		
+		/*
 		//Policy
 		log.info("Add policy.. Spike Arrest");
 		SpikeArrest p3 = new SpikeArrest();
@@ -103,7 +104,7 @@ public class ApiTest {
 		p3.setType("policy");
 		//spike arrest parameter
 		p3.setRate("10pm");
-		
+		*/
 		//App
 		log.info("Add app...");
 		App app1 = new App();
@@ -122,11 +123,11 @@ public class ApiTest {
 		List<Resource> rlist = new ArrayList<Resource>();
 		rlist.add(r1);
 		api.setResource(rlist);
-		
+		/*
 		List<Policy> plist = new ArrayList<Policy>();
 		plist.add(p3);
 		api.setPolicy(plist);
-		
+		*/
 		List<App> alist = new ArrayList<App>();
 		alist.add(app1);
 		api.setApp(alist);
@@ -139,7 +140,7 @@ public class ApiTest {
 			assertTrue("Successfully", response.getMessage().equalsIgnoreCase("Saved successfully."));
 		}catch(HttpClientErrorException e){
 			log.info("Error: {}",e.getMessage());
-			assertTrue("Error found", !e.getMessage().contains("400"));
+			assertTrue("Error found", e.getMessage().contains("200"));
 		}
 	}
 	
@@ -163,33 +164,6 @@ public class ApiTest {
 	 */
 	@Test
 	public void updateApi(){
-		// Resource
-		log.info("Add resource...");
-		Resource r1 = new Resource();
-		r1.setId("resource1");
-		r1.setName("Counter");
-		r1.setUri("http://www.mydomain.it/resource1");
-		r1.setVerb("GET");
-
-		// Policy
-		log.info("Add policy.. Spike Arrest");
-		//SpikeArrest p3 = new SpikeArrest();
-		Policy p3 = new Policy();
-		// policy parameter
-		p3.setName("SpikeArrest-3");
-		p3.setNotes("Some notes bla bla bla bla");
-		p3.setCategory("quality");
-		p3.setType("policy");
-		// spike arrest parameter
-		//p3.setRate("10pm");
-
-		// App
-		log.info("Add app...");
-		App app1 = new App();
-		app1.setId("junit-test-spring-1");
-		app1.setName("Openservice app junit-test");
-		app1.setKey("junit.test.openservice.1.app");
-			
 		// api
 		log.info("Update api...");
 		Api api = new Api();
@@ -197,18 +171,6 @@ public class ApiTest {
 		api.setName("Geocoding");
 		api.setBasePath("/v0/geocoding/update");
 		api.setOwnerId("g1shjfdj");
-		
-		List<Resource> rlist = new ArrayList<Resource>();
-		rlist.add(r1);
-		api.setResource(rlist);
-		
-		List<Policy> plist = new ArrayList<Policy>();
-		plist.add(p3);
-		api.setPolicy(plist);
-		
-		List<App> alist = new ArrayList<App>();
-		alist.add(app1);
-		api.setApp(alist);
 		
 		try{
 			ResultData response = rtemplate.postForObject("http://localhost:8080/apiManager/api/update", 
@@ -218,8 +180,202 @@ public class ApiTest {
 			assertTrue("Successfully", response.getMessage().equalsIgnoreCase("Update successfully."));
 		}catch(HttpClientErrorException e){
 			log.info("Error: {}",e.getMessage());
-			assertTrue("Error found", !e.getMessage().contains("400"));
+			assertTrue("Error found", e.getMessage().contains("200"));
 			
+		}
+	}
+	
+	/**
+	 * Add and update a resource to api
+	 */
+	@Test
+	public void addUpdateResource(){
+		log.info("Add and update resource ...");
+		Resource r2 = new Resource();
+		r2.setId("resource2");
+		r2.setName("Resource-junit");
+		r2.setUri("http://www.mydomain.it/resource2");
+		r2.setVerb("GET");
+		
+		//add
+		try{
+			ResultData response = rtemplate.postForObject(
+					"http://localhost:8080/apiManager/api/add/api1/resource", 
+					r2, 
+					ResultData.class);
+			log.info("Response: {}",response.getData());
+			log.info("Response: {}",response.getMessage());
+			assertTrue("Successfully", response.getMessage().contains("successfully"));
+		}catch(HttpClientErrorException e){
+			log.info("Error: {}",e.getMessage());
+			assertTrue("Error found", e.getMessage().contains("200"));
+		}
+		
+		//update
+		r2.setUri("http://www.mydomain.it/resource2/update");
+		try{
+			ResultData response = rtemplate.postForObject(
+					"http://localhost:8080/apiManager/api/update/api1/resource", 
+					r2, 
+					ResultData.class);
+			log.info("Response: {}",response.getData());
+			log.info("Response: {}",response.getMessage());
+			assertTrue("Successfully", response.getMessage().contains("successfully"));
+		}catch(HttpClientErrorException e){
+			log.info("Error: {}",e.getMessage());
+			assertTrue("Error found", e.getMessage().contains("200"));
+		}
+		
+	}
+	
+	/**
+	 * Add and update an app to api
+	 */
+	@Test
+	public void addUpdateApp(){
+		log.info("Add and update app api...");
+		App app2 = new App();
+		app2.setId("junit-test-spring-2");
+		app2.setName("Second app junit-test");
+		app2.setKey("junit.test.openservice.2.app");
+		
+		// add
+		try {
+			ResultData response = rtemplate.postForObject(
+					"http://localhost:8080/apiManager/api/add/api1/app",
+					app2, ResultData.class);
+			log.info("Response: {}", response.getData());
+			log.info("Response: {}", response.getMessage());
+			assertTrue(
+					"Successfully",
+					response.getMessage().contains(
+							"successfully"));
+		} catch (HttpClientErrorException e) {
+			log.info("Error: {}", e.getMessage());
+			assertTrue("Error found", e.getMessage().contains("200"));
+		}
+
+		// update
+		app2.setName("Second app junit-test-update");
+		try {
+			ResultData response = rtemplate
+					.postForObject(
+							"http://localhost:8080/apiManager/api/update/api1/app",
+							app2, ResultData.class);
+			log.info("Response: {}", response.getData());
+			log.info("Response: {}", response.getMessage());
+			assertTrue(
+					"Successfully",
+					response.getMessage().contains(
+							"successfully"));
+		} catch (HttpClientErrorException e) {
+			log.info("Error: {}", e.getMessage());
+			assertTrue("Error found", e.getMessage().contains("200"));
+		}
+	}
+	
+	/**
+	 * Add and update a policy to api
+	 */
+	@Test
+	public void addUpdatePolicy(){
+		log.info("Add and update policy api...");
+		
+		//Policy
+		log.info("Add policy 1...");
+		Policy p1 = new Policy();
+		p1.setId("api-p1");
+		p1.setName("Policy-1");
+		p1.setNotes("Some notes bla bla bla bla");
+		p1.setCategory("quality");
+		p1.setType("policy");
+		
+		// add
+		try {
+			ResultData response = rtemplate.postForObject(
+					"http://localhost:8080/apiManager/api/add/api1/policy", p1,
+					ResultData.class);
+			log.info("Response: {}", response.getData());
+			log.info("Response: {}", response.getMessage());
+			assertTrue(
+					"Successfully",
+					response.getMessage().contains(
+							"successfully"));
+		} catch (HttpClientErrorException e) {
+			log.info("Error: {}", e.getMessage());
+			assertTrue("Error found", e.getMessage().contains("200"));
+		}
+		
+		//update
+		p1.setNotes("Some notes bla bla bla bla update");
+		try {
+			ResultData response = rtemplate
+					.postForObject(
+							"http://localhost:8080/apiManager/api/update/api1/policy",
+							p1, ResultData.class);
+			log.info("Response: {}", response.getData());
+			log.info("Response: {}", response.getMessage());
+			assertTrue(
+					"Successfully",
+					response.getMessage().contains(
+							"successfully"));
+		} catch (HttpClientErrorException e) {
+			log.info("Error: {}", e.getMessage());
+			assertTrue("Error found", e.getMessage().contains("200"));
+		}
+		
+		//Spike Arrest
+		SpikeArrest p2 = new SpikeArrest();
+		//policy parameter
+		p2.setName("SpikeArrest-1");
+		p2.setNotes("Spike arrest 1 notes");
+		p2.setCategory("quality");
+		p2.setType("policy");
+		//spike arrest parameter
+		p2.setRate("10pm");
+		
+		// add
+		try {
+			ResultData response = rtemplate.postForObject(
+					"http://localhost:8080/apiManager/api/add/api1/policy", p2,
+					ResultData.class);
+			log.info("Response: {}", response.getData());
+			log.info("Response: {}", response.getMessage());
+			assertTrue(
+					"Successfully",
+					response.getMessage().contains(
+							"successfully"));
+		} catch (HttpClientErrorException e) {
+			log.info("Error: {}", e.getMessage());
+			assertTrue("Error found", e.getMessage().contains("200"));
+		}
+		
+		//Quota
+		Quota p3 = new Quota();
+		// policy parameter
+		p3.setName("Quota-1");
+		p3.setNotes("Quota 1 notes");
+		p3.setCategory("quality");
+		p3.setType("policy");
+		// spike arrest parameter
+		p3.setInterval(1);
+		p3.setTimeUnit("hour");
+		p3.setAllowCount(99);
+		
+		// add
+		try {
+			ResultData response = rtemplate.postForObject(
+					"http://localhost:8080/apiManager/api/add/api1/policy", p3,
+					ResultData.class);
+			log.info("Response: {}", response.getData());
+			log.info("Response: {}", response.getMessage());
+			assertTrue(
+					"Successfully",
+					response.getMessage().contains(
+							"successfully"));
+		} catch (HttpClientErrorException e) {
+			log.info("Error: {}", e.getMessage());
+			assertTrue("Error found", e.getMessage().contains("200"));
 		}
 	}
 	

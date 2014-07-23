@@ -30,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
+import eu.trentorise.smartcampus.api.manager.model.App;
+import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
@@ -53,6 +56,27 @@ public class ApiController {
 	 */
 	@Autowired
 	private PersistenceManager pmanager;
+	
+	/**
+	 * Rest service that retrieving api data having a specific owner id.
+	 * 
+	 * @param ownerId : String, path variable
+	 * @return instance of {@link ResultData} with api data having the given owner id, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"All data" if it is ok, otherwise "There is no api data for this owner.".
+	 */
+	@RequestMapping(value = "/{ownerId}", method = RequestMethod.GET, produces="application/json")
+	@ResponseBody
+	public ResultData getApiByOwnerId(@PathVariable String ownerId) {
+		List<Api> apiList = pmanager.getApiByOwnerId(ownerId);
+
+		if(apiList!=null){
+			return new ResultData(apiList, HttpServletResponse.SC_OK, "All data.");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, "There is no api data for this owner.");
+		}
+		
+	}
 	
 	/**
 	 * Rest service that adding an Api to database.
@@ -81,6 +105,88 @@ public class ApiController {
 	}
 	
 	/**
+	 * Rest service that updating a resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resource : instance of {@link Resource}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated resource Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */ 
+	@RequestMapping(value = "/add/{apiId}/resource", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData addResource(@PathVariable String apiId, @RequestBody Resource resource) {
+		logger.info("Update api resource.");
+		try{
+			Api updateApiR = pmanager.addResourceApi(apiId,resource);
+			if(updateApiR!=null){
+				return new ResultData(updateApiR, HttpServletResponse.SC_OK, "Add resource successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+	}
+	
+	/**
+	 * Rest service that updating an app api.
+	 * 
+	 * @param apiId : String
+	 * @param app : instance of {@link App}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated app Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/app", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData addApp(@PathVariable String apiId, @RequestBody App app) {
+		logger.info("Update api app.");
+		try{
+			Api updateApiA = pmanager.addAppApi(apiId, app);
+			if(updateApiA!=null){
+				return new ResultData(updateApiA, HttpServletResponse.SC_OK, "Add app successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+	}
+	
+	/**
+	 * Rest service that updating a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Policy}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Policy p) {
+		logger.info("Update api policy.");
+		try{
+			Api updateApiP = pmanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+		
+	}
+	
+	/**
 	 * Rest service that updating an Api in database.
 	 * 
 	 * @param api : instance of {@link Api}
@@ -94,7 +200,7 @@ public class ApiController {
 	public ResultData update(@RequestBody Api api) {
 		logger.info("Update api to db.");
 		try {
-			Api updatedApi = pmanager.updateApi(api);
+			Api updatedApi = pmanager.updateApiParameter(api);
 			if (updatedApi != null) {
 				return new ResultData(updatedApi, HttpServletResponse.SC_OK, "Update successfully.");
 			} else {
@@ -104,6 +210,88 @@ public class ApiController {
 		} catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
 		}
+	}
+	
+	/**
+	 * Rest service that updating a resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resource : instance of {@link Resource}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated resource Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */ 
+	@RequestMapping(value = "/update/{apiId}/resource", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData updateResource(@PathVariable String apiId, @RequestBody Resource resource) {
+		logger.info("Update api resource.");
+		try{
+			Api updateApiR = pmanager.updateResourceApi(apiId,resource);
+			if(updateApiR!=null){
+				return new ResultData(updateApiR, HttpServletResponse.SC_OK, "Update resource successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+	}
+	
+	/**
+	 * Rest service that updating an app api.
+	 * 
+	 * @param apiId : String
+	 * @param app : instance of {@link App}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated app Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/app", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData updateApp(@PathVariable String apiId, @RequestBody App app) {
+		logger.info("Update api app.");
+		try{
+			Api updateApiA = pmanager.updateAppApi(apiId, app);
+			if(updateApiA!=null){
+				return new ResultData(updateApiA, HttpServletResponse.SC_OK, "Update app successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+	}
+	
+	/**
+	 * Rest service that updating a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Policy}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Policy p) {
+		logger.info("Update api policy.");
+		try{
+			Api updateApiP = pmanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+		
 	}
 	
 	/**
@@ -121,26 +309,5 @@ public class ApiController {
 		pmanager.deleteApi(apiId);
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 			
-	}
-	
-	/**
-	 * Rest service that retrieving api data having a specific owner id.
-	 * 
-	 * @param ownerId : String, path variable
-	 * @return instance of {@link ResultData} with api data having the given owner id, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"All data" if it is ok, otherwise "There is no api data for this owner.".
-	 */
-	@RequestMapping(value = "/{ownerId}", method = RequestMethod.GET, produces="application/json")
-	@ResponseBody
-	public ResultData getApiByOwnerId(@PathVariable String ownerId) {
-		List<Api> apiList = pmanager.getApiByOwnerId(ownerId);
-
-		if(apiList!=null){
-			return new ResultData(apiList, HttpServletResponse.SC_OK, "All data.");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, "There is no api data for this owner.");
-		}
-		
 	}
 }
