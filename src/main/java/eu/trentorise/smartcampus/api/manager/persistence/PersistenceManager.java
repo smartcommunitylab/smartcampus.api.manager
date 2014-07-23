@@ -671,9 +671,8 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
-	 * @return instance of {@link Api} without deleted resource.
 	 */
-	public Api deleteResourceApi(String apiId, String resourceId){
+	public void deleteResourceApi(String apiId, String resourceId){
 		//retrieves api
 		Api api = getApiById(apiId);
 		//retrieves resource
@@ -686,10 +685,7 @@ public class PersistenceManager {
 				rlist.remove(i);
 				}
 			}
-			return updateApi(api);
 		}
-		return api;
-		
 	}
 	
 	/**
@@ -827,9 +823,8 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param policyId : String
-	 * @return instance of {@link Api} without deleted Policy
 	 */
-	public Api deletePolicyApi(String apiId, String policyId){
+	public void deletePolicyApi(String apiId, String policyId){
 		// retrieves api
 		Api api = getApiById(apiId);
 		// retrieves policy
@@ -842,10 +837,7 @@ public class PersistenceManager {
 					plist.remove(i);
 				}
 			}
-			return updateApi(api);
 		}
-		return api;
-		
 	}
 	
 	/**
@@ -1021,9 +1013,8 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param appId : String
-	 * @return instance of {@link Api} without deleted app
 	 */
-	public Api deleteAppApi(String apiId, String appId){
+	public void deleteAppApi(String apiId, String appId){
 		// retrieves api
 		Api api = getApiById(apiId);
 		// retrieves app
@@ -1035,8 +1026,6 @@ public class PersistenceManager {
 				alist.remove(i);
 			}
 		}
-
-		return updateApi(api);
 	}
 	
 	/**
