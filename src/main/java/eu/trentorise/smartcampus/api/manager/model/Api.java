@@ -51,6 +51,7 @@ public class Api implements Serializable{
 	@Indexed(unique=true)
 	private String name;
 	@Field
+	@Indexed(unique=true)
 	private String basePath;
 	@Field
 	private List<Resource> resource;
