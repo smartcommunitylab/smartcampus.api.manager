@@ -538,9 +538,9 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param r : instance of {@link Resource}
-	 * @return updated instance of {@link Api}
+	 * @return added instance of {@link Resource}
 	 */
-	public Api addResourceApi(String apiId, Resource r){
+	public Resource addResourceApi(String apiId, Resource r){
 		//check resource fields
 		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
@@ -590,8 +590,9 @@ public class PersistenceManager {
 		}
 		
 		//update api
-		return updateApi(api);
+		updateApi(api);
 		
+		return getResourceApiByResourceId(apiId, r.getId());
 	}
 	
 	/**
@@ -607,9 +608,9 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String 
 	 * @param r : instance of {@link Resource}
-	 * @return updated instance of {@link Api}
+	 * @return updated instance of {@link Resource}
 	 */
-	public Api updateResourceApi(String apiId, Resource r){
+	public Resource updateResourceApi(String apiId, Resource r){
 		//check resource fields
 		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
@@ -660,7 +661,9 @@ public class PersistenceManager {
 			oldr.setUpdateTime(today.toString());
 		}
 		//update api
-		return updateApi(api);
+		updateApi(api);
+		
+		return getResourceApiByResourceId(apiId, r.getId());
 	}
 	
 	/**
@@ -742,9 +745,9 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Policy}
-	 * @return instance of {@link Api}
+	 * @return added instance of {@link Policy}
 	 */
-	public Api addPolicyApi(String apiId, Policy p){
+	public Policy addPolicyApi(String apiId, Policy p){
 		//checks policy fields
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
@@ -768,7 +771,9 @@ public class PersistenceManager {
 		}
 
 		// update api
-		return updateApi(api);
+		updateApi(api);
+		
+		return getPolicyApiByPolicyId(apiId, p.getId());
 	}
 	
 	/**
@@ -782,9 +787,9 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Policy}
-	 * @return updated instance of {@link Api}
+	 * @return updated instance of {@link Policy}
 	 */
-	public Api updatePolicyApi(String apiId, Policy p){
+	public Policy updatePolicyApi(String apiId, Policy p){
 		//checks policy fields
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
@@ -812,7 +817,9 @@ public class PersistenceManager {
 			oldp.setType(p.getType());
 		}
 		//update api
-		return updateApi(api);
+		updateApi(api);
+		
+		return getPolicyApiByPolicyId(apiId, p.getId());
 	}
 	
 	/**
@@ -938,9 +945,9 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param app : instance of {@link App}
-	 * @return instance of {@link Api} with new app data
+	 * @return added instance of {@link App}
 	 */
-	public Api addAppApi(String apiId, App app){
+	public App addAppApi(String apiId, App app){
 		if(app.getName()==null){
 			throw new IllegalArgumentException("App name is required.");
 		}
@@ -962,7 +969,9 @@ public class PersistenceManager {
 		}
 
 		// update api
-		return updateApi(api);
+		updateApi(api);
+		
+		return getAppApiByAppId(apiId, app.getId());
 	}
 	
 	/**
@@ -976,9 +985,9 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param app : instance of {@link App}
-	 * @return instance of {@link Api} with update App
+	 * @return instance of {@link Ap} with updates
 	 */
-	public Api updateAppApi(String apiId, App app){
+	public App updateAppApi(String apiId, App app){
 		if(app.getName()==null){
 			throw new IllegalArgumentException("App name is required.");
 		}
@@ -1002,7 +1011,9 @@ public class PersistenceManager {
 			oldapp.setKey(app.getKey());
 		}
 		// update api
-		return updateApi(api);
+		updateApi(api);
+		
+		return getAppApiByAppId(apiId, app.getId());
 	}
 	
 	/**

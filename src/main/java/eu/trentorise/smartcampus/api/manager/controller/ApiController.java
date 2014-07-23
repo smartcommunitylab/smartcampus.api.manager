@@ -121,7 +121,7 @@ public class ApiController {
 	public ResultData addResource(@PathVariable String apiId, @RequestBody Resource resource) {
 		logger.info("Update api resource.");
 		try{
-			Api updateApiR = pmanager.addResourceApi(apiId,resource);
+			Resource updateApiR = pmanager.addResourceApi(apiId,resource);
 			if(updateApiR!=null){
 				return new ResultData(updateApiR, HttpServletResponse.SC_OK, "Add resource successfully.");
 			} else {
@@ -148,7 +148,7 @@ public class ApiController {
 	public ResultData addApp(@PathVariable String apiId, @RequestBody App app) {
 		logger.info("Update api app.");
 		try{
-			Api updateApiA = pmanager.addAppApi(apiId, app);
+			App updateApiA = pmanager.addAppApi(apiId, app);
 			if(updateApiA!=null){
 				return new ResultData(updateApiA, HttpServletResponse.SC_OK, "Add app successfully.");
 			} else {
@@ -175,7 +175,7 @@ public class ApiController {
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Policy p) {
 		logger.info("Update api policy.");
 		try{
-			Api updateApiP = pmanager.addPolicyApi(apiId, p);
+			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
 			} else {
@@ -203,7 +203,7 @@ public class ApiController {
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
 		logger.info("Update api policy.");
 		try{
-			Api updateApiP = pmanager.addPolicyApi(apiId, p);
+			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
 			} else {
@@ -231,7 +231,7 @@ public class ApiController {
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Quota p) {
 		logger.info("Update api policy.");
 		try{
-			Api updateApiP = pmanager.addPolicyApi(apiId, p);
+			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
 			} else {
@@ -285,7 +285,7 @@ public class ApiController {
 	public ResultData updateResource(@PathVariable String apiId, @RequestBody Resource resource) {
 		logger.info("Update api resource.");
 		try{
-			Api updateApiR = pmanager.updateResourceApi(apiId,resource);
+			Resource updateApiR = pmanager.updateResourceApi(apiId,resource);
 			if(updateApiR!=null){
 				return new ResultData(updateApiR, HttpServletResponse.SC_OK, "Update resource successfully.");
 			} else {
@@ -312,7 +312,7 @@ public class ApiController {
 	public ResultData updateApp(@PathVariable String apiId, @RequestBody App app) {
 		logger.info("Update api app.");
 		try{
-			Api updateApiA = pmanager.updateAppApi(apiId, app);
+			App updateApiA = pmanager.updateAppApi(apiId, app);
 			if(updateApiA!=null){
 				return new ResultData(updateApiA, HttpServletResponse.SC_OK, "Update app successfully.");
 			} else {
@@ -339,7 +339,7 @@ public class ApiController {
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Policy p) {
 		logger.info("Update api policy.");
 		try{
-			Api updateApiP = pmanager.updatePolicyApi(apiId, p);
+			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
 			} else {
@@ -367,7 +367,7 @@ public class ApiController {
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
 		logger.info("Update api policy.");
 		try{
-			Api updateApiP = pmanager.updatePolicyApi(apiId, p);
+			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
 			} else {
@@ -395,7 +395,7 @@ public class ApiController {
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Quota p) {
 		logger.info("Update api policy.");
 		try{
-			Api updateApiP = pmanager.updatePolicyApi(apiId, p);
+			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
 			} else {

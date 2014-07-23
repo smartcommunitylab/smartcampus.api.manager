@@ -191,10 +191,11 @@ public class ScenarioApi {
 		//spike arrest parameter
 		p3.setRate("10pm");
 		
-		apiManager.addPolicyApi("api1", p1);
-		apiManager.addPolicyApi("api1", p3);
-		Api api = apiManager.addPolicyApi("api1", p2);
-		assertNotNull("Error in finding by api",api);
+		log.info("Policy 1: {}", apiManager.addPolicyApi("api1", p1));
+		log.info("Spike Arrest p3: {}",apiManager.addPolicyApi("api1", p3));
+		Policy policy = apiManager.addPolicyApi("api1", p2);
+		log.info("Policy 1: {}", p2);
+		assertNotNull("Error in finding by api",policy);
 		
 		log.info("Add policy api test terminated.");
 	}
@@ -280,8 +281,8 @@ public class ScenarioApi {
 		app2.setKey("junit.test.smartcampus.2.app");
 		
 		apiManager.addAppApi("api1", app1);
-		Api api = apiManager.addAppApi("api1", app2);
-		assertNotNull("Error in finding api",api);
+		App app = apiManager.addAppApi("api1", app2);
+		assertNotNull("Error in finding app",app);
 		
 		log.info("Add app api test terminated.");
 	}
