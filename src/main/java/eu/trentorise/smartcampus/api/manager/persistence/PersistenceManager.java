@@ -238,7 +238,7 @@ public class PersistenceManager {
 	 */
 	public App getAppById(String id){
 		List<App> apps = apprepository.findById(id);
-		if(apps!=null){
+		if(apps!=null && apps.size()>0){
 			return apps.get(0);
 		}
 		return null;
@@ -322,7 +322,7 @@ public class PersistenceManager {
 	 */
 	public Policy getPolicyById(String id){
 		List<Policy> ps = policyrepository.findById(id);
-		if(ps!=null){
+		if(ps!=null && ps.size()>0){
 			return ps.get(0);
 		}
 		return null;
@@ -417,7 +417,7 @@ public class PersistenceManager {
 	 */
 	public Resource getResourceById(String id){
 		List<Resource> rs = resourcerepository.findById(id);
-		if(rs!=null){
+		if(rs!=null && rs.size()>0){
 			return rs.get(0);
 		}
 		return null;
