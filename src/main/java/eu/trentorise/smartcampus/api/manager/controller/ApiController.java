@@ -93,7 +93,7 @@ public class ApiController {
 		logger.info("List api by owner id.");
 		List<Api> apiList = pmanager.getApiByOwnerId(ownerId);
 
-		if(apiList!=null){
+		if(apiList!=null && apiList.size()>0){
 			return new ResultData(apiList, HttpServletResponse.SC_OK, "All data.");
 		}else{
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, "There is no api data for this owner.");
