@@ -60,6 +60,26 @@ public class ApiController {
 	private PersistenceManager pmanager;
 	
 	/**
+	 * Rest service that retrieving api data by id.
+	 * 
+	 * @param apiId : String
+	 * @return instance of {@link ResultData} with api data having the given id, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"Api data found" if it is ok, otherwise "There is no api data with this id.".
+	 */
+	@RequestMapping(value = "/id/{apiId}", method = RequestMethod.GET, produces="application/json")
+	@ResponseBody
+	public ResultData getApiById(@PathVariable String apiId){
+		logger.info("Api by id.");
+		Api api = pmanager.getApiById(apiId);
+		if(api!=null){
+			return new ResultData(api, HttpServletResponse.SC_OK, "Api data found");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, "There is no api data with this id.");
+		}
+	}
+	
+	/**
 	 * Rest service that retrieving api data having a specific owner id.
 	 * 
 	 * @param ownerId : String, path variable
@@ -70,6 +90,7 @@ public class ApiController {
 	@RequestMapping(value = "/{ownerId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
 	public ResultData getApiByOwnerId(@PathVariable String ownerId) {
+		logger.info("List api by owner id.");
 		List<Api> apiList = pmanager.getApiByOwnerId(ownerId);
 
 		if(apiList!=null){

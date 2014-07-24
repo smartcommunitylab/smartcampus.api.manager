@@ -99,7 +99,7 @@ public class PersistenceManager {
 	 */
 	public Api getApiById(String id){
 		List<Api> api = apirepository.findById(id);
-		if(api!=null){
+		if(api!=null && api.size()>0){
 			return api.get(0);
 		}
 		return null;
