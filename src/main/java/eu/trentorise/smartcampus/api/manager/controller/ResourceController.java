@@ -135,8 +135,8 @@ public class ResourceController {
 	 * 			status (OK and NOT FOUND) and a string message : 
 	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api.".
 	 */
-	@RequestMapping(value = "/{apiId}/resource/{resourceId}/delete/{policyId}", method = RequestMethod.PUT, 
-			consumes="application/json")
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/delete/{policyId}", 
+			method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@PathVariable String policyId){
