@@ -23,6 +23,12 @@
 	
 	<context:component-scan base-package="eu.trentorise.smartcampus.api.manager" />
 	
-	
+	<!-- Static resources -->
+	<!-- <resources mapping="/resources/**" location="/WEB-INF/resources/" />  -->
+	<resources mapping="/css/**" location="/WEB-INF/resources/css/" order="-1"/>
+	<resources mapping="/data/**" location="/WEB-INF/resources/data/" order="-1"/>
+	<resources mapping="/fonts/**" location="/WEB-INF/resources/fonts/" order="-1"/>
+	<resources mapping="/js/**" location="/WEB-INF/resources/js/" order="-1"/>
+	<resources mapping="/partials/**" location="/WEB-INF/resources/partials/" order="-1"/>
 	
 </beans:beans>
