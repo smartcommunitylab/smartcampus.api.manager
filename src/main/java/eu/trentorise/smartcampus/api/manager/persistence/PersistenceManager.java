@@ -1137,6 +1137,117 @@ public class PersistenceManager {
 		}
 	}
 	
+	/*
+	 * Policy in Resource Api
+	 */
+	/**
+	 * Add a policy resource in an api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link Policy}
+	 * @return updated instance of {@link Resource}
+	 */
+	public Resource addPolicyResourceApi(String apiId, String resourceId, Policy p){
+		// checks policy fields
+		if (p.getName() == null || p.getType() == null) {
+			throw new IllegalArgumentException(
+					"Policy name and type are required.");
+		}
+		isPolicyInstanceOf(p);
+		if (p.getId() == null || p.getId().equalsIgnoreCase("")) {
+			p.setId(generateId());
+		}
+		if (policyResourceApiExists(apiId,resourceId, p.getName())) {
+			throw new IllegalArgumentException(
+					"Policy with this name already exists.");
+		}
+		// get resource api and add policy
+		Resource r = getResourceApiByResourceId(apiId, resourceId);
+		List<Policy> plist = r.getPolicy();
+		if (plist != null) {
+			plist.add(p);
+		} else {
+			List<Policy> ps = new ArrayList<Policy>();
+			ps.add(p);
+			r.setPolicy(ps);
+		}
+
+		// update resource api
+		return updateResourceApi(apiId, r);
+	}
+	
+	/**
+	 * Update a policy resource in an api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link Policy}
+	 * @return updated instance of {@link Resource}
+	 */
+	public Resource updatePolicyResourceApi(String apiId, String resourceId, Policy p){
+		// checks policy fields
+		if (p.getName() == null || p.getType() == null) {
+			throw new IllegalArgumentException(
+					"Policy name and type are required.");
+		}
+		isPolicyInstanceOf(p);
+		// get resource api and add policy
+		Resource r = getResourceApiByResourceId(apiId, resourceId);
+		// retrieve policy
+		List<Policy> plist = r.getPolicy();
+		Policy oldp = null;
+		for (int i = 0; i < plist.size(); i++) {
+			if (plist.get(i).getId().equalsIgnoreCase(p.getId())) {
+				oldp = plist.get(i);
+			}
+		}
+		if (oldp != null) {
+			if (!oldp.getName().equalsIgnoreCase(p.getName())) {
+				if (policyResourceApiExists(apiId,resourceId, p.getName())) {
+					throw new IllegalArgumentException(
+							"Policy with this name already exists.");
+				}
+			}
+			oldp.setName(p.getName());
+			oldp.setNotes(p.getNotes());
+			oldp.setCategory(p.getCategory());
+			oldp.setType(p.getType());
+		}
+		// update api
+		return updateResourceApi(apiId, r);
+	}
+	
+	/**
+	 * Delete a policy resource in an api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @return updated instance of {@link Resource}
+	 */
+	public Resource deletePolicyResourceApi(String apiId, String resourceId, String policyId){
+		// retrieves resource
+		Resource r = getResourceApiByResourceId(apiId, resourceId);
+		// retrieves policy
+		List<Policy> plist = r.getPolicy();
+
+		if (plist != null) {
+			for (int i = 0; i < plist.size(); i++) {
+				if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+					// delete resource
+					plist.remove(i);
+				}
+			}
+		}
+		r.setPolicy(plist);
+		return updateResourceApi(apiId, r);
+	}
+	
+	public void getPolicyResourceApiByResourceId(){
+		
+	}
+	
 	/**
 	 * Check parameter value for policy.
 	 * Spike Arrest : name and rate are required.
@@ -1175,6 +1286,27 @@ public class PersistenceManager {
 		List<Policy> plist = getPolicyApiByPolicyName(apiId, policyName);
 		if(plist!=null && plist.size()>0){
 			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if a policy resource with a given name is already saved in db.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyName : String
+	 * @return true if a policy resource with a given name exists, false otherwise
+	 */
+	public boolean policyResourceApiExists(String apiId, String resourceId, String policyName){
+		Resource r = getResourceApiByResourceId(apiId, resourceId);
+		List<Policy> plist = r.getPolicy();
+		if(plist!=null && plist.size()>0){
+			for(int i=0;i<plist.size();i++){
+				if(plist.get(i).getName().equalsIgnoreCase(policyName)){
+					return true;
+				}
+			}
 		}
 		return false;
 	}
