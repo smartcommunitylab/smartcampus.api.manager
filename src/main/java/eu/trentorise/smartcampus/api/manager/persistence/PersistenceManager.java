@@ -686,6 +686,8 @@ public class PersistenceManager {
 				}
 			}
 		}
+		api.setResource(rlist);
+		updateApi(api);
 	}
 	
 	/**
@@ -846,6 +848,8 @@ public class PersistenceManager {
 				}
 			}
 		}
+		api.setPolicy(plist);
+		updateApi(api);
 	}
 	
 	/**
@@ -1051,6 +1055,8 @@ public class PersistenceManager {
 				alist.remove(i);
 			}
 		}
+		api.setApp(alist);
+		updateApi(api);
 	}
 	
 	/**
