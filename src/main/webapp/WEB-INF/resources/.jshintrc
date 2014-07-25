@@ -1,0 +1,29 @@
+{
+    "globals": {
+        "module": true,
+        "define": true,
+        "requirejs": true,
+        "require": true,
+        "app": true,
+        "angular": true,
+        "Holder": true,
+        "FB": true,
+        "_": true
+    },
+    "browser": true,
+    "bitwise": true,
+    "curly": true,
+    "eqeqeq": true,
+    //"freeze": true,
+    "immed": true,
+    "indent": 4,
+    "latedef": true,
+    "newcap": true,
+    "noempty": true,
+    "nonew": true,
+    "quotmark": true,
+    "trailing": true,
+    "undef": true,
+    "unused": true,
+    "node": true
+}

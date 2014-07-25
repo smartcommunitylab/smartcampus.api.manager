@@ -1,0 +1,33 @@
+<div ng-repeat="r in api.resource">
+	<h4><b><a ng-href="#">{{r.name}}</a></b></h4>
+	
+	<button type="button" class="pull-right btn btn-default btn-sm" ng-click="deleteResource(r.id)">
+        <i class="fa fa-trash-o"></i>
+    </button>
+    <a href="edit/{{api.id}}/resource/{{r.id}}" class="pull-right btn btn-default btn-sm orgbtn">
+    	<i class="fa fa-edit"></i>
+    </a>
+
+	<br/>
+	<div class="table-responsive">
+		<table class="table table-striped table-condensed table-bordered">
+			<tbody>
+				<tr>
+					<td>Uri</td>
+					<td>{{r.uri}}</td>
+				</tr>
+				<tr>
+					<td>Verb</td>
+					<td>{{r.verb}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+		
+</div>
+
+<div class="row">
+	<div class="col-md-2 col-md-offset-10">
+		<a href="create/resource/{{api.id}}" class="btn btn-info btn-block">Add</a>
+	</div>
+</div>

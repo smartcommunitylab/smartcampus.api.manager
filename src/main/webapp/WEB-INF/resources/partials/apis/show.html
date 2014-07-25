@@ -1,0 +1,44 @@
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="row">
+            <h1>Api</h1>
+        </div>
+        <div class="row">
+            <div class="panel panel-default panel-service">
+                <div class="panel-body">
+                    <ul class="list-unstyled">
+                        <li>
+                            <b>Name:</b>
+                            <span>{{api.name}}</span>
+                        </li>
+                        <li>
+                            <b>Base path:</b>
+                            <span>{{api.basePath}}</span>
+                        </li>
+                        <li>
+                            <b>Date of creation:</b>
+                            <span>{{api.creationTime}}</span>
+                        </li>
+                        <li>
+                            <b>Date of updating:</b>
+                            <span>{{api.updateTime}}</span>
+                        </li>
+                    </ul>
+                    
+                    <tabset>
+                    	<tab heading="Resources">
+                    		<div ng-include="'partials/apis/_resources.html'"></div>
+                    	</tab>
+                        <tab heading="Policies">
+                            <div ng-include="'partials/apis/_policies.html'"></div>
+                        </tab>
+                        <tab heading="Apps">
+                            <div ng-include="'partials/apis/_apps.html'"></div>
+                        </tab>
+                    </tabset>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

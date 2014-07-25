@@ -1,0 +1,61 @@
+<div class="row">
+	<div class="col-md--1 col-md-offset--40">
+		<h1>
+			<font color="0066FF"><b>APIs</b></font>
+		</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-8 col-md-offset-2">
+		<div class="row">
+
+			<div class="row" ng-if="!!apisList && apisList.length > 0">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="panel panel-default panel-services">
+							<div class="panel-body">
+								<ul class="list-unstyled" ng-if="apisList.length > 0">
+									<li ng-repeat="api in apisList"
+										class="animated fadeIn service-row">
+											<span class="badge pull-right">
+												Creation date: {{api.creationTime}} 
+											</span>
+											<h3>
+												<a ng-href="api/{{api.id}}">{{api.name}}</a>
+											</h3>
+											<p>{{api.basePath}}</p>
+											
+											<button type="button" class="pull-right btn btn-default btn-sm" 
+											ng-click="deleteApi(api.id)">
+    											<i class="fa fa-trash-o"></i>
+    										</button>
+    										<a href="edit/api/{{api.id}}" 
+    										class="pull-right btn btn-default btn-sm orgbtn">
+    											<i class="fa fa-edit"></i>
+    										</a>
+										
+										
+										</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div ng-if="!apisList || apisList.length == 0">
+				<h4>There are no saved apis for this user.</h4>
+			</div>
+
+			<br />
+		</div>
+
+		<div class="row">
+			<div class="col-md-2 col-md-offset-10">
+				<a href="create/api" class="btn btn-info btn-block">Add</a>
+			</div>
+		</div>
+		
+	</div>
+</div>

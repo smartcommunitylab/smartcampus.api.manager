@@ -1,0 +1,74 @@
+<div class="row animated fadeIn">
+    <div ng-hide="!errorMsg" class="alert alert-danger">{{errorMsg}}</div>
+    <div class="col-md-6 col-md-offset-3">
+        <h2>{{title}} Policy</h2>
+        <form name="main" novalidate role="form" ng-submit="submit()">
+            <div class="form-group" show-validation>
+                <label for="policyname">Name</label>
+                <input ng-disabled="policy.id != null" type="text" class="form-control" id="policyname" 
+                placeholder="Name" ng-model="policy.name" required />
+            </div>
+            <div class="form-group">
+                <label for="policynotes">Notes</label>
+                <input type="text" id="policyNotes" class="form-control" ng-model="policy.notes" />
+            </div>
+			<div class="form-group">
+				<label for="policycategory">Category</label> 
+				<input type="text" class="form-control" id="policycategory" ng-model="policy.category">
+			</div>
+			<div class="form-group" show-validation>
+				<label for="policytype">Type</label> 
+				<select id="policytype" class="form-control" ng-model="policy.type" required>
+					<option>Spike Arrest</option>
+					<option>Quota</option>
+				</select>
+			</div>
+			
+			<!-- Spike Arrest data -->
+			<div ng-show="policy.type === 'Spike Arrest'">
+				<div class="form-group">
+					<label for="sarate">Rate</label> 
+					<input type="text" class="form-control" 
+						placeholder="<Integer value>pm or <Integer value>ps" id="sarate" 
+						ng-model="policy.rate">
+				</div>
+
+			</div>
+
+			<!-- Quota data -->
+			<div ng-show="policy.type === 'Quota'">
+				<div class="form-group" >
+					<label for="qinterval">Interval</label> 
+					<input type="text" class="form-control" id="qinterval" placeholder="Integer value ex. 12"
+							ng-model="policy.interval" >
+					</div>
+					<div class="form-group" >
+						<label for="qtimeunit">Time Unit</label> 
+						<select id="resourceverb" class="form-control" ng-model="policy.timeUnit">
+							<option>second</option>
+							<option>minute</option>
+							<option>hour</option>
+							<option>day</option>
+							<option>month</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="qallowcount">Allow Count</label> 
+						<input type="text" class="form-control" id="qalllowcount" 
+						placeholder="Integer value ex. 2000" ng-model="policy.allowCount">
+					</div>
+			</div>
+			
+			<!-- Quota and spike arrest -->
+			<div ng-show="policy.type === 'Spike Arrest' || policy.type === 'Quota'">
+				<div class="form-group">
+						<label for="policyqspid">Identifier</label> 
+						<input type="text" class="form-control" id="policyqspid" ng-model="policy.identifier">
+				</div>
+			</div>
+			
+            <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Save</button>
+            <button ng-click="back()" class="pull-right btn btn-default">Go back</button>
+        </form>
+    </div>
+</div>

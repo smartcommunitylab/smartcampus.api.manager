@@ -1,0 +1,28 @@
+<div class="row animated fadeIn">
+    <div ng-hide="!errorMsg" class="alert alert-danger">{{errorMsg}}</div>
+    <div class="col-md-6 col-md-offset-3">
+        <h2>{{title}} Resource</h2>
+        <form name="main" novalidate role="form" ng-submit="submit()">
+            <div class="form-group" show-validation>
+                <label for="resourcename">Name</label>
+                <input ng-disabled="resource.id != null" type="text" class="form-control" id="resourcename" placeholder="Name" ng-model="resource.name" required />
+            </div>
+            <div class="form-group" show-validation>
+                <label for="resourceuri">Uri</label>
+                <input type="text" class="form-control" id="resourceuri" placeholder="http://www.example.it/sample" ng-model="resource.uri" required />
+            </div>
+			<div class="form-group" show-validation>
+				<label for="resourceverb">Verb</label> <select id="resourceverb"
+					class="form-control" ng-model="resource.verb" required>
+					<option>GET</option>
+					<option>POST</option>
+					<option>PUT</option>
+					<option>DELETE</option>
+				</select>
+			</div>
+
+			<button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Save</button>
+            <button ng-click="back()" class="pull-right btn btn-default">Go back</button>
+        </form>
+    </div>
+</div>

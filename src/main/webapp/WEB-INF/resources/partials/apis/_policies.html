@@ -1,0 +1,36 @@
+<div ng-repeat="p in api.policy">
+	
+	<h4><b><a ng-href="#">{{p.name}}</a></b></h4>
+    <button type="button" class="pull-right btn btn-default btn-sm" ng-click="deletePolicy(p.id)">
+        <i class="fa fa-trash-o"></i>
+    </button>
+    <a href="edit/{{api.id}}/policy/{{p.id}}" class="pull-right btn btn-default btn-sm orgbtn">
+    	<i class="fa fa-edit"></i>
+    </a>
+
+	<br/>
+	<div class="table-responsive">
+		<table class="table table-striped table-condensed table-bordered">
+			<tbody>
+				<tr>
+					<td>Notes</td>
+					<td>{{p.notes}}</td>
+				</tr>
+				<tr>
+					<td>Category</td>
+					<td>{{p.category}}</td>
+				</tr>
+				<tr>
+					<td>Type</td>
+					<td>{{p.type}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-2 col-md-offset-10">
+		<a href="create/policy/{{api.id}}" class="btn btn-info btn-block">Add</a>
+	</div>
+</div>
