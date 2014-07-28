@@ -138,7 +138,7 @@ public class ResourceController {
 	@RequestMapping(value = "/{apiId}/resource/{resourceId}/delete/{policyId}", 
 			method = RequestMethod.DELETE)
 	@ResponseBody
-	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+	public ResultData deleteResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@PathVariable String policyId){
 		logger.info("Delete policy to resource.");
 		pmanager.deletePolicyResourceApi(apiId, resourceId, policyId);
