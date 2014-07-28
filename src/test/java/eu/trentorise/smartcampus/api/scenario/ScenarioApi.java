@@ -109,6 +109,53 @@ public class ScenarioApi {
 	}
 	
 	/**
+	 * Add policy to resource.
+	 */
+	@Test
+	public void addPolicyResource1(){
+		log.info("Add policy to resource 1 ...");
+		
+		Policy p1 = new Policy();
+		p1.setId("resource-p1");
+		p1.setName("SpikeArrest-resource1");
+		p1.setNotes("Some notes bla bla bla bla");
+		p1.setCategory("quality");
+		p1.setType("policy");
+		
+		Resource r = apiManager.addPolicyResourceApi("api1", "resource1", p1);
+		assertNotNull("Problem in saving",r);
+	}
+	
+	/**
+	 * Update policy to resource.
+	 */
+	@Test
+	public void updatePolicyResource1(){
+		log.info("Update policy to resource 1 ...");
+		
+		Policy p1 = new Policy();
+		p1.setId("resource-p1");
+		p1.setName("SpikeArrest-resource1");
+		p1.setNotes("Some notes bla bla bla bla update");
+		p1.setCategory("quality");
+		p1.setType("policy");
+		
+		Resource r = apiManager.updatePolicyResourceApi("api1", "resource1", p1);
+		assertNotNull("Problem in saving",r);
+	}
+	
+	/**
+	 * Delete policy to resource.
+	 */
+	@Test
+	public void deletePolicyResource1(){
+		log.info("Delete policy to resource 1 ...");
+		
+		Resource r = apiManager.deletePolicyResourceApi("api1", "resource1", "resource-p1");
+		assertNotNull("Problem in saving",r);
+	}
+	
+	/**
 	 * Retrieves resource data from api. 
 	 * Searching first by id and then by name.
 	 */
@@ -156,53 +203,6 @@ public class ScenarioApi {
 		
 		log.info("Delete resource 1 of api terminated.");
 		
-	}
-	
-	/**
-	 * Add policy to resource.
-	 */
-	@Test
-	public void addPolicyResource1(){
-		log.info("Add policy to resource 1 ...");
-		
-		Policy p1 = new Policy();
-		p1.setId("resource-p1");
-		p1.setName("SpikeArrest-resource1");
-		p1.setNotes("Some notes bla bla bla bla");
-		p1.setCategory("quality");
-		p1.setType("policy");
-		
-		Resource r = apiManager.addPolicyResourceApi("api1", "resource1", p1);
-		assertNotNull("Problem in saving",r);
-	}
-	
-	/**
-	 * Update policy to resource.
-	 */
-	@Test
-	public void updatePolicyResource1(){
-		log.info("Update policy to resource 1 ...");
-		
-		Policy p1 = new Policy();
-		p1.setId("resource-p1");
-		p1.setName("SpikeArrest-resource1");
-		p1.setNotes("Some notes bla bla bla bla update");
-		p1.setCategory("quality");
-		p1.setType("policy");
-		
-		Resource r = apiManager.updatePolicyResourceApi("api1", "resource1", p1);
-		assertNotNull("Problem in saving",r);
-	}
-	
-	/**
-	 * Delete policy to resource.
-	 */
-	@Test
-	public void deletePolicyResource1(){
-		log.info("Delete policy to resource 1 ...");
-		
-		Resource r = apiManager.deletePolicyResourceApi("api1", "resource1", "resource-p1");
-		assertNotNull("Problem in saving",r);
 	}
 	
 	/**
