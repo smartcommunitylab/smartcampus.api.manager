@@ -61,7 +61,7 @@ public class PolicyController {
 	 */
 	@RequestMapping(value = "/{apiId}/policy/{policyId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
-	public ResultData getResourceAppById(@PathVariable String apiId, @PathVariable String policyId){
+	public ResultData getPolicyApiById(@PathVariable String apiId, @PathVariable String policyId){
 		logger.info("Policy by id.");
 		Policy p = pmanager.getPolicyApiByPolicyId(apiId, policyId);
 		if(p!=null){

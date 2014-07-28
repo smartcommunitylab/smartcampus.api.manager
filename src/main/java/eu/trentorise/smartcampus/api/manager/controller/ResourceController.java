@@ -28,8 +28,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
+import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
 /**
@@ -72,6 +74,32 @@ public class ResourceController {
 		}else{
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
 					"There is no resource data for this api.");
+		}
+	}
+	
+	/**
+	 * Rest service that retrieves policy resource of an Api by api, resource and policy ids.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @return instance of {@link ResultData} with policy resource data having the given id, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"Policy Resource data found" if it is ok, 
+	 * 			otherwise "There is no policy resource data for this api.".
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/policy/{policyId}", method = RequestMethod.GET, 
+			produces="application/json")
+	@ResponseBody
+	public ResultData getResourcePolicyById(@PathVariable String apiId, @PathVariable String resourceId,
+			@PathVariable String policyId){
+		logger.info("Policy Resource by id.");
+		Policy p = pmanager.getPolicyResourceApiByResourceId(apiId, resourceId, policyId);
+		if(p!=null){
+			return new ResultData(p, HttpServletResponse.SC_OK, "Policy Resource data found");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"There is no policy resource data for this api.");
 		}
 	}
 	
@@ -126,6 +154,58 @@ public class ResourceController {
 	}
 	
 	/**
+	 * Rest that update a spike arrest policy to resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of {@link ResultData} with resource data having the updated policy, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api.".
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/update/policy/spikeArrest", 
+			method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+			@RequestParam SpikeArrest p){
+		logger.info("Update policy to resource.");
+		Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
+		if(r!=null){
+			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem in updating policy to resource api.");
+		}
+	}
+	
+	/**
+	 * Rest that update a quota policy to resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of {@link ResultData} with resource data having the updated policy, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api.".
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/update/policy/quota", 
+			method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+			@RequestParam Quota p){
+		logger.info("Update policy to resource.");
+		Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
+		if(r!=null){
+			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem in updating policy to resource api.");
+		}
+	}
+	
+	/**
 	 * Rest that update a policy to resource api.
 	 * 
 	 * @param apiId : String
@@ -140,7 +220,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData deleteResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@PathVariable String policyId){
-		logger.info("Delete policy to resource.");
+		logger.info("Delete policy from resource.");
 		pmanager.deletePolicyResourceApi(apiId, resourceId, policyId);
 		
 		return new ResultData(null, HttpServletResponse.SC_OK, "Resource data found");

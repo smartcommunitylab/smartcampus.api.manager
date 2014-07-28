@@ -1244,8 +1244,31 @@ public class PersistenceManager {
 		return updateResourceApi(apiId, r);
 	}
 	
-	public void getPolicyResourceApiByResourceId(){
-		
+	/**
+	 * Retrieve policy resource by policyId
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @return instance of {@link Policy} resource
+	 */
+	public Policy getPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId){
+		Resource resource = getResourceApiByResourceId(apiId, resourceId);
+		try {
+			List<Policy> plist = resource.getPolicy();
+			Policy p = null;
+
+			if (plist != null) {
+				for (int i = 0; i < plist.size(); i++) {
+					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+						p = plist.get(i);
+					}
+				}
+			}
+			return p;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
 	}
 	
 	/**
