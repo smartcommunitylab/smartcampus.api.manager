@@ -285,52 +285,6 @@ public class ApiTest {
 	public void addUpdatePolicy(){
 		log.info("Add and update policy api...");
 		
-		//Policy
-		log.info("Add policy 1...");
-		Policy p1 = new Policy();
-		p1.setId("api-p1");
-		p1.setName("Policy-1");
-		p1.setNotes("Some notes bla bla bla bla");
-		p1.setCategory("quality");
-		p1.setType("policy");
-		
-		// add
-		try {
-			ResultData response = rtemplate.postForObject(
-					"http://localhost:8080/apiManager/api/add/api1/policy", p1,
-					ResultData.class);
-			log.info("Response: {}", response.getData());
-			log.info("Response: {}", response.getMessage());
-			assertTrue(
-					"Successfully",
-					response.getMessage().contains(
-							"successfully"));
-		} catch (HttpClientErrorException e) {
-			log.info("Error: {}", e.getMessage());
-			assertTrue("Error found", e.getMessage().contains("200"));
-		}
-		
-		//update
-		p1.setNotes("Some notes bla bla bla bla update");
-		try {
-			ResultData response = rtemplate
-					.postForObject(
-							"http://localhost:8080/apiManager/api/update/api1/policy",
-							p1, ResultData.class);
-			log.info("Response: {}", response.getData());
-			log.info("Response: {}", response.getMessage());
-			assertTrue(
-					"Successfully",
-					response.getMessage().contains(
-							"successfully"));
-		} catch (HttpClientErrorException e) {
-			log.info("Error: {}", e.getMessage());
-			assertTrue("Error found", e.getMessage().contains("200"));
-		}
-		
-		//delete
-		rtemplate.delete("http://localhost:8080/apiManager/api/delete/api1/policy/"+p1.getId());
-		
 		//Spike Arrest
 		SpikeArrest p2 = new SpikeArrest();
 		//policy parameter
@@ -360,6 +314,7 @@ public class ApiTest {
 		//Quota
 		Quota p3 = new Quota();
 		// policy parameter
+		p3.setId("p3-test");
 		p3.setName("Quota-1");
 		p3.setNotes("Quota 1 notes");
 		p3.setCategory("quality");
@@ -384,6 +339,9 @@ public class ApiTest {
 			log.info("Error: {}", e.getMessage());
 			assertTrue("Error found", e.getMessage().contains("200"));
 		}
+		
+		//delete
+		rtemplate.delete("http://localhost:8080/apiManager/api/delete/api1/policy/"+p3.getId());
 	}
 	
 	/**

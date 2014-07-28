@@ -31,6 +31,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
@@ -97,7 +98,7 @@ public class ScenarioApi {
 		api.setId("api1");
 		api.setName("Geocoding");
 		api.setBasePath("/v0/geocoding");
-		api.setOwnerId("g1shjfdj");
+		api.setOwnerId("1");
 
 		Api nApi = apiManager.addApi(api);
 		assertNotNull("Error in saving a new api..",nApi);
@@ -115,12 +116,13 @@ public class ScenarioApi {
 	public void addPolicyResource1(){
 		log.info("Add policy to resource 1 ...");
 		
-		Policy p1 = new Policy();
+		SpikeArrest p1 = new SpikeArrest();
 		p1.setId("resource-p1");
 		p1.setName("SpikeArrest-resource1");
 		p1.setNotes("Some notes bla bla bla bla");
 		p1.setCategory("quality");
-		p1.setType("policy");
+		p1.setType("Spike Arrest");
+		p1.setRate("12ps");
 		
 		Resource r = apiManager.addPolicyResourceApi("api1", "resource1", p1);
 		assertNotNull("Problem in saving",r);
@@ -133,12 +135,13 @@ public class ScenarioApi {
 	public void updatePolicyResource1(){
 		log.info("Update policy to resource 1 ...");
 		
-		Policy p1 = new Policy();
+		SpikeArrest p1 = new SpikeArrest();
 		p1.setId("resource-p1");
 		p1.setName("SpikeArrest-resource1");
 		p1.setNotes("Some notes bla bla bla bla update");
 		p1.setCategory("quality");
 		p1.setType("policy");
+		p1.setRate("12ps");
 		
 		Resource r = apiManager.updatePolicyResourceApi("api1", "resource1", p1);
 		assertNotNull("Problem in saving",r);
@@ -214,19 +217,15 @@ public class ScenarioApi {
 		
 		//Policy list
 		log.info("Add policy 1...");
-		Policy p1 = new Policy();
+		Quota p1 = new Quota();
 		p1.setId("api-p1");
-		p1.setName("SpikeArrest-1");
+		p1.setName("Quota-1");
 		p1.setNotes("Some notes bla bla bla bla");
 		p1.setCategory("quality");
-		p1.setType("policy");
-		
-		log.info("Add policy 2..");
-		Policy p2 = new Policy();
-		p2.setName("Quota-1");
-		p2.setNotes("Some notes of quota bla bla bla bla");
-		p2.setCategory("quality");
-		p2.setType("policy");
+		p1.setType("Quota");
+		p1.setAllowCount(12);
+		p1.setInterval(2000);
+		p1.setTimeUnit("second");
 		
 		log.info("Add policy 3.. Spike Arrest");
 		SpikeArrest p3 = new SpikeArrest();
@@ -234,14 +233,12 @@ public class ScenarioApi {
 		p3.setName("SpikeArrest-3");
 		p3.setNotes("Some notes bla bla bla bla");
 		p3.setCategory("quality");
-		p3.setType("policy");
+		p3.setType("Spike Arrest");
 		//spike arrest parameter
 		p3.setRate("10pm");
 		
 		log.info("Policy 1: {}", apiManager.addPolicyApi("api1", p1));
-		log.info("Spike Arrest p3: {}",apiManager.addPolicyApi("api1", p3));
-		Policy policy = apiManager.addPolicyApi("api1", p2);
-		log.info("Policy 1: {}", p2);
+		Policy policy = apiManager.addPolicyApi("api1", p3);
 		assertNotNull("Error in finding by api",policy);
 		
 		log.info("Add policy api test terminated.");
@@ -254,7 +251,7 @@ public class ScenarioApi {
 	@Test
 	public void retrievePolicies(){
 		log.info("Find policies api by policies id..");
-		Policy p= apiManager.getPolicyApiByPolicyId("api1", "api-p1");
+		Quota p= (Quota) apiManager.getPolicyApiByPolicyId("api1", "api-p1");
 		assertNotNull("Error in finding by resource id",p);
 		assertTrue("Incorrect id",p.getId().equalsIgnoreCase("api-p1"));
 		
@@ -269,9 +266,9 @@ public class ScenarioApi {
 		assertTrue("Incorrect category",pclist.get(0).getCategory().equalsIgnoreCase("quality"));
 		
 		log.info("Find policies api by policies type..");
-		List<Policy> ptlist = apiManager.getPolicyApiByPolicyType("api1", "policy");
+		List<Policy> ptlist = apiManager.getPolicyApiByPolicyType("api1", "Spike Arrest");
 		assertNotNull("Error in finding by resource name",ptlist);
-		assertTrue("Incorrect type",ptlist.get(0).getType().equalsIgnoreCase("policy"));
+		assertTrue("Incorrect type",ptlist.get(0).getType().equalsIgnoreCase("Spike Arrest"));
 		
 		log.info("Search terminated.");
 	}
