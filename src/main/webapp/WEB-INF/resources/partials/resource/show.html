@@ -35,48 +35,52 @@
 </div>
 
 <div class="row">
-<div class="col-md-8 col-md-offset-2">
-<div ng-show="resource.policy" ng-repeat="p in resource.policy">
-	<h2>Policies:</h2>
-	<h4><b>{{p.name}}</b></h4>
-	
-	<button type="button" class="pull-right btn btn-default btn-sm" 
-		ng-click="deletePolicy(resource.id,p.id)">
-        <i class="fa fa-trash-o"></i>
-    </button>
-    <a href="edit/{{apiid}}/resource/{{resource.id}}/policy/{{p.id}}" class="pull-right btn btn-default btn-sm orgbtn">
-    	<i class="fa fa-edit"></i>
-    </a>
+	<div class="col-md-8 col-md-offset-2">
+		<h2>Policies:</h2>
+		<div ng-show="resource.policy" ng-repeat="p in resource.policy">
 
-	<br/>
-	<div class="table-responsive">
-		<table class="table table-striped table-condensed table-bordered">
-			<tbody>
-				<tr>
-					<td>Name</td>
-					<td>{{p.name}}</td>
-				</tr>
-				<tr>
-					<td>Notes</td>
-					<td>{{p.notes}}</td>
-				</tr>
-				<tr>
-					<td>Category</td>
-					<td>{{p.category}}</td>
-				</tr>
-				<tr>
-					<td>Type</td>
-					<td>{{p.type}}</td>
-				</tr>
-			</tbody>
-		</table>
+			<h4>
+				<b>{{p.name}}</b>
+			</h4>
+
+			<button type="button" class="pull-right btn btn-default btn-sm"
+				ng-click="deletePolicy(resource.id,p.id)">
+				<i class="fa fa-trash-o"></i>
+			</button>
+			<a href="edit/{{apiid}}/resource/{{resource.id}}/policy/{{p.id}}"
+				class="pull-right btn btn-default btn-sm orgbtn"> <i
+				class="fa fa-edit"></i>
+			</a> <br />
+			<div class="table-responsive">
+				<table class="table table-striped table-condensed table-bordered">
+					<tbody>
+						<tr>
+							<td>Name</td>
+							<td>{{p.name}}</td>
+						</tr>
+						<tr>
+							<td>Notes</td>
+							<td>{{p.notes}}</td>
+						</tr>
+						<tr>
+							<td>Category</td>
+							<td>{{p.category}}</td>
+						</tr>
+						<tr>
+							<td>Type</td>
+							<td>{{p.type}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
-</div>
-</div>
 </div>
 
 <div class="row">
 	<div class="col-md-2 col-md-offset-8">
-		<a href="#" class="btn btn-info btn-block">Add</a>
+		<a href="create/{{apiid}}/resource/{{resource.id}}/add/policy" class="btn btn-info btn-block">
+			Add Policy
+		</a>
 	</div>
 </div>

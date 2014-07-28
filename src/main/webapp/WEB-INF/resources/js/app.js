@@ -87,6 +87,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/resource/show.html',
         	access: access.public
         }).
+        when('/create/:apiId/resource/:resourceId/add/policy',{
+        	controller: 'addResourcePolicyCtrl',
+        	templateUrl: 'partials/policy/edit.html',
+        	access: access.public
+        }).
         when('/edit/:apiId/resource/:resourceId/policy/:policyId',{
         	controller: 'editResourcePolicyCtrl',
         	templateUrl: 'partials/policy/edit.html',

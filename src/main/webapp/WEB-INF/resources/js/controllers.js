@@ -342,6 +342,7 @@ app.controller('showResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 
 app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 'Resource',
             function($scope, $location, $routeParams, Resource){
+				$scope.title = 'Edit';			
 				var apiid = $routeParams.apiId;
 				var rid = $routeParams.resourceId;
 				var pid = $routeParams.policyId;
@@ -396,6 +397,57 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 					}
 					
 		        };
+			}
+]);
+
+app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 'Resource',
+            function($scope, $location, $routeParams, Resource){
+            	$scope.title = 'New';
+            	
+            	var apiid = $routeParams.apiId;
+            	var rid = $routeParams.resourceId;
+        		
+        		$scope.submit = function () {
+        			var type = $scope.policy.type;
+        			if(type=='Spike Arrest'){
+        				Resource.createSpikeArrestResource({
+        					apiId: apiid,
+        					resourceId: rid
+        					},$scope.policy,
+        					function (data) {
+        						if(data.status == 200){
+        							$location.path('api/'+apiid);
+        						}else{
+        							$scope.errorMsg = data.message;
+        						}
+        				});
+        			}
+        			else if(type=='Quota'){
+        				Resource.createQuotaResource({
+        					apiId: apiid,
+        					resourceId: rid
+        					},$scope.policy,
+        					function (data) {
+        						if(data.status == 200){
+        							$location.path('api/'+apiid);
+        						}else{
+        							$scope.errorMsg = data.message;
+        						}
+        				});
+        			}else{
+        				Resource.createPolicyResource({
+        					apiId: apiid,
+        					resourceId: rid
+        					},$scope.policy,
+        					function (data) {
+        						if(data.status == 200){
+        							$location.path('api/'+apiid);
+        						}else{
+        							$scope.errorMsg = data.message;
+        						}
+        				});
+        			}
+        		};
 			}
 ]);
 

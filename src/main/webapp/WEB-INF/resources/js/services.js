@@ -51,6 +51,18 @@ services.factory('Resource', ['$resource',
 				method: 'GET',
 				url: 'api/:apiId/resource/:resourceId/policy/:policyId'
 			},
+			createPolicyResource:{
+				method: 'POST',
+				url: 'api/:apiId/resource/:resourceId/add/policy'
+            },
+            createSpikeArrestResource:{
+				method: 'POST',
+				url: 'api/:apiId/resource/:resourceId/add/policy/spikeArrest'
+            },
+            createQuotaResource:{
+				method: 'POST',
+				url: 'api/:apiId/resource/:resourceId/add/policy/quota'
+            },
 			updatePolicyResource:{
 				method: 'PUT',
 				url: 'api/:apiId/resource/:resourceId/update/policy'
