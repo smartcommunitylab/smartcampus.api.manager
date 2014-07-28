@@ -60,7 +60,7 @@ public class AppManagerTest {
 	/**
 	 * Test add two new app data to collections.
 	 */
-	@Test
+	/*@Test
 	public void addApp() {
 		log.info("Add App data..");
 		App app1 = new App();
@@ -77,11 +77,11 @@ public class AppManagerTest {
 		
 		log.info("Add App data terminated.");
 	}
-	
+	*/
 	/**
 	 * Test retrieving all App data.
 	 */
-	@Test
+	/*@Test
 	public void listApp(){
 		log.info("List App data..");
 		List<App> lapp = apiManager.listApp();
@@ -91,11 +91,11 @@ public class AppManagerTest {
 		assertNotNull("Error, null",lapp);
 		log.info("List App data terminated.");
 	}
-	
+	*/
 	/**
 	 * Test updating App data.
 	 */
-	@Test
+	/*@Test
 	public void updateApi() {
 		log.info("Update App ..");
 		App app = new App();
@@ -106,22 +106,22 @@ public class AppManagerTest {
 		assertNotNull("Error in saving a new app..",nApp);
 		log.info("Update App terminated.");
 	}
-	
+	*/
 	/**
 	 * Retrieves App searching by id.
 	 */
-	@Test
+	/*@Test
 	public void getAppById(){
 		log.info("Find App by id..");
 		App app = apiManager.getAppById("ue45fght");
 		assertNotNull("App not found", app);
 		log.info("Found App by id terminated.");
 	}
-	
+	*/
 	/**
 	 * Retrieves App searching by name.
 	 */
-	@Test
+	/*@Test
 	public void getAppByName(){
 		log.info("Find App by name..");
 		List<App> lapp = apiManager.getAppByName("Openservice app junit-test");
@@ -131,11 +131,11 @@ public class AppManagerTest {
 		}
 		log.info("Found App by name terminated.");
 	}
-	
+	*/
 	/**
 	 * Retrieves App searching by key.
 	 */
-	@Test
+	/*@Test
 	public void getAppByKey(){
 		log.info("Find App by key..");
 		List<App> lapp = apiManager.getAppByKey("openservice.98jhgndl.app.upd");
@@ -145,11 +145,11 @@ public class AppManagerTest {
 		}
 		log.info("Found App by key terminated.");
 	}
-	
+	*/
 	/**
 	 * Deletes App data.
 	 */
-	@Test
+	/*@Test
 	public void deleteApp(){
 		log.info("Delete App..");
 		App app = new App();
@@ -163,5 +163,5 @@ public class AppManagerTest {
 		
 		log.info("Delete App terminated.");
 	}
-
+	 */
 }

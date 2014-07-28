@@ -65,7 +65,7 @@ public class PolicyManagerTest {
 	/**
 	 * Test creating policy data.
 	 */
-	@Test
+	/*@Test
 	public void addPolicy() {
 		log.info("Add Policy data..");
 		Policy p1 = new Policy();
@@ -85,11 +85,11 @@ public class PolicyManagerTest {
 		
 		log.info("Add Policy data terminated.");
 	}
-	
+	*/
 	/**
 	 * Test retrieving all Policy data.
 	 */
-	@Test
+	/*@Test
 	public void listPolicy(){
 		log.info("List Policy data..");
 		List<Policy> plist = apiManager.listPolicy();
@@ -99,11 +99,11 @@ public class PolicyManagerTest {
 		assertNotNull("Error, null",plist);
 		log.info("List Policy data terminated.");
 	}
-	
+	*/
 	/**
 	 * Test updating Policy data.
 	 */
-	@Test
+	/*@Test
 	public void updatePolicy() {
 		log.info("Update Policy ..");
 		Policy p1 = new Policy();
@@ -115,22 +115,22 @@ public class PolicyManagerTest {
 		assertNotNull("Error in saving a new Policy..",np);
 		log.info("Update Policy terminated.");
 	}
-	
+	*/
 	/**
 	 * Retrieves Policy searching by id.
 	 */
-	@Test
+	/*@Test
 	public void getPolicyById(){
 		log.info("Find Policy by id..");
 		Policy p = apiManager.getPolicyById("sa1");
 		assertNotNull("Policy not found", p);
 		log.info("Found Policy by id terminated.");
 	}
-	
+	*/
 	/**
 	 * Retrieves Policy searching by name.
 	 */
-	@Test
+	/*@Test
 	public void getPolicyByName(){
 		log.info("Find Policy by name..");
 		List<Policy> plist = apiManager.getPolicyByName("SpikeArrest-junit-test_update");
@@ -140,11 +140,11 @@ public class PolicyManagerTest {
 		}
 		log.info("Found Policy by name terminated.");
 	}
-	
+	*/
 	/**
 	 * Retrieves Policy searching by category.
 	 */
-	@Test
+	/*@Test
 	public void getPolicyByCategory(){
 		log.info("Find Policy by category..");
 		List<Policy> plist = apiManager.getPolicyByCategory("quality");
@@ -154,11 +154,11 @@ public class PolicyManagerTest {
 		}
 		log.info("Found Policy by category terminated.");
 	}
-	
+	*/
 	/**
 	 * Retrieves Policy searching by type.
 	 */
-	@Test
+	/*@Test
 	public void getPolicyByType(){
 		log.info("Find Policy by type..");
 		List<Policy> plist = apiManager.getPolicyByType("t1");
@@ -168,11 +168,11 @@ public class PolicyManagerTest {
 		}
 		log.info("Found Policy by type terminated.");
 	}
-	
+	*/
 	/**
 	 * Deletes Policy data.
 	 */
-	@Test
+	/*@Test
 	public void deletePolicy(){
 		log.info("Delete Policy..");
 		Policy p1 = new Policy();
@@ -186,5 +186,5 @@ public class PolicyManagerTest {
 		apiManager.deletePolicy(p2);
 		
 		log.info("Delete Policy terminated.");
-	}
+	}*/
 }
