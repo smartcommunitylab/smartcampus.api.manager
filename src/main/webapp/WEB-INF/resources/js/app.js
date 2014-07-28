@@ -19,7 +19,7 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
                     	$location.path('/');
                         return $q.reject(response);
                     } else {
-                    	$location.path('/');
+                    	//$location.path('/');
                     	return $q.reject(response);
                     }
                 }
