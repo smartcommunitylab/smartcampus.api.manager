@@ -223,56 +223,61 @@ public class PersistenceManager {
 	
 	/**
 	 * Retrieves all App data saved in db.
+	 * NOT IN USE
 	 * 
 	 * @return list of {@link App} instances
 	 */
-	public List<App> listApp(){
+	/*public List<App> listApp(){
 		return apprepository.findAll();
 	}
-	
+	*/
 	/**
 	 * Retrieves App data searching by id.
+	 * NOT IN USE
 	 * 
 	 * @param id : String
 	 * @return instance of {@link App}
 	 */
-	public App getAppById(String id){
+	/*public App getAppById(String id){
 		List<App> apps = apprepository.findById(id);
 		if(apps!=null && apps.size()>0){
 			return apps.get(0);
 		}
 		return null;
 	}
-	
+	*/
 	/**
 	 * Retrieves App data searching by key.
+	 * NOT IN USE
 	 * 
 	 * @param key : String
 	 * @return list of {@link App} instances
 	 */
-	public List<App> getAppByKey(String key){
+	/*public List<App> getAppByKey(String key){
 		return (List<App>) apprepository.findByKey(key);
-	}
+	}*/
 	
 	/**
 	 * Retrieves App data searching by name.
+	 * NOT IN USE
 	 * 
 	 * @param name : String
 	 * @return list of {@link App}
 	 */
-	public List<App> getAppByName(String name){
+	/*public List<App> getAppByName(String name){
 		return (List<App>) apprepository.findByName(name);
 	}
-	
+	*/
 	/**
 	 * Create a new App and save it in db.
 	 * If name field is null then throws IllegalArgumentException, because
 	 * name is required.
+	 * NOT IN USE
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return saved instance of {@link App}
 	 */
-	public App addApp(App app){
+	/*public App addApp(App app){
 		if(app.getName()==null){
 			throw new IllegalArgumentException("App name is required.");
 		}
@@ -281,92 +286,100 @@ public class PersistenceManager {
 		}
 		return apprepository.save(app);
 	}
-	
+	*/
 	/**
 	 * Update an existing App.
+	 * NOT IN USE
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return updated instace of {@link App}
 	 */
-	public App updateApp(App app){
+	/*public App updateApp(App app){
 		return addApp(app);
 	}
-	
+	*/
 	/**
 	 * Deletes an App from db.
+	 * NOT IN USE
 	 * 
 	 * @param app : instance of {@link App}
 	 */
-	public void deleteApp(App app){
+	/*public void deleteApp(App app){
 		apprepository.delete(app);
 	}
-	
+	*/
 	/* 
 	 * Policy 
 	 */
 	
 	/**
 	 * Retrieves all policy data saved in db.
+	 * NOT IN USE
 	 * 
 	 * @return list of {@link Policy} instances
 	 */
-	public List<Policy> listPolicy(){
+	/*public List<Policy> listPolicy(){
 		return policyrepository.findAll();
 	}
-	
+	*/
 	/**
 	 * Retrieves policy data searching by id.
+	 * NOT IN USE
 	 * 
 	 * @param id : String
 	 * @return instance of {@link Policy}
 	 */
-	public Policy getPolicyById(String id){
+	/*public Policy getPolicyById(String id){
 		List<Policy> ps = policyrepository.findById(id);
 		if(ps!=null && ps.size()>0){
 			return ps.get(0);
 		}
 		return null;
 	}
-	
+	*/
 	/**
 	 * Retrieves policy data searching by name.
+	 * NOT IN USE
 	 * 
 	 * @param name : String
 	 * @return list of {@link Policy} instances
 	 */
-	public List<Policy> getPolicyByName(String name){
+	/*public List<Policy> getPolicyByName(String name){
 		return (List<Policy>) policyrepository.findByName(name);
 	}
-	
+	*/
 	/**
 	 * Retrieves policy data searching by category.
+	 * NOT IN USE
 	 * 
 	 * @param category : String
 	 * @return list of {@link Policy} instances
 	 */
-	public List<Policy> getPolicyByCategory(String category){
+	/*public List<Policy> getPolicyByCategory(String category){
 		return (List<Policy>) policyrepository.findByCategory(category);
 	}
-	
+	*/
 	/**
 	 * Retrieves policy data searching by type.
+	 * NOT IN USE
 	 * 
 	 * @param type : String
 	 * @return list of {@link Policy} instances
 	 */
-	public List<Policy> getPolicyByType(String type){
+	/*public List<Policy> getPolicyByType(String type){
 		return (List<Policy>) policyrepository.findByType(type);
 	}
-	
+	*/
 	/**
 	 * Create a new Policy in db.
 	 * If name or type field are undefined then it throws 
 	 * IllegalArgumentException, because they are required.
+	 * NOT IN USE
 	 * 
 	 * @param p : instance of {@link Policy}
 	 * @return saved instance of {@link Policy}
 	 */
-	public Policy addPolicy(Policy p){
+	/*public Policy addPolicy(Policy p){
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
 		}
@@ -376,72 +389,78 @@ public class PersistenceManager {
 		}
 		return policyrepository.save(p);
 	}
-	
+	*/
 	/**
 	 * Update a policy saved in db.
+	 * NOT IN USE
 	 * 
 	 * @param p : instance of {@link Policy}
 	 * @return updated instance of {@link Policy}
 	 */
-	public Policy updatePolicy(Policy p){
+	/*public Policy updatePolicy(Policy p){
 		return addPolicy(p);
 	}
-	
+	*/
 	/**
 	 * Delete a policy from db.
+	 * NOT IN USE
 	 * 
 	 * @param p : instance of {@link Policy}
 	 */
-	public void deletePolicy(Policy p){
+	/*public void deletePolicy(Policy p){
 		policyrepository.delete(p);
 	}
-	
+	*/
 	/*
 	 * Resource
 	 */
 	
 	/**
 	 * Retrieves all resources saved in db.
+	 * NOT IN USE
 	 * 
 	 * @return list of {@link Resource} instances
 	 */
-	public List<Resource> listResource(){
+	/*public List<Resource> listResource(){
 		return resourcerepository.findAll();
 	}
-	
+	*/
 	/**
 	 * Retrieves resource data searching by id.
+	 * NOT IN USE
 	 * 
 	 * @param id : String
 	 * @return instance of {@link Resource}
 	 */
-	public Resource getResourceById(String id){
+	/*public Resource getResourceById(String id){
 		List<Resource> rs = resourcerepository.findById(id);
 		if(rs!=null && rs.size()>0){
 			return rs.get(0);
 		}
 		return null;
 	}
-	
+	*/
 	/**
 	 * Retrieves resource data searching by name.
+	 * NOT IN USE
 	 * 
 	 * @param name : String
 	 * @return list of {@link Resource} instances
 	 */
-	public List<Resource> getResourceByName(String name){
+	/*public List<Resource> getResourceByName(String name){
 		return (List<Resource>) resourcerepository.findByName(name);
 	}
-	
+	*/
 	/**
 	 * Create a new resource and saved it in db.
 	 * If name, uri or verb are undefined then it throws IllegalArgumentException,
 	 * because they are required.
+	 * NOT IN USE
 	 * 
 	 * @param r : instance of {@link Resource}
 	 * @return saved instance of {@link Resource}
 	 */
-	public Resource addResource(Resource r){
+	/*public Resource addResource(Resource r){
 		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
 		}
@@ -475,14 +494,15 @@ public class PersistenceManager {
 		r.setCreationTime(today.toString());
 		return resourcerepository.save(r);
 	}
-	
+	*/
 	/**
 	 * Update a resource in db.
+	 * NOT IN USE
 	 * 
 	 * @param r : instance of {@link Resource}
 	 * @return updated instance of {@link Resource}
 	 */
-	public Resource updateResource(Resource r){
+	/*public Resource updateResource(Resource r){
 		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
 		}
@@ -512,16 +532,17 @@ public class PersistenceManager {
 		r.setUpdateTime(today.toString());
 		return resourcerepository.save(r);
 	}
-	
+	*/
 	/**
 	 * Delete an existing resource in db.
+	 * NOT IN USE
 	 * 
 	 * @param r : instance of {@link Resource}
 	 */
-	public void deleteResource(Resource r){
+	/*public void deleteResource(Resource r){
 		resourcerepository.delete(r);
 	}
-	
+	*/
 	
 	/*
 	 * API retrieves Resource and Policy data
