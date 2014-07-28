@@ -129,6 +129,58 @@ public class ResourceController {
 	}
 	
 	/**
+	 * Rest that add a spike arrest policy to resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of {@link ResultData} with resource data having the new policy, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api.".
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/add/policy/spikeArrest", 
+			method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+			@RequestBody SpikeArrest p){
+		logger.info("Add policy to resource.");
+		Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
+		if(r!=null){
+			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem in saving policy to resource api.");
+		}
+	}
+	
+	/**
+	 * Rest that add a quota policy to resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of {@link ResultData} with resource data having the new policy, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api.".
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/add/policy/quota", 
+			method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+			@RequestBody Quota p){
+		logger.info("Add policy to resource.");
+		Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
+		if(r!=null){
+			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem in saving policy to resource api.");
+		}
+	}
+	
+	/**
 	 * Rest that update a policy to resource api.
 	 * 
 	 * @param apiId : String
