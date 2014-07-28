@@ -17,7 +17,7 @@ package eu.trentorise.smartcampus.api.manager.model;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+//import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,7 +31,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * 
  */
 @Document
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Policy implements Serializable {
 
 	/**

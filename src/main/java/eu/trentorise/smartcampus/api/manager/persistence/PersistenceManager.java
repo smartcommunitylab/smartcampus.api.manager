@@ -767,7 +767,7 @@ public class PersistenceManager {
 		}
 		// get api and add policy
 		Api api = getApiById(apiId);
-		List<Policy> plist = api.getPolicy();
+		List<Policy> plist = (List<Policy>) api.getPolicy();
 		if (plist != null) {
 			plist.add(p);
 		} else {
@@ -804,11 +804,12 @@ public class PersistenceManager {
 		//retrieve api searching by id
 		Api api = getApiById(apiId);
 		//retrieve policy
-		List<Policy> plist = api.getPolicy();
+		List<Policy> plist = (List<Policy>) api.getPolicy();
 		Policy oldp = null;
 		for(int i=0;i<plist.size();i++){
 			if(plist.get(i).getId().equalsIgnoreCase(p.getId())){
 				oldp = plist.get(i);
+				plist.remove(i);
 			}
 		}
 		if(oldp!=null){
@@ -817,10 +818,7 @@ public class PersistenceManager {
 					throw new IllegalArgumentException("Policy with this name already exists.");
 				}
 			}
-			oldp.setName(p.getName());
-			oldp.setNotes(p.getNotes());
-			oldp.setCategory(p.getCategory());
-			oldp.setType(p.getType());
+			plist.add(p);
 		}
 		//update api
 		updateApi(api);
@@ -838,7 +836,7 @@ public class PersistenceManager {
 		// retrieves api
 		Api api = getApiById(apiId);
 		// retrieves policy
-		List<Policy> plist = api.getPolicy();
+		List<Policy> plist = (List<Policy>) api.getPolicy();
 
 		if (plist != null) {
 			for (int i = 0; i < plist.size(); i++) {
@@ -862,13 +860,65 @@ public class PersistenceManager {
 	public Policy getPolicyApiByPolicyId(String apiId, String policyId){
 		Api api = getApiById(apiId);
 		try {
-			List<Policy> plist = api.getPolicy();
+			List<Policy> plist = (List<Policy>) api.getPolicy();
 			Policy p = null;
 
 			if (plist != null) {
 				for (int i = 0; i < plist.size(); i++) {
 					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
 						p = plist.get(i);
+					}
+				}
+			}
+			return p;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieves spike arrest policy data from Api searching by policy id.
+	 * 
+	 * @param apiId : String
+	 * @param policyId : String
+	 * @return instance of {@link SpikeArrest}
+	 */
+	public Policy getSpikeArrestPolicyApiByPolicyId(String apiId, String policyId){
+		Api api = getApiById(apiId);
+		try {
+			List<Policy> plist = api.getPolicy();
+			SpikeArrest p = null;
+
+			if (plist != null) {
+				for (int i = 0; i < plist.size(); i++) {
+					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+						p = (SpikeArrest) plist.get(i);
+					}
+				}
+			}
+			return p;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieves quota data from Api searching by policy id.
+	 * 
+	 * @param apiId : String
+	 * @param policyId : String
+	 * @return instance of {@link Quota}
+	 */
+	public Policy getQuotaPolicyApiByPolicyId(String apiId, String policyId){
+		Api api = getApiById(apiId);
+		try {
+			List<Policy> plist = api.getPolicy();
+			Quota p = null;
+
+			if (plist != null) {
+				for (int i = 0; i < plist.size(); i++) {
+					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+						p = (Quota) plist.get(i);
 					}
 				}
 			}
@@ -888,7 +938,7 @@ public class PersistenceManager {
 	public List<Policy> getPolicyApiByPolicyName(String apiId, String policyName){
 		Api api = getApiById(apiId);
 		try {
-			List<Policy> plist = api.getPolicy();
+			List<Policy> plist = (List<Policy>) api.getPolicy();
 			List<Policy> ps = new ArrayList<Policy>();
 
 			if (plist != null) {
@@ -914,7 +964,7 @@ public class PersistenceManager {
 	public List<Policy> getPolicyApiByPolicyCategory(String apiId, String policyCategory){
 		Api api = getApiById(apiId);
 		try {
-			List<Policy> plist = api.getPolicy();
+			List<Policy> plist = (List<Policy>) api.getPolicy();
 			List<Policy> ps = new ArrayList<Policy>();
 
 			if (plist != null) {
@@ -941,7 +991,7 @@ public class PersistenceManager {
 	public List<Policy> getPolicyApiByPolicyType(String apiId, String policyType){
 		Api api = getApiById(apiId);
 		try {
-			List<Policy> plist = api.getPolicy();
+			List<Policy> plist = (List<Policy>) api.getPolicy();
 			List<Policy> ps = new ArrayList<Policy>();
 
 			if (plist != null) {
@@ -1164,7 +1214,7 @@ public class PersistenceManager {
 		}
 		// get resource api and add policy
 		Resource r = getResourceApiByResourceId(apiId, resourceId);
-		List<Policy> plist = r.getPolicy();
+		List<Policy> plist = (List<Policy>) r.getPolicy();
 		if (plist != null) {
 			plist.add(p);
 		} else {
@@ -1195,11 +1245,12 @@ public class PersistenceManager {
 		// get resource api and add policy
 		Resource r = getResourceApiByResourceId(apiId, resourceId);
 		// retrieve policy
-		List<Policy> plist = r.getPolicy();
+		List<Policy> plist = (List<Policy>) r.getPolicy();
 		Policy oldp = null;
 		for (int i = 0; i < plist.size(); i++) {
 			if (plist.get(i).getId().equalsIgnoreCase(p.getId())) {
 				oldp = plist.get(i);
+				plist.remove(i);
 			}
 		}
 		if (oldp != null) {
@@ -1209,10 +1260,7 @@ public class PersistenceManager {
 							"Policy with this name already exists.");
 				}
 			}
-			oldp.setName(p.getName());
-			oldp.setNotes(p.getNotes());
-			oldp.setCategory(p.getCategory());
-			oldp.setType(p.getType());
+			plist.add(p);
 		}
 		// update api
 		return updateResourceApi(apiId, r);
@@ -1230,7 +1278,7 @@ public class PersistenceManager {
 		// retrieves resource
 		Resource r = getResourceApiByResourceId(apiId, resourceId);
 		// retrieves policy
-		List<Policy> plist = r.getPolicy();
+		List<Policy> plist = (List<Policy>) r.getPolicy();
 
 		if (plist != null) {
 			for (int i = 0; i < plist.size(); i++) {
@@ -1255,13 +1303,68 @@ public class PersistenceManager {
 	public Policy getPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId){
 		Resource resource = getResourceApiByResourceId(apiId, resourceId);
 		try {
-			List<Policy> plist = resource.getPolicy();
+			List<Policy> plist = (List<Policy>) resource.getPolicy();
 			Policy p = null;
 
 			if (plist != null) {
 				for (int i = 0; i < plist.size(); i++) {
 					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
 						p = plist.get(i);
+					}
+				}
+			}
+			return p;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieve spike arrest policy resource by policyId
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @return instance of {@link SpikeArrest} resource
+	 */
+	public Policy getSpikeArrestPolicyResourceApiByResourceId(String apiId, String resourceId, 
+			String policyId){
+		Resource resource = getResourceApiByResourceId(apiId, resourceId);
+		try {
+			List<Policy> plist = resource.getPolicy();
+			SpikeArrest p = null;
+
+			if (plist != null) {
+				for (int i = 0; i < plist.size(); i++) {
+					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+						p = (SpikeArrest) plist.get(i);
+					}
+				}
+			}
+			return p;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieve quota policy resource by policyId
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @return instance of {@link Quota} resource
+	 */
+	public Policy getQuotaPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId){
+		Resource resource = getResourceApiByResourceId(apiId, resourceId);
+		try {
+			List<Policy> plist = resource.getPolicy();
+			Quota p = null;
+
+			if (plist != null) {
+				for (int i = 0; i < plist.size(); i++) {
+					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+						p = (Quota) plist.get(i);
 					}
 				}
 			}
@@ -1323,14 +1426,16 @@ public class PersistenceManager {
 	 */
 	public boolean policyResourceApiExists(String apiId, String resourceId, String policyName){
 		Resource r = getResourceApiByResourceId(apiId, resourceId);
-		List<Policy> plist = r.getPolicy();
-		if(plist!=null && plist.size()>0){
-			for(int i=0;i<plist.size();i++){
-				if(plist.get(i).getName().equalsIgnoreCase(policyName)){
+
+		List<Policy> plist = (List<Policy>) r.getPolicy();
+		if (plist != null && plist.size() > 0) {
+			for (int i = 0; i < plist.size(); i++) {
+				if (plist.get(i).getName().equalsIgnoreCase(policyName)) {
 					return true;
 				}
 			}
 		}
+
 		return false;
 	}
 	

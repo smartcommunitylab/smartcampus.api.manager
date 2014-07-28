@@ -59,7 +59,8 @@ public class PolicyController {
 	 * 			status (OK and NOT FOUND) and a string message : 
 	 * 			"Policy data found" if it is ok, otherwise "There is no policy data for this api.".
 	 */
-	@RequestMapping(value = "/{apiId}/policy/{policyId}", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(value = "/{apiId}/policy/{policyId}", method = RequestMethod.GET, 
+			produces="application/json")
 	@ResponseBody
 	public ResultData getPolicyApiById(@PathVariable String apiId, @PathVariable String policyId){
 		logger.info("Policy by id.");

@@ -386,7 +386,7 @@ public class ApiController {
 	@RequestMapping(value = "/update/{apiId}/policy/spikeArrest", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
-		logger.info("Update api policy.");
+		logger.info("Update api policy spike arrest.");
 		try{
 			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
@@ -414,7 +414,7 @@ public class ApiController {
 	@RequestMapping(value = "/update/{apiId}/policy/quota", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Quota p) {
-		logger.info("Update api policy.");
+		logger.info("Update api policy quota.");
 		try{
 			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
