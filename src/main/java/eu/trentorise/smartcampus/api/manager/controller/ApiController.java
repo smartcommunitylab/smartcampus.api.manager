@@ -267,6 +267,8 @@ public class ApiController {
 	
 	/**
 	 * Rest service that updating an Api in database.
+	 * PROBLEM TODO: when trying to update Api data, and list policy is populated, it
+	 * returns a bad request error.
 	 * 
 	 * @param api : instance of {@link Api}
 	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
