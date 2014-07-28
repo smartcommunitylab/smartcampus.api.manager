@@ -1,0 +1,82 @@
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="row">
+            <h1>Resource</h1>
+        </div>
+        <div class="row">
+            <div class="panel panel-default panel-service">
+                <div class="panel-body">
+                    <ul class="list-unstyled">
+                        <li>
+                            <b>Name:</b>
+                            <span>{{resource.name}}</span>
+                        </li>
+                        <li>
+                            <b>Uri:</b>
+                            <span>{{resource.uri}}</span>
+                        </li>
+                        <li>
+                            <b>Verb:</b>
+                            <span>{{resource.verb}}</span>
+                        </li>
+                        <li>
+                            <b>Date of creation:</b>
+                            <span>{{resource.creationTime}}</span>
+                        </li>
+                        <li>
+                            <b>Date of updating:</b>
+                            <span>{{resource.updateTime}}</span>
+                        </li>
+					</ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<div ng-show="resource.policy" ng-repeat="p in resource.policy">
+	<h2>Policies:</h2>
+	<h4><b>{{p.name}}</b></h4>
+	
+	<button type="button" class="pull-right btn btn-default btn-sm" 
+		ng-click="deletePolicy(resource.id,p.id)">
+        <i class="fa fa-trash-o"></i>
+    </button>
+    <a href="edit/{{apiid}}/resource/{{resource.id}}/policy/{{p.id}}" class="pull-right btn btn-default btn-sm orgbtn">
+    	<i class="fa fa-edit"></i>
+    </a>
+
+	<br/>
+	<div class="table-responsive">
+		<table class="table table-striped table-condensed table-bordered">
+			<tbody>
+				<tr>
+					<td>Name</td>
+					<td>{{p.name}}</td>
+				</tr>
+				<tr>
+					<td>Notes</td>
+					<td>{{p.notes}}</td>
+				</tr>
+				<tr>
+					<td>Category</td>
+					<td>{{p.category}}</td>
+				</tr>
+				<tr>
+					<td>Type</td>
+					<td>{{p.type}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+	<div class="col-md-2 col-md-offset-8">
+		<a href="#" class="btn btn-info btn-block">Add</a>
+	</div>
+</div>

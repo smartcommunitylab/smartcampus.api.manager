@@ -82,6 +82,16 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/app/edit.html',
         	access: access.public
         }).
+        when('/show/:apiId/resource/:resourceId',{
+        	controller: 'showResourceCtrl',
+        	templateUrl: 'partials/resource/show.html',
+        	access: access.public
+        }).
+        when('/edit/:apiId/resource/:resourceId/policy/:policyId',{
+        	controller: 'editResourcePolicyCtrl',
+        	templateUrl: 'partials/policy/edit.html',
+        	access: access.public
+        }).
         otherwise({
             redirectTo: '/'
         });

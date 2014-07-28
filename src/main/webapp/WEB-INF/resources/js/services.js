@@ -46,7 +46,27 @@ services.factory('Resource', ['$resource',
             getResource:{
 				method: 'GET',
 				url: 'api/:apiId/resource/:resourceId'
-			}
+			},
+			getPolicyResource:{
+				method: 'GET',
+				url: 'api/:apiId/resource/:resourceId/policy/:policyId'
+			},
+			updatePolicyResource:{
+				method: 'PUT',
+				url: 'api/:apiId/resource/:resourceId/update/policy'
+            },
+            updateSpikeArrestResource:{
+				method: 'PUT',
+				url: 'api/:apiId/resource/:resourceId/update/policy/spikeArrest'
+            },
+            updateQuotaResource:{
+				method: 'PUT',
+				url: 'api/:apiId/resource/:resourceId/update/policy/quota'
+            },
+			removePolicy:{
+            	method: 'DELETE',
+            	url: 'api/:apiId/resource/:resourceId/delete/:policyId'
+            }
 		});
 	}
 ]);

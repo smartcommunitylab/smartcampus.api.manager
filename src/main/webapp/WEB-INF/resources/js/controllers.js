@@ -48,7 +48,7 @@ app.controller('showApiCtrl', ['$scope', '$routeParams', '$location', 'Api', 'Re
 				apiId : apiid,
 				resourceId : id
 			}, function(data){
-				$location.path('/apis');
+				$location.path('apis');
 			});
 		};
 		
@@ -57,7 +57,7 @@ app.controller('showApiCtrl', ['$scope', '$routeParams', '$location', 'Api', 'Re
 				apiId : apiid,
 				policyId : id
 			}, function(data){
-				$location.path('/apis');
+				$location.path('apis');
 			});
 		};
 		
@@ -66,7 +66,7 @@ app.controller('showApiCtrl', ['$scope', '$routeParams', '$location', 'Api', 'Re
 				apiId : apiid,
 				appId : id
 			}, function(data){
-				$location.path('/apis');
+				$location.path('apis');
 			});
 		};
 		
@@ -103,7 +103,7 @@ app.controller('addResourceCtrl', ['$scope', '$location', '$routeParams', 'Resou
 				},$scope.resource,
 					function (data) {
 						if(data.status == 200){
-							$location.path('/api/'+apiid);
+							$location.path('api/'+apiid);
 						}else{
 							$scope.errorMsg = data.message;
 						}
@@ -314,3 +314,88 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 	        };
         }
 ]);
+
+app.controller('showResourceCtrl', ['$scope', '$location', '$routeParams', 'Resource',
+          function($scope, $location, $routeParams, Resource){
+				var apiid = $routeParams.apiId;
+				var rd = $routeParams.resourceId;
+				$scope.apiid=apiid;
+				
+				Resource.getResource({
+					apiId: apiid,
+					resourceId: rd
+					},function(data){
+						$scope.resource = data.data;
+				});
+				
+				$scope.deletePolicy = function (rId, pId) {
+					Resource.removePolicy({
+						apiId : apiid,
+						resourceId: rId,
+						policyId : pId
+					}, function(data){
+						$location.path('api/'+apiid);
+					});
+				};
+			}
+]);
+
+app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 'Resource',
+            function($scope, $location, $routeParams, Resource){
+				var apiid = $routeParams.apiId;
+				var rid = $routeParams.resourceId;
+				var pid = $routeParams.policyId;
+				
+				Resource.getPolicyResource({
+					apiId : apiid,
+					resourceId: rid,
+					policyId : pid
+				}, function(data){
+					$scope.policy = data.data;
+				});
+		        
+		        $scope.submit = function () {
+					var type = $scope.policy.type;
+					if(type=='Spike Arrest'){
+						Resource.updateSpikeArrestResource({
+							apiId: apiid,
+			            	resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+								}
+						});
+					}
+					else if(type=='Quota'){
+						Resource.updateQuotaResource({
+							apiId: apiid,
+			            	resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+								}
+						});
+					}else{
+						 Resource.updatePolicyResource({
+				            	apiId: apiid,
+				            	resourceId: rid
+				            }, $scope.policy,
+				                function (data) {
+				            		if(data.status == 200){
+				            			$location.path('api/'+apiid);
+				            		}else{
+				            			$scope.errorMsg = data.message;
+				            		}
+				                });
+					}
+					
+		        };
+			}
+]);
+

@@ -1,5 +1,5 @@
 <div ng-repeat="r in api.resource">
-	<h4><b><a ng-href="#">{{r.name}}</a></b></h4>
+	<h4><b><a ng-href="show/{{api.id}}/resource/{{r.id}}">{{r.name}}</a></b></h4>
 	
 	<button type="button" class="pull-right btn btn-default btn-sm" ng-click="deleteResource(r.id)">
         <i class="fa fa-trash-o"></i>
@@ -19,6 +19,14 @@
 				<tr>
 					<td>Verb</td>
 					<td>{{r.verb}}</td>
+				</tr>
+				<tr ng-show="r.policy">
+					<td>Policies</td>
+					<td>
+						<div ng-repeat="p in r.policy">
+							{{p.name}}<br/>
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>
