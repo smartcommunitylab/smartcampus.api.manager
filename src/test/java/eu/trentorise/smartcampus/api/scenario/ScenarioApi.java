@@ -280,12 +280,15 @@ public class ScenarioApi {
 	public void updatePolicy1(){
 		log.info("Update policy 1 of api...");
 		
-		Policy p1 = new Policy();
+		Quota p1 = new Quota();
 		p1.setId("api-p1");
-		p1.setName("SpikeArrest-1");
-		p1.setNotes("Some notes bla bla bla bla with update");
+		p1.setName("Quota-1");
+		p1.setNotes("Some notes bla bla bla bla update");
 		p1.setCategory("quality");
-		p1.setType("policy");
+		p1.setType("Quota");
+		p1.setAllowCount(12);
+		p1.setInterval(4000);
+		p1.setTimeUnit("second");
 		apiManager.updatePolicyApi("api1", p1);
 		
 		log.info("Update policy 1 of api terminated.");
