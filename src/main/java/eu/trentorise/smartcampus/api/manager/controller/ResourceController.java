@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.Policy;
@@ -117,7 +117,7 @@ public class ResourceController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
-			@RequestParam Policy p){
+			@RequestBody Policy p){
 		logger.info("Add policy to resource.");
 		Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
 		if(r!=null){
@@ -142,7 +142,7 @@ public class ResourceController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
-			@RequestParam Policy p){
+			@RequestBody Policy p){
 		logger.info("Update policy to resource.");
 		Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
 		if(r!=null){
@@ -168,7 +168,7 @@ public class ResourceController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
-			@RequestParam SpikeArrest p){
+			@RequestBody SpikeArrest p){
 		logger.info("Update policy to resource.");
 		Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
 		if(r!=null){
@@ -194,7 +194,7 @@ public class ResourceController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
-			@RequestParam Quota p){
+			@RequestBody Quota p){
 		logger.info("Update policy to resource.");
 		Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
 		if(r!=null){
