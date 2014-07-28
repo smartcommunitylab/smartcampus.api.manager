@@ -142,17 +142,6 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 							$scope.errorMsg = data.message;
 						}
 				});
-			}else{
-				Policy.create({
-					apiId: apiid
-					},$scope.policy,
-					function (data) {
-						if(data.status == 200){
-							$location.path('api/'+apiid);
-						}else{
-							$scope.errorMsg = data.message;
-						}
-				});
 			}
 		};
      }
@@ -270,17 +259,6 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 								$scope.errorMsg = data.message;
 							}
 					});
-				}else{
-					Policy.update({
-						apiId: apiid
-						}, $scope.policy,
-						function (data) {
-							if(data.status == 200){
-								$location.path('api/'+apiid);
-							}else{
-								$scope.errorMsg = data.message;
-							}
-						});
 				}
 				
 	        };
@@ -334,7 +312,7 @@ app.controller('showResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 						resourceId: rId,
 						policyId : pId
 					}, function(data){
-						$location.path('api/'+apiid);
+						$location.path('/show/'+apiid+'/resource/'+rd);
 					});
 				};
 			}
@@ -364,7 +342,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$location.path('api/'+apiid);
+									$location.path('/show/'+apiid+'/resource/'+rid);
 								}else{
 									$scope.errorMsg = data.message;
 								}
@@ -377,25 +355,12 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$location.path('api/'+apiid);
+									$location.path('/show/'+apiid+'/resource/'+rid);
 								}else{
 									$scope.errorMsg = data.message;
 								}
 						});
-					}else{
-						 Resource.updatePolicyResource({
-				            	apiId: apiid,
-				            	resourceId: rid
-				            }, $scope.policy,
-				                function (data) {
-				            		if(data.status == 200){
-				            			$location.path('api/'+apiid);
-				            		}else{
-				            			$scope.errorMsg = data.message;
-				            		}
-				                });
 					}
-					
 		        };
 			}
 ]);
@@ -416,7 +381,7 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
         					},$scope.policy,
         					function (data) {
         						if(data.status == 200){
-        							$location.path('api/'+apiid);
+        							$location.path('/show/'+apiid+'/resource/'+rid);
         						}else{
         							$scope.errorMsg = data.message;
         						}
@@ -429,19 +394,7 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
         					},$scope.policy,
         					function (data) {
         						if(data.status == 200){
-        							$location.path('api/'+apiid);
-        						}else{
-        							$scope.errorMsg = data.message;
-        						}
-        				});
-        			}else{
-        				Resource.createPolicyResource({
-        					apiId: apiid,
-        					resourceId: rid
-        					},$scope.policy,
-        					function (data) {
-        						if(data.status == 200){
-        							$location.path('api/'+apiid);
+        							$location.path('/show/'+apiid+'/resource/'+rid);
         						}else{
         							$scope.errorMsg = data.message;
         						}

@@ -32,7 +32,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  */
 @Document
 //@JsonIgnoreProperties(ignoreUnknown = true)
-public class Policy implements Serializable {
+public abstract class Policy implements Serializable {
 
 	/**
 	 * Default serial version

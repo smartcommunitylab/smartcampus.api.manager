@@ -105,6 +105,7 @@ public class ResourceController {
 	
 	/**
 	 * Rest that add a policy to resource api.
+	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
@@ -113,7 +114,7 @@ public class ResourceController {
 	 * 			status (OK and NOT FOUND) and a string message : 
 	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api.".
 	 */
-	@RequestMapping(value = "/{apiId}/resource/{resourceId}/add/policy", method = RequestMethod.POST, 
+	/*@RequestMapping(value = "/{apiId}/resource/{resourceId}/add/policy", method = RequestMethod.POST, 
 			consumes="application/json")
 	@ResponseBody
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
@@ -127,7 +128,7 @@ public class ResourceController {
 					"Problem in saving policy to resource api.");
 		}
 	}
-	
+	*/
 	/**
 	 * Rest that add a spike arrest policy to resource api.
 	 * 
@@ -182,6 +183,7 @@ public class ResourceController {
 	
 	/**
 	 * Rest that update a policy to resource api.
+	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
@@ -190,7 +192,7 @@ public class ResourceController {
 	 * 			status (OK and NOT FOUND) and a string message : 
 	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api.".
 	 */
-	@RequestMapping(value = "/{apiId}/resource/{resourceId}/update/policy", method = RequestMethod.PUT, 
+	/*@RequestMapping(value = "/{apiId}/resource/{resourceId}/update/policy", method = RequestMethod.PUT, 
 			consumes="application/json")
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
@@ -204,7 +206,7 @@ public class ResourceController {
 					"Problem in updating policy to resource api.");
 		}
 	}
-	
+	*/
 	/**
 	 * Rest that update a spike arrest policy to resource api.
 	 * 

@@ -51,10 +51,6 @@ services.factory('Resource', ['$resource',
 				method: 'GET',
 				url: 'api/:apiId/resource/:resourceId/policy/:policyId'
 			},
-			createPolicyResource:{
-				method: 'POST',
-				url: 'api/:apiId/resource/:resourceId/add/policy'
-            },
             createSpikeArrestResource:{
 				method: 'POST',
 				url: 'api/:apiId/resource/:resourceId/add/policy/spikeArrest'
@@ -62,10 +58,6 @@ services.factory('Resource', ['$resource',
             createQuotaResource:{
 				method: 'POST',
 				url: 'api/:apiId/resource/:resourceId/add/policy/quota'
-            },
-			updatePolicyResource:{
-				method: 'PUT',
-				url: 'api/:apiId/resource/:resourceId/update/policy'
             },
             updateSpikeArrestResource:{
 				method: 'PUT',
@@ -109,10 +101,6 @@ services.factory('App', ['$resource',
 services.factory('Policy', ['$resource',
     function($resource){
 		return $resource('api/:apiId/policy/:policyId', {}, {
-			create:{
-				method: 'POST',
-				url: 'api/add/:apiId/policy'
-			},
 			createSpikeArrest:{
 				method: 'POST',
 				url: 'api/add/:apiId/policy/spikeArrest'
@@ -120,10 +108,6 @@ services.factory('Policy', ['$resource',
 			createQuota:{
 				method: 'POST',
 				url: 'api/add/:apiId/policy/quota'
-			},
-			update:{
-				method: 'POST',
-				url: 'api/update/:apiId/policy'
 			},
 			updateSpikeArrest:{
 				method: 'POST',

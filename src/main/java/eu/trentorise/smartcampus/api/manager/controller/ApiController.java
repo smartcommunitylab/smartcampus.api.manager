@@ -183,6 +183,7 @@ public class ApiController {
 	
 	/**
 	 * Rest service that updating a policy api.
+	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Policy}
@@ -191,7 +192,7 @@ public class ApiController {
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/add/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
+	/*@RequestMapping(value = "/add/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Policy p) {
 		logger.info("Update api policy.");
@@ -208,7 +209,7 @@ public class ApiController {
 		}
 		
 	}
-	
+	*/
 	/**
 	 * Rest service that updating a policy api.
 	 * 
@@ -349,6 +350,7 @@ public class ApiController {
 	
 	/**
 	 * Rest service that updating a policy api.
+	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Policy}
@@ -357,7 +359,7 @@ public class ApiController {
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/update/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
+	/*@RequestMapping(value = "/update/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Policy p) {
 		logger.info("Update api policy.");
@@ -374,7 +376,7 @@ public class ApiController {
 		}
 		
 	}
-	
+	*/
 	/**
 	 * Rest service that updating a policy api.
 	 * 
