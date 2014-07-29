@@ -1213,6 +1213,8 @@ public class PersistenceManager {
 	 */
 	/**
 	 * Add a policy resource in an api.
+	 * It throws java.lang.IllegalArgumentException if some required parameters are not
+	 * added and if a policy with same name already exists.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
@@ -1250,6 +1252,8 @@ public class PersistenceManager {
 	
 	/**
 	 * Update a policy resource in an api.
+	 * It throws java.lang.IllegalArgumentException if some required parameters
+	 * are missing.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
@@ -1399,6 +1403,8 @@ public class PersistenceManager {
 	 * Check parameter value for policy.
 	 * Spike Arrest : name and rate are required.
 	 * Quota : name, interval, timeunit and allow count are required.
+	 * It throws java.lang.IllegalArgumentException if some required policy 
+	 * parameters are missing.
 	 * 
 	 * @param p : instance of {@link Policy}
 	 */

@@ -136,8 +136,9 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param p : instance of {@link SpikeArrest}
 	 * @return instance of {@link ResultData} with resource data having the new policy, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api.".
+	 * 			status (OK, BAD REQUEST and NOT FOUND) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api."
+	 * 			or if exception is thrown, the error message.
 	 */
 	@RequestMapping(value = "/{apiId}/resource/{resourceId}/add/policy/spikeArrest", 
 			method = RequestMethod.POST, 
@@ -146,12 +147,18 @@ public class ResourceController {
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody SpikeArrest p){
 		logger.info("Add policy to resource.");
-		Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
-		if(r!=null){
-			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"Problem in saving policy to resource api.");
+		try {
+			Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
+			if (r != null) {
+				return new ResultData(r, HttpServletResponse.SC_OK,
+						"Resource policy added successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"Problem in saving policy to resource api.");
+			}
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
+					i.getMessage());
 		}
 	}
 	
@@ -162,8 +169,9 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param p : instance of {@link Quota}
 	 * @return instance of {@link ResultData} with resource data having the new policy, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api.".
+	 * 			status (OK, BAD REQUEST and NOT FOUND) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api."
+	 * 			or if exception is thrown, the error message.
 	 */
 	@RequestMapping(value = "/{apiId}/resource/{resourceId}/add/policy/quota", 
 			method = RequestMethod.POST, 
@@ -172,12 +180,18 @@ public class ResourceController {
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody Quota p){
 		logger.info("Add policy to resource.");
-		Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
-		if(r!=null){
-			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"Problem in saving policy to resource api.");
+		try {
+			Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
+			if (r != null) {
+				return new ResultData(r, HttpServletResponse.SC_OK,
+						"Resource policy added successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"Problem in saving policy to resource api.");
+			}
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
+					i.getMessage());
 		}
 	}
 	
@@ -214,8 +228,9 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param p : instance of {@link SpikeArrest}
 	 * @return instance of {@link ResultData} with resource data having the updated policy, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api.".
+	 * 			status (OK, BAD REQUEST and NOT FOUND) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api."
+	 * 			or if exception is thrown, the error message.
 	 */
 	@RequestMapping(value = "/{apiId}/resource/{resourceId}/update/policy/spikeArrest", 
 			method = RequestMethod.PUT, 
@@ -224,12 +239,18 @@ public class ResourceController {
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody SpikeArrest p){
 		logger.info("Update policy to resource.");
-		Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
-		if(r!=null){
-			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"Problem in updating policy to resource api.");
+		try {
+			Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
+			if (r != null) {
+				return new ResultData(r, HttpServletResponse.SC_OK,
+						"Resource policy updated successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"Problem in updating policy to resource api.");
+			}
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
+					i.getMessage());
 		}
 	}
 	
@@ -240,8 +261,9 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param p : instance of {@link Quota}
 	 * @return instance of {@link ResultData} with resource data having the updated policy, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api.".
+	 * 			status (OK, BAD REQUEST and NOT FOUND) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api."
+	 * 			or if exception is thrown, the error message.
 	 */
 	@RequestMapping(value = "/{apiId}/resource/{resourceId}/update/policy/quota", 
 			method = RequestMethod.PUT, 
@@ -251,21 +273,27 @@ public class ResourceController {
 			@RequestBody Quota p){
 		logger.info("Update policy to resource.");
 		Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
-		if(r!=null){
-			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"Problem in updating policy to resource api.");
+		try {
+			if (r != null) {
+				return new ResultData(r, HttpServletResponse.SC_OK,
+						"Resource policy updated successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"Problem in updating policy to resource api.");
+			}
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
+					i.getMessage());
 		}
 	}
 	
 	/**
-	 * Rest that update a policy to resource api.
+	 * Rest that deletes a policy to resource api.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
 	 * @param policyId : String
-	 * @return instance of {@link ResultData} with resource data having the updated policy, 
+	 * @return instance of {@link ResultData} with resource data without deleted policy, 
 	 * 			status (OK and NOT FOUND) and a string message : 
 	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api.".
 	 */
@@ -277,7 +305,7 @@ public class ResourceController {
 		logger.info("Delete policy from resource.");
 		pmanager.deletePolicyResourceApi(apiId, resourceId, policyId);
 		
-		return new ResultData(null, HttpServletResponse.SC_OK, "Resource data found");
+		return new ResultData(null, HttpServletResponse.SC_OK, "Resource delete successfully");
 		
 	}
 
