@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.validator.routines.UrlValidator;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,6 +36,7 @@ import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
 import eu.trentorise.smartcampus.api.manager.repository.ResourceRepository;
+import eu.trentorise.smartcampus.api.manager.util.UriValidation;
 
 /**
  * Persistence manager for all entity.
@@ -598,8 +598,12 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
 		}
 		
-		UrlValidator urlValidator = new UrlValidator();
+		/*UrlValidator urlValidator = new UrlValidator();
 		if(!urlValidator.isValid(r.getUri())){
+			throw new IllegalArgumentException("Uri is not valid.");
+		}*/
+		UriValidation uriValidator = new UriValidation();
+		if(!uriValidator.validate(r.getUri())){
 			throw new IllegalArgumentException("Uri is not valid.");
 		}
 		
@@ -660,8 +664,13 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
 		}
 		
-		UrlValidator urlValidator = new UrlValidator();
+		
+		/*UrlValidator urlValidator = new UrlValidator();
 		if(!urlValidator.isValid(r.getUri())){
+			throw new IllegalArgumentException("Uri is not valid.");
+		}*/
+		UriValidation uriValidator = new UriValidation();
+		if(!uriValidator.validate(r.getUri())){
 			throw new IllegalArgumentException("Uri is not valid.");
 		}
 		
