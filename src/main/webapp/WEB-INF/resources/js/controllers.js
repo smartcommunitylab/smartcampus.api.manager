@@ -15,8 +15,8 @@ app.controller('breadCtrl', [
     function () {}
 ]);
 
-app.controller('apisCtrl', ['$scope', '$location', 'Api',
-    function($scope, $location, Api){
+app.controller('apisCtrl', ['$scope', '$location', '$route', 'Api',
+    function($scope, $location, $route, Api){
     	Api.list({
     		ownerId : '1'
     	}, function(data){
@@ -27,14 +27,15 @@ app.controller('apisCtrl', ['$scope', '$location', 'Api',
 			Api.remove({
 				apiId : id
 			}, function(data){
-				$location.path('/');
+				$route.reload();
 			});
 		};
     }
 ]);
 
-app.controller('showApiCtrl', ['$scope', '$routeParams', '$location', 'Api', 'Resource', 'Policy', 'App',
-    function($scope, $routeParams, $location, Api, Resource, Policy, App){
+app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 'Api', 'Resource', 
+                               'Policy', 'App',
+    function($scope, $route, $routeParams, $location, Api, Resource, Policy, App){
 		var apiid = $routeParams.apiId;
 		
 		Api.getApi({
@@ -48,7 +49,7 @@ app.controller('showApiCtrl', ['$scope', '$routeParams', '$location', 'Api', 'Re
 				apiId : apiid,
 				resourceId : id
 			}, function(data){
-				$location.path('apis');
+				$route.reload();
 			});
 		};
 		
@@ -57,7 +58,7 @@ app.controller('showApiCtrl', ['$scope', '$routeParams', '$location', 'Api', 'Re
 				apiId : apiid,
 				policyId : id
 			}, function(data){
-				$location.path('apis');
+				$route.reload();
 			});
 		};
 		
@@ -66,7 +67,7 @@ app.controller('showApiCtrl', ['$scope', '$routeParams', '$location', 'Api', 'Re
 				apiId : apiid,
 				appId : id
 			}, function(data){
-				$location.path('apis');
+				$route.reload();
 			});
 		};
 		
@@ -183,7 +184,8 @@ app.controller('editApiCtrl', ['$scope', '$location', '$routeParams', 'Api',
         	Api.update($scope.api,
         			function (data) {
         				if(data.status == 200){
-                        	$location.path('apis');
+                        	//$location.path('apis');
+        					$scope.msg = data.message;
                         }else{
                         	$scope.errorMsg = data.message;
                         }
@@ -207,12 +209,14 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 			});
 			
 			$scope.submit = function () {
+				$scope.resource.policy = null;
 	            Resource.update({
 	            	apiId: apiid
 	            }, $scope.resource,
 	                function (data) {
 	            		if(data.status == 200){
-	            			$location.path('api/'+apiid);
+	            			//$location.path('api/'+apiid);
+	            			$scope.msg = data.message;
 	            		}else{
 	            			$scope.errorMsg = data.message;
 	            		}
@@ -242,7 +246,8 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 						},$scope.policy,
 						function (data) {
 							if(data.status == 200){
-								$location.path('api/'+apiid);
+								//$location.path('api/'+apiid);
+								$scope.msg = data.message;
 							}else{
 								$scope.errorMsg = data.message;
 							}
@@ -254,7 +259,8 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 						},$scope.policy,
 						function (data) {
 							if(data.status == 200){
-								$location.path('api/'+apiid);
+								//$location.path('api/'+apiid);
+								$scope.msg = data.message;
 							}else{
 								$scope.errorMsg = data.message;
 							}
@@ -284,7 +290,8 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 	            }, $scope.app,
 	                function (data) {
 	            		if(data.status == 200){
-	            			$location.path('api/'+apiid);
+	            			//$location.path('api/'+apiid);
+	            			$scope.msg = data.message;
 	            		}else{
 	            			$scope.errorMsg = data.message;
 	            		}
@@ -293,8 +300,8 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', 'App',
         }
 ]);
 
-app.controller('showResourceCtrl', ['$scope', '$location', '$routeParams', 'Resource',
-          function($scope, $location, $routeParams, Resource){
+app.controller('showResourceCtrl', ['$scope', '$location', '$route', '$routeParams', 'Resource',
+          function($scope, $location, $route, $routeParams, Resource){
 				var apiid = $routeParams.apiId;
 				var rd = $routeParams.resourceId;
 				$scope.apiid=apiid;
@@ -312,7 +319,7 @@ app.controller('showResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 						resourceId: rId,
 						policyId : pId
 					}, function(data){
-						$location.path('/show/'+apiid+'/resource/'+rd);
+						$route.reload();
 					});
 				};
 			}
@@ -342,7 +349,8 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$location.path('/show/'+apiid+'/resource/'+rid);
+									//$location.path('/show/'+apiid+'/resource/'+rid);
+									$scope.msg = data.message;
 								}else{
 									$scope.errorMsg = data.message;
 								}
@@ -355,7 +363,8 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$location.path('/show/'+apiid+'/resource/'+rid);
+									//$location.path('/show/'+apiid+'/resource/'+rid);
+									$scope.msg = data.message;
 								}else{
 									$scope.errorMsg = data.message;
 								}
@@ -401,6 +410,10 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
         				});
         			}
         		};
+        		
+        		$scope.closeAlert = function(index) {
+        		    $scope.alerts.splice(index, 1);
+        		  };
 			}
 ]);
 

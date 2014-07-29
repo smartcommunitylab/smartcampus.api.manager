@@ -296,6 +296,9 @@ public class ApiController {
 	
 	/**
 	 * Rest service that updating a resource api.
+	 * Policy parameter must be set to null, because this method
+	 * does not update policy, only uri and verb parameters, otherwise
+	 * it returns BAD REQUEST. 
 	 * 
 	 * @param apiId : String
 	 * @param resource : instance of {@link Resource}

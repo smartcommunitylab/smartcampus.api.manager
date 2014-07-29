@@ -677,7 +677,6 @@ public class PersistenceManager {
 			oldr.setName(r.getName());
 			oldr.setUri(r.getUri());
 			oldr.setVerb(r.getVerb());
-			oldr.setPolicy(r.getPolicy());
 			Date today = new Date();
 			oldr.setUpdateTime(today.toString());
 		}
