@@ -290,7 +290,6 @@ public class ApiTest {
 		//policy parameter
 		p2.setName("SpikeArrest-1");
 		p2.setNotes("Spike arrest 1 notes");
-		p2.setCategory("quality");
 		p2.setType("policy");
 		//spike arrest parameter
 		p2.setRate("10pm");
@@ -317,7 +316,6 @@ public class ApiTest {
 		p3.setId("p3-test");
 		p3.setName("Quota-1");
 		p3.setNotes("Quota 1 notes");
-		p3.setCategory("quality");
 		p3.setType("policy");
 		// spike arrest parameter
 		p3.setInterval(1);

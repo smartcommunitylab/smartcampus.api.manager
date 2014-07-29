@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.Constants;
+import eu.trentorise.smartcampus.api.manager.Constants.POLICY_CATEGORY;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
@@ -387,6 +388,9 @@ public class PersistenceManager {
 		if(p.getId()==null || p.getId().equalsIgnoreCase("")){
 			p.setId(generateId());
 		}
+		if(p instanceof SpikeArrest || p instanceof Quota){
+			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
+		}
 		return policyrepository.save(p);
 	}
 	*/
@@ -398,6 +402,9 @@ public class PersistenceManager {
 	 * @return updated instance of {@link Policy}
 	 */
 	/*public Policy updatePolicy(Policy p){
+	 	if(p instanceof SpikeArrest || p instanceof Quota){
+			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
+		}
 		return addPolicy(p);
 	}
 	*/
@@ -677,6 +684,9 @@ public class PersistenceManager {
 			oldr.setName(r.getName());
 			oldr.setUri(r.getUri());
 			oldr.setVerb(r.getVerb());
+			if(r.getPolicy()!=null){
+				oldr.setPolicy(r.getPolicy());
+			}
 			Date today = new Date();
 			oldr.setUpdateTime(today.toString());
 		}
@@ -785,6 +795,9 @@ public class PersistenceManager {
 		if(policyApiExists(apiId, p.getName())){
 			throw new IllegalArgumentException("Policy with this name already exists.");
 		}
+		if(p instanceof SpikeArrest || p instanceof Quota){
+			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
+		}
 		// get api and add policy
 		Api api = getApiById(apiId);
 		List<Policy> plist = (List<Policy>) api.getPolicy();
@@ -822,6 +835,13 @@ public class PersistenceManager {
 		}
 		isPolicyInstanceOf(p);
 		//retrieve api searching by id
+		//check category
+		if(p instanceof SpikeArrest || p instanceof Quota){
+			if(!p.getCategory().equalsIgnoreCase(POLICY_CATEGORY.QualityOfService.toString())){
+				p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
+				//throw new IllegalArgumentException("Policy category is wrong.");
+			}
+		}
 		Api api = getApiById(apiId);
 		//retrieve policy
 		List<Policy> plist = (List<Policy>) api.getPolicy();
@@ -1234,6 +1254,9 @@ public class PersistenceManager {
 			throw new IllegalArgumentException(
 					"Policy with this name already exists.");
 		}
+		if(p instanceof SpikeArrest || p instanceof Quota){
+			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
+		}
 		// get resource api and add policy
 		Resource r = getResourceApiByResourceId(apiId, resourceId);
 		List<Policy> plist = (List<Policy>) r.getPolicy();
@@ -1266,6 +1289,15 @@ public class PersistenceManager {
 					"Policy name and type are required.");
 		}
 		isPolicyInstanceOf(p);
+		// check category
+		if (p instanceof SpikeArrest || p instanceof Quota) {
+			if (!p.getCategory().equalsIgnoreCase(
+					POLICY_CATEGORY.QualityOfService.toString())) {
+				p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
+				// throw new
+				// IllegalArgumentException("Policy category is wrong.");
+			}
+		}
 		// get resource api and add policy
 		Resource r = getResourceApiByResourceId(apiId, resourceId);
 		// retrieve policy
@@ -1279,6 +1311,7 @@ public class PersistenceManager {
 		}
 		if (oldp != null) {
 			if (!oldp.getName().equalsIgnoreCase(p.getName())) {
+				System.out.println("Different name");
 				if (policyResourceApiExists(apiId,resourceId, p.getName())) {
 					throw new IllegalArgumentException(
 							"Policy with this name already exists.");

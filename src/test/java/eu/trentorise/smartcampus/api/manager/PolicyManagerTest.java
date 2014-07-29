@@ -71,7 +71,6 @@ public class PolicyManagerTest {
 		Policy p1 = new Policy();
 		p1.setId("sa1");
 		p1.setName("SpikeArrest-junit-test");
-		p1.setCategory("quality");
 		p1.setType("t1");
 		apiManager.addPolicy(p1);
 		
@@ -79,7 +78,6 @@ public class PolicyManagerTest {
 		Policy p2 = new Policy();
 		p2.setId("sa2");
 		p2.setName("Quota-junit-test");
-		p2.setCategory("quality");
 		p2.setType("q1");
 		apiManager.addPolicy(p2);
 		
@@ -109,7 +107,6 @@ public class PolicyManagerTest {
 		Policy p1 = new Policy();
 		p1.setId("sa1");
 		p1.setName("SpikeArrest-junit-test_update");
-		p1.setCategory("quality");
 		p1.setType("t1");
 		Policy np = apiManager.updatePolicy(p1);
 		assertNotNull("Error in saving a new Policy..",np);

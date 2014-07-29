@@ -120,7 +120,6 @@ public class ScenarioApi {
 		p1.setId("resource-p1");
 		p1.setName("SpikeArrest-resource1");
 		p1.setNotes("Some notes bla bla bla bla");
-		p1.setCategory("quality");
 		p1.setType("Spike Arrest");
 		p1.setRate("12ps");
 		
@@ -139,7 +138,6 @@ public class ScenarioApi {
 		p1.setId("resource-p1");
 		p1.setName("SpikeArrest-resource1");
 		p1.setNotes("Some notes bla bla bla bla update");
-		p1.setCategory("quality");
 		p1.setType("policy");
 		p1.setRate("12ps");
 		
@@ -221,7 +219,6 @@ public class ScenarioApi {
 		p1.setId("api-p1");
 		p1.setName("Quota-1");
 		p1.setNotes("Some notes bla bla bla bla");
-		p1.setCategory("quality");
 		p1.setType("Quota");
 		p1.setAllowCount(12);
 		p1.setInterval(2000);
@@ -232,7 +229,6 @@ public class ScenarioApi {
 		//policy parameter
 		p3.setName("SpikeArrest-3");
 		p3.setNotes("Some notes bla bla bla bla");
-		p3.setCategory("quality");
 		p3.setType("Spike Arrest");
 		//spike arrest parameter
 		p3.setRate("10pm");
@@ -284,7 +280,6 @@ public class ScenarioApi {
 		p1.setId("api-p1");
 		p1.setName("Quota-1");
 		p1.setNotes("Some notes bla bla bla bla update");
-		p1.setCategory("quality");
 		p1.setType("Quota");
 		p1.setAllowCount(12);
 		p1.setInterval(4000);
