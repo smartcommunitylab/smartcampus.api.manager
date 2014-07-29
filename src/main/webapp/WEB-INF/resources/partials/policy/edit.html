@@ -19,7 +19,7 @@
 			</div>
 			<div class="form-group" show-validation>
 				<label for="policytype">Type</label> 
-				<select id="policytype" class="form-control" ng-model="policy.type" required>
+				<select ng-disabled="policy.id != null" id="policytype" class="form-control" ng-model="policy.type" required>
 					<option>Spike Arrest</option>
 					<option>Quota</option>
 				</select>
@@ -30,8 +30,8 @@
 				<div class="form-group">
 					<label for="sarate">Rate</label> 
 					<input type="text" class="form-control" 
-						placeholder="<Integer value>pm or <Integer value>ps" id="sarate" 
-						ng-model="policy.rate">
+						placeholder="<Integer value>pm or <Integer value>ps ex 22ps or 22pm" id="sarate" 
+						ng-model="policy.rate" >
 				</div>
 
 			</div>
@@ -41,8 +41,7 @@
 				<div class="form-group" >
 					<label for="qinterval">Interval</label> 
 					<input type="text" class="form-control" id="qinterval" placeholder="Integer value ex. 12"
-							ng-model="policy.interval" integer 
-							>
+							ng-model="policy.interval" integer >
 					</div>
 					<div class="form-group" >
 						<label for="qtimeunit">Time Unit</label> 
@@ -57,8 +56,7 @@
 					<div class="form-group">
 						<label for="qallowcount">Allow Count</label> 
 						<input type="text" class="form-control" id="qalllowcount" 
-						placeholder="Integer value ex. 2000" ng-model="policy.allowCount" integer
-						>
+						placeholder="Integer value ex. 2000" ng-model="policy.allowCount" integer >
 					</div>
 			</div>
 			
