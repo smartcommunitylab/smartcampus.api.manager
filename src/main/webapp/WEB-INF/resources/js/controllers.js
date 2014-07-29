@@ -222,6 +222,15 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 	            		}
 	                });
 	        };
+	        
+	        $scope.remove = function () {
+				Resource.remove({
+					apiId : apiid,
+					resourceId : rid
+				}, function(data){
+					$location.path('api/'+apiid);
+				});
+			};
 		}
 ]);
 
@@ -268,6 +277,15 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 				}
 				
 	        };
+			
+			$scope.remove = function () {
+				Policy.remove({
+					apiId : apiid,
+					policyId : pid
+				}, function(data){
+					$location.path('api/'+apiid);
+				});
+			};
         }
 ]);
 
@@ -297,6 +315,15 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 	            		}
 	                });
 	        };
+	        
+			$scope.remove = function () {
+				App.remove({
+					apiId : apiid,
+					appId : aid
+				}, function(data){
+					$location.path('api/'+apiid);
+				});
+			};
         }
 ]);
 
@@ -371,6 +398,16 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 						});
 					}
 		        };
+		        
+		        $scope.remove = function () {
+					Resource.removePolicy({
+						apiId : apiid,
+						resourceId: rid,
+						policyId : pid
+					}, function(data){
+						$location.path('/show/'+apiid+'/resource/'+rid);
+					});
+				};
 			}
 ]);
 
