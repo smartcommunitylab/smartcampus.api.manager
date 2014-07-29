@@ -53,7 +53,9 @@
   <!-- ng-hide="location === '/'" -->
     <ol ng-controller="breadCtrl" ng-hide="loc[0] === ''" class="animated fadeIn breadcrumb">
       <li ng-repeat="location in loc">
-        <a ng-href="{{loc.slice(0,$index+1).join('/')}}">{{locTitles[$index] ? locTitles[$index] : location}}</a>
+        <!--<a ng-href="{{loc.slice(0,$index+1).join('/')}}">-->
+        	{{locTitles[$index] ? locTitles[$index] : location}}
+        <!--</a>-->
       </li>
     </ol>
   </div>
