@@ -355,7 +355,7 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', '$timeout'
 			$timeout(function () {
 				$scope.errorMsg = null;
 				$scope.msg = null;
-		    }, 10000);
+		    }, 7000);
         }
 ]);
 
