@@ -143,6 +143,12 @@ public class PersistenceManager {
 		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
 			api.setId(generateId());
 		}
+		//check api basepath
+		List<Api> savedApi = getApiByBasePath(api.getBasePath());
+		if(savedApi!=null && savedApi.size()>0){
+			throw new IllegalArgumentException("This base path is already saved. " +
+					"For adding an api, change it");
+		}
 		Date today = new Date();
 		api.setCreationTime(today.toString());
 		return apirepository.save(api);
