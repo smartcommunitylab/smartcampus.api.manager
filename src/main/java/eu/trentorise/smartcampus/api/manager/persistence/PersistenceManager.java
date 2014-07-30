@@ -107,6 +107,16 @@ public class PersistenceManager {
 	}
 	
 	/**
+	 * Retrieves Api data searching by name.
+	 * 
+	 * @param name : String
+	 * @return instance of {@link Api}
+	 */
+	public List<Api> getApiByName(String name){
+		return (List<Api>) apirepository.findByName(name);
+	}
+	
+	/**
 	 * Retries Api data searching by base path.
 	 * 
 	 * @param basePath : String
@@ -143,6 +153,12 @@ public class PersistenceManager {
 		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
 			api.setId(generateId());
 		}
+		//check name
+		List<Api> savedApiName = getApiByName(api.getName());
+		if(savedApiName!=null && savedApiName.size()>0){
+			throw new IllegalArgumentException("This name is already saved. " +
+					"For adding an api, change it");
+		}
 		//check api basepath
 		List<Api> savedApi = getApiByBasePath(api.getBasePath());
 		if(savedApi!=null && savedApi.size()>0){
@@ -170,6 +186,14 @@ public class PersistenceManager {
 		}
 		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
 			throw new IllegalArgumentException("Api name, base path and owner id are required.");
+		}
+		//check api basepath
+		List<Api> savedApi = getApiByBasePath(api.getBasePath());
+		if(savedApi!=null && savedApi.size()>0){
+			if(!savedApi.get(0).getId().equalsIgnoreCase(api.getId())){
+				throw new IllegalArgumentException("This base path is already " +
+						"saved for a different api. For adding an api, change it");
+			}
 		}
 		Date today = new Date();
 		api.setUpdateTime(today.toString());
