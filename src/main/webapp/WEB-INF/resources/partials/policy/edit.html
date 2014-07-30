@@ -13,10 +13,6 @@
                 <label for="policynotes">Notes</label>
                 <textarea  id="policyNotes" class="form-control" ng-model="policy.notes" />
             </div>
-			<div class="form-group" ng-show="title==='Edit'">
-				<label for="policycategory">Category</label> 
-				<input disabled="true" type="text" class="form-control" id="policycategory" ng-model="policy.category">
-			</div>
 			<div class="form-group" show-validation>
 				<label for="policytype">Type</label> 
 				<select ng-disabled="policy.id != null" id="policytype" class="form-control" ng-model="policy.type" required>
