@@ -173,8 +173,8 @@ app.controller('addAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 ]);
 
 
-app.controller('editApiCtrl', ['$scope', '$location', '$routeParams', 'Api',
-     function($scope, $location, $routeParams, Api){
+app.controller('editApiCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'Api',
+     function($scope, $location, $routeParams, $timeout, Api){
      	$scope.title = 'Edit';
      	var apiid = $routeParams.apiId;
      	
@@ -185,7 +185,6 @@ app.controller('editApiCtrl', ['$scope', '$location', '$routeParams', 'Api',
 		});
 
         $scope.submit = function () {
-        	$scope.date = new Date();
         	Api.update($scope.api,
         			function (data) {
         				if(data.status == 200){
@@ -196,12 +195,17 @@ app.controller('editApiCtrl', ['$scope', '$location', '$routeParams', 'Api',
                         }
                      });
         };
+        
+        $timeout(function () {
+			$scope.errorMsg = null;
+			$scope.msg = null;
+	    }, 10000);
 
      }
 ]);
 
-app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', 'Resource',
-		function($scope, $location, $routeParams, Resource){
+app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'Resource',
+		function($scope, $location, $routeParams, $timeout, Resource){
 			$scope.title = 'Edit';
 			var apiid = $routeParams.apiId;
 			var rid = $routeParams.resourceId;
@@ -214,7 +218,6 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 			});
 			
 			$scope.submit = function () {
-				$scope.date = new Date();
 				$scope.resource.policy = null;
 	            Resource.update({
 	            	apiId: apiid
@@ -239,11 +242,16 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 					$location.path('api/'+apiid);
 				});
 			};
+			
+			$timeout(function () {
+				$scope.errorMsg = null;
+				$scope.msg = null;
+		    }, 10000);
 		}
 ]);
 
-app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy',
-        function($scope, $location, $routeParams, Policy){
+app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'Policy',
+        function($scope, $location, $routeParams, $timeout, Policy){
 			$scope.title = 'Edit';
 			var apiid = $routeParams.apiId;
 			var pid = $routeParams.policyId;
@@ -256,7 +264,6 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 			});
 			
 			$scope.submit = function () {
-				$scope.date = new Date();
 				var type = $scope.policy.type;
 				if(type=='Spike Arrest'){
 					Policy.updateSpikeArrest({
@@ -299,11 +306,16 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 					$location.path('api/'+apiid);
 				});
 			};
+			
+			$timeout(function () {
+				$scope.errorMsg = null;
+				$scope.msg = null;
+		    }, 10000);
         }
 ]);
 
-app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', 'App',
-        function($scope, $location, $routeParams, App){
+app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'App',
+        function($scope, $location, $routeParams, $timeout, App){
 			$scope.title = 'Edit';
 			var apiid = $routeParams.apiId;
 			var aid = $routeParams.appId;
@@ -316,8 +328,7 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 			});
 			
 			$scope.submit = function () {
-				$scope.date = new Date();
-	            App.update({
+				App.update({
 	            	apiId: apiid
 	            }, $scope.app,
  	                function(data) {
@@ -340,6 +351,11 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 					$location.path('api/'+apiid);
 				});
 			};
+			
+			$timeout(function () {
+				$scope.errorMsg = null;
+				$scope.msg = null;
+		    }, 10000);
         }
 ]);
 
@@ -368,8 +384,9 @@ app.controller('showResourceCtrl', ['$scope', '$location', '$route', '$routePara
 			}
 ]);
 
-app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 'Resource',
-            function($scope, $location, $routeParams, Resource){
+app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams', '$timeout', 
+                                          'Resource',
+            function($scope, $location, $routeParams, $timeout, Resource){
 				$scope.title = 'Edit';			
 				var apiid = $routeParams.apiId;
 				var rid = $routeParams.resourceId;
@@ -384,8 +401,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 				});
 		        
 		        $scope.submit = function () {
-		        	$scope.date = new Date();
-					var type = $scope.policy.type;
+		        	var type = $scope.policy.type;
 					if(type=='Spike Arrest'){
 						Resource.updateSpikeArrestResource({
 							apiId: apiid,
@@ -429,6 +445,11 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 						$location.path('/show/'+apiid+'/resource/'+rid);
 					});
 				};
+				
+				$timeout(function () {
+					$scope.errorMsg = null;
+					$scope.msg = null;
+			    }, 10000);
 			}
 ]);
 
