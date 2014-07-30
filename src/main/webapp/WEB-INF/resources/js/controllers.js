@@ -489,10 +489,6 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
         				});
         			}
         		};
-        		
-        		$scope.closeAlert = function(index) {
-        		    $scope.alerts.splice(index, 1);
-        		  };
 			}
 ]);
 
