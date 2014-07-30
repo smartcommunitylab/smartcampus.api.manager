@@ -71,6 +71,10 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 			});
 		};
 		
+		$scope.setAppId = function(id){
+			$scope.appId = id;
+		};
+		
 	}
 ]);
 
@@ -181,6 +185,7 @@ app.controller('editApiCtrl', ['$scope', '$location', '$routeParams', 'Api',
 		});
 
         $scope.submit = function () {
+        	$scope.date = new Date();
         	Api.update($scope.api,
         			function (data) {
         				if(data.status == 200){
@@ -209,6 +214,7 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 			});
 			
 			$scope.submit = function () {
+				$scope.date = new Date();
 				$scope.resource.policy = null;
 	            Resource.update({
 	            	apiId: apiid
@@ -217,8 +223,10 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', 'Reso
 	            		if(data.status == 200){
 	            			//$location.path('api/'+apiid);
 	            			$scope.msg = data.message;
+	            			$scope.errorMsg = null;
 	            		}else{
 	            			$scope.errorMsg = data.message;
+	            			$scope.msg = null;
 	            		}
 	                });
 	        };
@@ -248,6 +256,7 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 			});
 			
 			$scope.submit = function () {
+				$scope.date = new Date();
 				var type = $scope.policy.type;
 				if(type=='Spike Arrest'){
 					Policy.updateSpikeArrest({
@@ -255,11 +264,13 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 						},$scope.policy,
 						function (data) {
 							if(data.status == 200){
-								//$location.path('api/'+apiid);
-								$scope.msg = data.message;
-							}else{
-								$scope.errorMsg = data.message;
-							}
+		            			//$location.path('api/'+apiid);
+		            			$scope.msg = data.message;
+		            			$scope.errorMsg = null;
+		            		}else{
+		            			$scope.errorMsg = data.message;
+		            			$scope.msg = null;
+		            		}
 					});
 				}
 				else if(type=='Quota'){
@@ -268,11 +279,13 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy
 						},$scope.policy,
 						function (data) {
 							if(data.status == 200){
-								//$location.path('api/'+apiid);
-								$scope.msg = data.message;
-							}else{
-								$scope.errorMsg = data.message;
-							}
+		            			//$location.path('api/'+apiid);
+		            			$scope.msg = data.message;
+		            			$scope.errorMsg = null;
+		            		}else{
+		            			$scope.errorMsg = data.message;
+		            			$scope.msg = null;
+		            		}
 					});
 				}
 				
@@ -303,17 +316,20 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 			});
 			
 			$scope.submit = function () {
+				$scope.date = new Date();
 	            App.update({
 	            	apiId: apiid
 	            }, $scope.app,
-	                function (data) {
-	            		if(data.status == 200){
-	            			//$location.path('api/'+apiid);
-	            			$scope.msg = data.message;
-	            		}else{
-	            			$scope.errorMsg = data.message;
-	            		}
-	                });
+ 	                function(data) {
+						if (data.status == 200) {
+							// $location.path('api/'+apiid);
+							$scope.msg = data.message;
+							$scope.errorMsg = null;
+						} else {
+							$scope.errorMsg = data.message;
+							$scope.msg = null;
+						}
+				});
 	        };
 	        
 			$scope.remove = function () {
@@ -368,6 +384,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 				});
 		        
 		        $scope.submit = function () {
+		        	$scope.date = new Date();
 					var type = $scope.policy.type;
 					if(type=='Spike Arrest'){
 						Resource.updateSpikeArrestResource({
@@ -378,8 +395,10 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 								if(data.status == 200){
 									//$location.path('/show/'+apiid+'/resource/'+rid);
 									$scope.msg = data.message;
+									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
+									$scope.msg = null;
 								}
 						});
 					}
@@ -392,8 +411,10 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 								if(data.status == 200){
 									//$location.path('/show/'+apiid+'/resource/'+rid);
 									$scope.msg = data.message;
+									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
+									$scope.msg = null;
 								}
 						});
 					}

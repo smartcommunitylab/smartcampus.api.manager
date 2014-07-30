@@ -1,6 +1,6 @@
 <div class="row animated fadeIn">
-    <div ng-hide="!errorMsg" class="alert alert-danger">{{errorMsg}}</div>
-    <div ng-hide="!msg" class="alert alert-success">{{msg}}</div>
+    <div ng-hide="!errorMsg || msg" class="alert alert-danger">{{errorMsg}}</div>
+    <div ng-hide="!msg || errorMsg" class="alert alert-success">At {{date | date:'HH:mm:ss'}}: {{msg}}</div>
     <div class="col-md-6 col-md-offset-3">
         <h2>{{title}} Resource</h2>
         <form name="main" novalidate role="form" ng-submit="submit()">
