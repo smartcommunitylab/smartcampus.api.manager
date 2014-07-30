@@ -1452,28 +1452,37 @@ public class PersistenceManager {
 	public void isPolicyInstanceOf(Policy p){
 		// check fields of Spike Arrest
 		if (p instanceof SpikeArrest) {
-			//rate is required
-			if(((SpikeArrest) p).getRate()==null ){
-				throw new IllegalArgumentException("For policy spike arrest, rate is required.");
-			}
-			else{
-				//check rate value
-				String rate = ((SpikeArrest)p).getRate();
-				String[] res = rate.split("p");
-				System.out.println("'Rate split: "+res[0]+", "+res[1]);;
-				try{
-					Integer.parseInt(res[0]);
-				}catch(NumberFormatException n){
-					throw new IllegalArgumentException("For policy spike arrest, " +
-							"rate value is not in the correct format: <Integer>ps/pm. " +
-							"Ex. 12ps or 12pm.");
+			// rate is required
+			if (((SpikeArrest) p).getRate() == null) {
+				throw new IllegalArgumentException(
+						"For policy spike arrest, rate is required.");
+			} else {
+				// check rate value
+				String rate = ((SpikeArrest) p).getRate();
+				if (rate.contains("p")) {
+					String[] res = rate.split("p");
+					try {
+						Integer.parseInt(res[0]);
+					} catch (NumberFormatException n) {
+						throw new IllegalArgumentException(
+								"For policy spike arrest, "
+										+ "rate value is not in the correct format: <Integer>ps/pm. "
+										+ "Ex. 12ps or 12pm.");
+					}
+					if (!res[1].equalsIgnoreCase("s")
+							&& !res[1].equalsIgnoreCase("m")) {
+						throw new IllegalArgumentException(
+								"For policy spike arrest, "
+										+ "rate value is not in the correct format: <Integer>ps/pm. "
+										+ "Ex. 12ps or 12pm.");
+					}
+				} else {
+					throw new IllegalArgumentException(
+							"For policy spike arrest, "
+									+ "rate value is not in the correct format: <Integer>ps/pm. "
+									+ "Ex. 12ps or 12pm.");
 				}
-				if(!res[1].equalsIgnoreCase("s") && !res[1].equalsIgnoreCase("m")){
-					throw new IllegalArgumentException("For policy spike arrest, " +
-							"rate value is not in the correct format: <Integer>ps/pm. " +
-							"Ex. 12ps or 12pm.");
-				}
-				
+
 			}
 		}
 		// check fields of Quota
