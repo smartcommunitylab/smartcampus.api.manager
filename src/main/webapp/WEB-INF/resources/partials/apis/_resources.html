@@ -1,7 +1,10 @@
 <div ng-repeat="r in api.resource">
 	<h4><b><a ng-href="show/{{api.id}}/resource/{{r.id}}">{{r.name}}</a></b></h4>
 	
-	<button type="button" class="pull-right btn btn-default btn-sm" ng-click="deleteResource(r.id)">
+	<button type="button" class="pull-right btn btn-default btn-sm" 
+		ng-confirm-click="deleteResource(r.id)"
+    	ng-confirm-message="Are you sure that you want to delete this resource?"
+    	ng-confirm-condition="true">
         <i class="fa fa-trash-o"></i>
     </button>
     <a href="edit/{{api.id}}/resource/{{r.id}}" class="pull-right btn btn-default btn-sm orgbtn">
