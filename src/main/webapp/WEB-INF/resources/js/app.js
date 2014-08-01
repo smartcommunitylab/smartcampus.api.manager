@@ -42,6 +42,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/apis/show.html',
         	access: access.public
         }).
+        when('/api/:apiId/:elem',{
+        	controller: 'showApiCtrl',
+        	templateUrl: 'partials/apis/show.html',
+        	access: access.public
+        }).
         when('/create/api',{
         	controller: 'addApiCtrl',
         	templateUrl: 'partials/apis/edit.html',

@@ -26,13 +26,13 @@
                     </ul>
                     
                     <tabset>
-                    	<tab heading="Resources">
+                    	<tab heading="Resources" active="isTabResourceActive" >
                     		<div ng-include="'partials/apis/_resources.html'"></div>
                     	</tab>
-                        <tab heading="Policies">
+                        <tab heading="Policies" active="isTabPolicyActive" >
                             <div ng-include="'partials/apis/_policies.html'"></div>
                         </tab>
-                        <tab heading="Apps">
+                        <tab heading="Apps" active="isTabAppActive" >
                             <div ng-include="'partials/apis/_apps.html'"></div>
                         </tab>
                     </tabset>

@@ -6,7 +6,8 @@
         <form name="main" novalidate role="form" ng-submit="submit()">
             <div class="form-group" show-validation>
                 <label for="resourcename">Name</label>
-                <input ng-disabled="resource.id != null" type="text" class="form-control" id="resourcename" placeholder="Name" ng-model="resource.name" required />
+                <input ng-disabled="resource.id != null" type="text" class="form-control" 
+                	id="resourcename" placeholder="Name" ng-model="resource.name" required />
             </div>
             <div class="form-group" show-validation>
                 <label for="resourceuri">Uri</label>
@@ -27,7 +28,10 @@
             	ng-confirm-click="remove()"
     			ng-confirm-message="Are you sure that you want to delete this resource?"
     			ng-confirm-condition="true">Delete</button>
-            <button ng-click="back()" class="pull-right btn btn-default">Go back</button>
+           <button ng-hide="title==='Edit'" type="button" ng-click="back()" 
+            	class="pull-right btn btn-default">Go back</button>
+            <button ng-show="title==='Edit'" ng-click="goBack()" 
+            	class="pull-right btn btn-default">Go back</button>
         </form>
     </div>
 </div>

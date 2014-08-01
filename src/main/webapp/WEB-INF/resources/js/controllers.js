@@ -37,6 +37,34 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
                                'Policy', 'App',
     function($scope, $route, $routeParams, $location, Api, Resource, Policy, App){
 		var apiid = $routeParams.apiId;
+		var elem = $routeParams.elem;
+		
+		if(elem){
+			if(elem==='resource'){
+				$scope.isTabResourceActive = true;
+				$scope.isTabPolicyActive = false;
+				$scope.isTabAppActive = false;
+				
+			}else if(elem==='policy'){
+				$scope.isTabResourceActive = false;
+				$scope.isTabPolicyActive = true;
+				$scope.isTabAppActive = false;
+				
+			}else if(elem==='app'){
+				$scope.isTabResourceActive = false;
+				$scope.isTabPolicyActive = false;
+				$scope.isTabAppActive = true;
+			}else{
+				console.log('Error. Elem can be resource, policy or app.');
+				$scope.isTabResourceActive = true;
+				$scope.isTabPolicyActive = false;
+				$scope.isTabAppActive = false;
+			}
+		}else{
+			$scope.isTabResourceActive = true;
+			$scope.isTabPolicyActive = false;
+			$scope.isTabAppActive = false;
+		}
 		
 		Api.getApi({
 			apiId : apiid
@@ -69,10 +97,6 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 			}, function(data){
 				$route.reload();
 			});
-		};
-		
-		$scope.setAppId = function(id){
-			$scope.appId = id;
 		};
 		
 	}
@@ -247,6 +271,10 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', '$tim
 				$scope.errorMsg = null;
 				$scope.msg = null;
 		    }, 10000);
+			
+			$scope.goBack = function(){
+				$location.path('/api/'+apiid);
+			};
 		}
 ]);
 
@@ -311,6 +339,10 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeo
 				$scope.errorMsg = null;
 				$scope.msg = null;
 		    }, 10000);
+			
+			$scope.goBack = function(){
+				$location.path('/api/'+apiid+'/policy');
+			};
         }
 ]);
 
@@ -356,6 +388,10 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', '$timeout'
 				$scope.errorMsg = null;
 				$scope.msg = null;
 		    }, 7000);
+			
+			$scope.goBack = function(){
+				$location.path('/api/'+apiid+'/app');
+			};
         }
 ]);
 
@@ -387,7 +423,7 @@ app.controller('showResourceCtrl', ['$scope', '$location', '$route', '$routePara
 app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams', '$timeout', 
                                           'Resource',
             function($scope, $location, $routeParams, $timeout, Resource){
-				$scope.title = 'Edit';			
+				$scope.title = 'Edit Resource';			
 				var apiid = $routeParams.apiId;
 				var rid = $routeParams.resourceId;
 				var pid = $routeParams.policyId;
@@ -455,7 +491,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 
 app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 'Resource',
             function($scope, $location, $routeParams, Resource){
-            	$scope.title = 'New';
+            	$scope.title = 'New Resource';
             	
             	var apiid = $routeParams.apiId;
             	var rid = $routeParams.resourceId;

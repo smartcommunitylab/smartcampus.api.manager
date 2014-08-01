@@ -1,7 +1,8 @@
 <div ng-repeat="app in api.app">
 	
 	<h4><b>{{app.name}}</b></h4>
-    <button type="button" class="pull-right btn btn-default btn-sm" ng-confirm-click="deleteApp(app.id)"
+    <button type="button" class="pull-right btn btn-default btn-sm" 
+    	ng-confirm-click="deleteApp(app.id)"
     	ng-confirm-message="Are you sure that you want to delete this app?"
     	ng-confirm-condition="true">
     	<i class="fa fa-trash-o"></i>

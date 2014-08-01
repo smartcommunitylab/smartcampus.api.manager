@@ -6,7 +6,8 @@
         <form name="main" novalidate role="form" ng-submit="submit()">
             <div class="form-group" show-validation>
                 <label for="appname">Name</label>
-                <input ng-disabled="app.id != null" type="text" class="form-control" id="appname" placeholder="Name" ng-model="app.name" required />
+                <input ng-disabled="app.id != null" type="text" class="form-control" id="appname" 
+                placeholder="Name" ng-model="app.name" required />
             </div>
             <div class="form-group" show-validation>
                 <label for="appkey">Key</label>
@@ -18,7 +19,10 @@
             	ng-confirm-click="remove()"
     			ng-confirm-message="Are you sure that you want to delete this app?"
     			ng-confirm-condition="true">Delete</button>
-            <button ng-click="back()" class="pull-right btn btn-default">Go back</button>
+            <button ng-hide="title==='Edit'" type="button" ng-click="back()" 
+            	class="pull-right btn btn-default">Go back</button>
+            <button ng-show="title==='Edit'" ng-click="goBack()" 
+            	class="pull-right btn btn-default">Go back</button>
         </form>
     </div>
 </div>

@@ -26,7 +26,8 @@
 				<div class="form-group">
 					<label for="sarate">Rate</label> 
 					<input type="text" class="form-control" 
-						placeholder="<Integer value>pm or <Integer value>ps ex 22ps or 22pm" id="sarate" 
+						placeholder="<Integer value>pm or <Integer value>ps ex 22ps or 22pm" 
+						id="sarate" 
 						ng-model="policy.rate" >
 				</div>
 
@@ -36,7 +37,8 @@
 			<div ng-show="policy.type === 'Quota'">
 				<div class="form-group" >
 					<label for="qinterval">Interval</label> 
-					<input type="text" class="form-control" id="qinterval" placeholder="Integer value ex. 12"
+					<input type="text" class="form-control" id="qinterval" 
+						placeholder="Integer value ex. 12"
 							ng-model="policy.interval" integer >
 					</div>
 					<div class="form-group" >
@@ -60,7 +62,8 @@
 			<div ng-show="policy.type === 'Spike Arrest' || policy.type === 'Quota'">
 				<div class="form-group">
 						<label for="policyqspid">Identifier</label> 
-						<input type="text" class="form-control" id="policyqspid" ng-model="policy.identifier">
+						<input type="text" class="form-control" id="policyqspid" 
+							ng-model="policy.identifier">
 				</div>
 			</div>
 			
@@ -69,7 +72,10 @@
             	ng-confirm-click="remove()"
     			ng-confirm-message="Are you sure that you want to delete this policy?"
     			ng-confirm-condition="true">Delete</button>
-            <button ng-click="back()" class="pull-right btn btn-default">Go back</button>
+            <button ng-hide="title==='Edit'" type="button" ng-click="back()" 
+            	class="pull-right btn btn-default">Go back</button>
+            <button ng-show="title==='Edit'" ng-click="goBack()" 
+            	class="pull-right btn btn-default">Go back</button>
         </form>
     </div>
 </div>
