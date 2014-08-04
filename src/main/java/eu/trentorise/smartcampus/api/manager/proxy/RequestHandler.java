@@ -75,59 +75,48 @@ public class RequestHandler{
 	public void handleRequest(HttpServletRequest request, String url,
 			HttpServletResponse response) throws ServletException, IOException {
 		
-		//check headers data
-		//logger.info("Request headers: {}",request.getHeaderNames());
-		
-		//retrieves id of api and resource if exists
-		//logger.info("Request parameters: {}",request.getParameterNames());
-		
-		//retrieves body
-		/*StringBuilder buffer = new StringBuilder();
-		try{
-			BufferedReader reader = request.getReader();
-			String line;
-			while ((line = reader.readLine()) != null) {
-				buffer.append(line);
-			}
-			logger.info("Body: {}",buffer.toString());
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		*/
+		//init resource ids list
 		resourceIds = new ArrayList<String>();
 		
+		//if request
 		if (url == null) {
 
 			String basepath = request.getContextPath();
 
 			// retrieve api
-			List<Api> apiList = apiManager.getApiByBasePath(basepath);
-			if (apiList != null && apiList.size() > 0) {
-				logger.info("Found api: ", apiList.get(0).getName());
-				apiId = apiList.get(0).getId();
+			try {
+				logger.info("1a {}: ", basepath);
+				List<Api> apiList = apiManager.getApiByBasePath(basepath);
+				logger.info("2a {}: ", basepath);
+				if (apiList != null && apiList.size() > 0) {
+					logger.info("(a)Found api: ", apiList.get(0).getName());
+					apiId = apiList.get(0).getId();
 
-				// retrieve ids resource
-				if (apiList.get(0).getResource() != null
-						&& apiList.get(0).getResource().size() > 0) {
-					for (int i = 0; i < apiList.get(0).getResource().size(); i++) {
-						resourceIds.add(apiList.get(0).getResource().get(i)
-								.getId());
+					List<Resource> rlist = apiList.get(0).getResource();
+					// retrieve ids resource
+					if (rlist != null && rlist.size() > 0) {
+						for (int i = 0; i < rlist.size(); i++) {
+							resourceIds.add(rlist.get(i).getId());
+						}
+
 					}
-
 				}
+			} catch (NullPointerException n) {
+				logger.info("There is no api for this basepath {}.",
+						basepath);
 			}
-
-		}else{
+			
+		}else{//if url
 			
 			String basepath = splitBasePath(url);
 			
 			if (basepath != null && !basepath.equalsIgnoreCase("")) {
-				logger.info("Api Basepath: {}", basepath);
+				logger.info("(b)Api Basepath: {}", basepath);
 				// retrieve api
 				try {
-					logger.info("1 {}: ", basepath);
+					logger.info("1b {}: ", basepath);
 					List<Api> apiList = apiManager.getApiByBasePath(basepath);
-					logger.info("2 {}: ", basepath);
+					logger.info("2b {}: ", basepath);
 					if (apiList != null && apiList.size() > 0) {
 						logger.info("Found api: ", apiList.get(0).getName());
 						apiId = apiList.get(0).getId();
@@ -173,9 +162,10 @@ public class RequestHandler{
 	
 	/**
 	 * Method that retrieves basepath from a string in body.
+	 * Problem: basepath has = character at the end of the string.
 	 * 
 	 * @param url : String
-	 * @return basepath of api
+	 * @return basepath of api 
 	 */
 	private String splitBasePath(String url){
 		//String
@@ -189,11 +179,12 @@ public class RequestHandler{
 		}
 		
 		//http(s) AND proxy/api_basepath
-		String[] slist2 = slist[1].split("/",2);
+		/*String[] slist2 = slist[1].split("/",2);
 		for(int i=0;i<slist2.length;i++){
 			logger.info("String pieces 2 - index: {}",i);
 			logger.info("String pieces  2- value: {} --",slist2[i]);
-		}
+		}*/
+		
 		//to avoid = after basepath
 		String basepath = slist[1].substring(slist[1].indexOf("/"),slist[1].indexOf("="));
 		logger.info("Base path: {}", basepath);
