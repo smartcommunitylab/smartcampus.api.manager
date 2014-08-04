@@ -145,6 +145,12 @@ public class ApiManagerTest {
 		log.info("Find api by id..");
 		List<Api> api = apiManager.getApiByBasePath("/v0/geocoding");
 		assertNotNull("Api not found", api);
+		assertTrue("Api not found", api.size()>0);
+		for(int i=0;i<api.size();i++){
+			log.info("Api {}",i);
+			log.info("Name {}",api.get(i).getName());
+			log.info("Basepath {}",api.get(i).getBasePath());
+		}
 		log.info("Found api by id terminated.");
 	}
 	
