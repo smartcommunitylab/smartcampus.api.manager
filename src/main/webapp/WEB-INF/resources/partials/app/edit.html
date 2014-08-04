@@ -9,12 +9,15 @@
                 <input ng-disabled="app.id != null" type="text" class="form-control" id="appname" 
                 placeholder="Name" ng-model="app.name" required />
             </div>
-            <div class="form-group" show-validation>
+            <div class="form-group" ng-show="app.id != null" >
                 <label for="appkey">Key</label>
                 <input ng-disabled="app.id != null" type="text" id="appkey" class="form-control" ng-model="app.key" />
             </div>
             
-            <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Reset key</button>
+            <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">
+            	<div ng-show="title==='New'">Save</div>
+            	<div ng-show="title==='Edit'">Reset key</div>
+            </button>
             <button ng-hide="title==='New'" class="btn btn-danger"
             	ng-confirm-click="remove()"
     			ng-confirm-message="Are you sure that you want to delete this app?"
