@@ -213,6 +213,7 @@ app.controller('editApiCtrl', ['$scope', '$location', '$routeParams', '$timeout'
         			function (data) {
         				if(data.status == 200){
                         	//$location.path('apis');
+        					$scope.api = data.data;
         					$scope.msg = data.message;
                         }else{
                         	$scope.errorMsg = data.message;
@@ -249,6 +250,7 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', '$tim
 	                function (data) {
 	            		if(data.status == 200){
 	            			//$location.path('api/'+apiid);
+	            			$scope.resource = data.data;
 	            			$scope.msg = data.message;
 	            			$scope.errorMsg = null;
 	            		}else{
@@ -300,6 +302,7 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeo
 						function (data) {
 							if(data.status == 200){
 		            			//$location.path('api/'+apiid);
+								$scope.policy=data.data;
 		            			$scope.msg = data.message;
 		            			$scope.errorMsg = null;
 		            		}else{
@@ -314,7 +317,7 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeo
 						},$scope.policy,
 						function (data) {
 							if(data.status == 200){
-		            			//$location.path('api/'+apiid);
+								$scope.policy=data.data;
 		            			$scope.msg = data.message;
 		            			$scope.errorMsg = null;
 		            		}else{
@@ -366,6 +369,7 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', '$timeout'
  	                function(data) {
 						if (data.status == 200) {
 							// $location.path('api/'+apiid);
+							$scope.app=data.data;
 							$scope.msg = data.message;
 							$scope.errorMsg = null;
 						} else {
@@ -446,6 +450,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							function (data) {
 								if(data.status == 200){
 									//$location.path('/show/'+apiid+'/resource/'+rid);
+									$scope.policy = data.data;
 									$scope.msg = data.message;
 									$scope.errorMsg = null;
 								}else{
@@ -461,7 +466,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									//$location.path('/show/'+apiid+'/resource/'+rid);
+									$scope.policy = data.data;
 									$scope.msg = data.message;
 									$scope.errorMsg = null;
 								}else{

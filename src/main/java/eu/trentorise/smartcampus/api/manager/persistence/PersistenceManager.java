@@ -18,6 +18,7 @@ package eu.trentorise.smartcampus.api.manager.persistence;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1107,6 +1108,8 @@ public class PersistenceManager {
 		if(app.getId()==null || app.getId().equalsIgnoreCase("")){
 			app.setId(generateId());
 		}
+		//set app key
+		app.setKey(UUID.randomUUID().toString());
 		// get api and add app
 		Api api = getApiById(apiId);
 		List<App> alist = api.getApp();
@@ -1158,7 +1161,8 @@ public class PersistenceManager {
 				}
 			}
 			oldapp.setName(app.getName());
-			oldapp.setKey(app.getKey());
+			//set app key
+			oldapp.setKey(UUID.randomUUID().toString());
 		}
 		// update api
 		updateApi(api);
