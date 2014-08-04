@@ -16,10 +16,12 @@
 package eu.trentorise.smartcampus.api.manager.controller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -53,29 +55,51 @@ public class HomeController {
 		return "index";
 	}
 	
+	/**
+	 * Try Request Handler class, with a string api url.
+	 * POST method.
+	 * 
+	 * @param url : String 
+	 * @param request : instance of {@link HttpServletRequest}
+	 * @return instance of {@link ResultData} with data, 
+	 * 			status (OK and BAD REQUEST) and a string message : 
+	 * 			"ok", otherwise "Error".
+	 */
 	@RequestMapping(value="/proxy", method = RequestMethod.POST)
-	public ResultData requestHandler(@RequestBody String url){
+	@ResponseBody
+	public ResultData requestHandler(@RequestBody String url, HttpServletRequest request){
 		logger.info("proxy request handler");
-		//requestHandler = new RequestHandler();
 		try {
 			String decodedurl = URLDecoder.decode(url, "UTF-8");
 			logger.info("Decoded url: {}", decodedurl);
-			requestHandler.handleRequest(null, decodedurl, null);
+			HashMap<String, String> r = requestHandler.handleUrl(decodedurl, request);
 			
-			logger.info("Api id: {}", requestHandler.getApiId());
-			logger.info("Api resource ids: {}", requestHandler.getResourceIds());
+			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
 			
-			return new ResultData(null, HttpServletResponse.SC_OK, "ok");
-			
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return new ResultData(null, HttpServletResponse.SC_OK, "ok");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return new ResultData(null, HttpServletResponse.SC_OK, "ok");
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, "Error");
 		}
+	}
+	
+	/**
+	 * Try Request Handler class, with retrieving api url from request.
+	 * GET method.
+	 * 
+	 * @param request : instance of {@link HttpServletRequest}
+	 * @return instance of {@link ResultData} with data, 
+	 * 			status (OK and BAD REQUEST) and a string message : 
+	 * 			"ok", otherwise "Error".
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
+	public ResultData requestHandl(HttpServletRequest request){
+		logger.info("proxy request handler");
+
+		HashMap<String, String> r = requestHandler.handleRequest(request);
+
+		return new ResultData(r, HttpServletResponse.SC_OK, "ok");
+
 	}
 	
 }

@@ -15,13 +15,12 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.proxy;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,36 +59,31 @@ public class RequestHandler{
 	 * Global variable, list of resource id
 	 */
 	private List<String> resourceIds;
-
+	
 	/**
 	 * Method that retrieves basepath of api and api resource.
 	 * Then it set two global variables.
 	 * It suppose that the request is for example:
 	 * http(s)://proxy/api_basepath
 	 * 
+	 * @param url : String, url of api
 	 * @param request : instance of {@link HttpServletRequest}
-	 * @param response : instance of {@link HttpServletResponse}
-	 * @throws ServletException
-	 * @throws IOException
+	 * @return HashMap with String key, value.
+	 * 			ApiID - key for api id
+	 * 			Resource(i) - for resource id, where i is index
+	 * 			<Header name> - for header
 	 */
-	public void handleRequest(HttpServletRequest request, String url,
-			HttpServletResponse response) throws ServletException, IOException {
+	public HashMap<String, String> handleUrl(String url, HttpServletRequest request){
+		HashMap<String, String> map = new HashMap<String, String>();
 		
-		//init resource ids list
-		resourceIds = new ArrayList<String>();
+		String basepath = splitBasePath(url);
 		
-		//if request
-		if (url == null) {
-
-			String basepath = request.getContextPath();
-
+		if (basepath != null && !basepath.equalsIgnoreCase("")) {
 			// retrieve api
 			try {
-				logger.info("1a {}: ", basepath);
 				List<Api> apiList = apiManager.getApiByBasePath(basepath);
-				logger.info("2a {}: ", basepath);
 				if (apiList != null && apiList.size() > 0) {
-					logger.info("(a)Found api: ", apiList.get(0).getName());
+					logger.info("Found api: ", apiList.get(0).getName());
 					apiId = apiList.get(0).getId();
 
 					List<Resource> rlist = apiList.get(0).getResource();
@@ -105,41 +99,104 @@ public class RequestHandler{
 				logger.info("There is no api for this basepath {}.",
 						basepath);
 			}
-			
-		}else{//if url
-			
-			String basepath = splitBasePath(url);
-			
-			if (basepath != null && !basepath.equalsIgnoreCase("")) {
-				logger.info("(b)Api Basepath: {}", basepath);
-				// retrieve api
-				try {
-					logger.info("1b {}: ", basepath);
-					List<Api> apiList = apiManager.getApiByBasePath(basepath);
-					logger.info("2b {}: ", basepath);
-					if (apiList != null && apiList.size() > 0) {
-						logger.info("Found api: ", apiList.get(0).getName());
-						apiId = apiList.get(0).getId();
 
-						List<Resource> rlist = apiList.get(0).getResource();
-						// retrieve ids resource
-						if (rlist != null && rlist.size() > 0) {
-							for (int i = 0; i < rlist.size(); i++) {
-								resourceIds.add(rlist.get(i).getId());
-							}
-
-						}
-					}
-				} catch (NullPointerException n) {
-					logger.info("There is no api for this basepath {}.",
-							basepath);
-				}
-
-			} else {
-				logger.info("There is some problems with split method.");
-			}
+		} else {
+			logger.info("There is some problems with split method.");
 		}
 		
+		map.put("ApiID", apiId);
+		for(int i=0;i<resourceIds.size();i++){
+			map.put("Resource"+i, resourceIds.get(i));
+		}
+		
+		// retrieves headers
+		Enumeration<String> headerNames = request.getHeaderNames();
+
+		while (headerNames.hasMoreElements()) {
+
+			String headerName = headerNames.nextElement();
+
+			Enumeration<String> headers = request.getHeaders(headerName);
+			while (headers.hasMoreElements()) {
+				String headerValue = headers.nextElement();
+				map.put(headerName, headerValue);
+			}
+
+		}
+		return map;
+	}
+
+	/**
+	 * Method that retrieves basepath of api and api resource.
+	 * Then it set two global variables.
+	 * It suppose that the request is for example:
+	 * http(s)://proxy/api_basepath
+	 * 
+	 * @param request : instance of {@link HttpServletRequest}
+	 * @return HashMap with String key, value.
+	 * 			ApiID - key for api id
+	 * 			Resource(i) - for resource id, where i is index
+	 * 			<Header name> - for header
+	 */
+	public HashMap<String, String> handleRequest(HttpServletRequest request) {
+
+		HashMap<String, String> map = new HashMap<String, String>();
+		
+		// init resource ids list
+		resourceIds = new ArrayList<String>();
+
+		String requestUri = request.getRequestURI();
+		String[] slist = requestUri.split("/", 3);
+		for (int i = 0; i < slist.length; i++) {
+			logger.info("index: {}", i);
+			logger.info("value: {} --", slist[i]);
+		}
+		String basepath = "/" + slist[2];
+		logger.info("(a)Api Basepath: {}", basepath);
+		// retrieve api
+		try {
+			logger.info("1a {}: ", basepath);
+			List<Api> apiList = apiManager.getApiByBasePath(basepath);
+			logger.info("2a {}: ", basepath);
+			if (apiList != null && apiList.size() > 0) {
+				logger.info("(a)Found api: ", apiList.get(0).getName());
+				apiId = apiList.get(0).getId();
+
+				List<Resource> rlist = apiList.get(0).getResource();
+				// retrieve ids resource
+				if (rlist != null && rlist.size() > 0) {
+					for (int i = 0; i < rlist.size(); i++) {
+						resourceIds.add(rlist.get(i).getId());
+					}
+
+				}
+			}
+		} catch (NullPointerException n) {
+			logger.info("There is no api for this basepath {}.", basepath);
+		}
+		
+		map.put("ApiID", apiId);
+		for(int i=0;i<resourceIds.size();i++){
+			map.put("Resource"+i, resourceIds.get(i));
+		}
+		
+		// retrieves headers
+		Enumeration<String> headerNames = request.getHeaderNames();
+
+		while (headerNames.hasMoreElements()) {
+
+			String headerName = headerNames.nextElement();
+
+			Enumeration<String> headers = request.getHeaders(headerName);
+			while (headers.hasMoreElements()) {
+				String headerValue = headers.nextElement();
+				map.put(headerName, headerValue);
+			}
+
+		}
+		
+		return map;
+
 	}
 	
 	//getter
@@ -177,13 +234,6 @@ public class RequestHandler{
 			logger.info("String pieces - index: {}",i);
 			logger.info("String pieces - value: {} --",slist[i]);
 		}
-		
-		//http(s) AND proxy/api_basepath
-		/*String[] slist2 = slist[1].split("/",2);
-		for(int i=0;i<slist2.length;i++){
-			logger.info("String pieces 2 - index: {}",i);
-			logger.info("String pieces  2- value: {} --",slist2[i]);
-		}*/
 		
 		//to avoid = after basepath
 		String basepath = slist[1].substring(slist[1].indexOf("/"),slist[1].indexOf("="));
