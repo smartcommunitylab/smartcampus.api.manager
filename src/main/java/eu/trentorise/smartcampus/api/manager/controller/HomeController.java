@@ -15,10 +15,21 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.controller;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import eu.trentorise.smartcampus.api.manager.model.ResultData;
+import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
 
 /**
  * Handles requests for the application home page.
@@ -29,6 +40,8 @@ public class HomeController {
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	@Autowired
+	private RequestHandler requestHandler;
 	
 	/**
 	 * Return "HelloWorld" string
@@ -38,6 +51,31 @@ public class HomeController {
 		logger.info("Hello World!");
 		
 		return "index";
+	}
+	
+	@RequestMapping(value="/proxy", method = RequestMethod.POST)
+	public ResultData requestHandler(@RequestBody String url){
+		logger.info("proxy request handler");
+		//requestHandler = new RequestHandler();
+		try {
+			String decodedurl = URLDecoder.decode(url, "UTF-8");
+			logger.info("Decoded url: {}", decodedurl);
+			requestHandler.handleRequest(null, decodedurl, null);
+			
+			logger.info("Api id: {}", requestHandler.getApiId());
+			logger.info("Api resource ids: {}", requestHandler.getResourceIds());
+			
+			return new ResultData(null, HttpServletResponse.SC_OK, "ok");
+			
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResultData(null, HttpServletResponse.SC_OK, "ok");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResultData(null, HttpServletResponse.SC_OK, "ok");
+		}
 	}
 	
 }

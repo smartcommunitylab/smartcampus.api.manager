@@ -48,7 +48,7 @@ public interface ApiRepository extends MongoRepository<Api,String>{
 	public List<Api> findByName(String name);
 	
 	/**
-	 * Retrieves Api data searching by id.
+	 * Retrieves Api data searching by basepath.
 	 * 
 	 * @param basepath : String
 	 * @return list of {@link Api}
