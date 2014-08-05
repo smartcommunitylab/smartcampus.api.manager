@@ -83,13 +83,13 @@ public class ScenarioApi {
 		Resource r1 = new Resource();
 		r1.setId("resource1");
 		r1.setName("Counter");
-		r1.setUri("http://www.mydomain.it/resource1");
+		r1.setUri("/resource1");
 		r1.setVerb("GET");
 		
 		log.info("Add Resource 2..");
 		Resource r2 = new Resource();
 		r2.setName("Like");
-		r2.setUri("http://www.mydomain.it/resource2");
+		r2.setUri("/resource2");
 		r2.setVerb("GET");
 		
 		//api
@@ -185,7 +185,7 @@ public class ScenarioApi {
 		Resource r1 = new Resource();
 		r1.setId("resource1");
 		r1.setName("Counter");
-		r1.setUri("http://www.mydomain.it/resource1");
+		r1.setUri("/resource1");
 		r1.setVerb("POST");
 		apiManager.updateResourceApi("api1", r1);
 		
@@ -315,12 +315,12 @@ public class ScenarioApi {
 		App app1 = new App();
 		app1.setId("junit-test-spring-1");
 		app1.setName("Openservice app junit-test");
-		app1.setKey("junit.test.openservice.1.app");
+		//app1.setKey("junit.test.openservice.1.app");
 		
 		log.info("Add app 2..");
 		App app2 = new App();
 		app2.setName("Smartcampus app junit-test");
-		app2.setKey("junit.test.smartcampus.2.app");
+		//app2.setKey("junit.test.smartcampus.2.app");
 		
 		apiManager.addAppApi("api1", app1);
 		App app = apiManager.addAppApi("api1", app2);
@@ -345,9 +345,10 @@ public class ScenarioApi {
 		assertTrue("Incorrect id",app1.get(0).getName().equalsIgnoreCase("Smartcampus app junit-test"));
 		
 		log.info("Find apps api by apps key..");
-		List<App> app2= apiManager.getAppApiByAppKey("api1", "junit.test.smartcampus.2.app");
+		App a= apiManager.getAppApiByAppId("api1", "junit-test-spring-1");
+		List<App> app2= apiManager.getAppApiByAppKey("api1", a.getKey());
 		assertNotNull("Error in finding by resource id",app2);
-		assertTrue("Incorrect id",app2.get(0).getKey().equalsIgnoreCase("junit.test.smartcampus.2.app"));
+		assertTrue("Incorrect id",app2.get(0).getKey().equalsIgnoreCase(a.getKey()));
 		
 		log.info("Search terminated.");
 	}

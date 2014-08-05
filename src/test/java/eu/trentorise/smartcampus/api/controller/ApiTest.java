@@ -90,7 +90,7 @@ public class ApiTest {
 		Resource r1 = new Resource();
 		r1.setId("resource1");
 		r1.setName("Counter");
-		r1.setUri("http://www.mydomain.it/resource1");
+		r1.setUri("/resource1");
 		r1.setVerb("GET");
 		/*
 		//Policy
@@ -193,7 +193,7 @@ public class ApiTest {
 		Resource r2 = new Resource();
 		r2.setId("resource2");
 		r2.setName("Resource-junit");
-		r2.setUri("http://www.mydomain.it/resource2");
+		r2.setUri("/resource2");
 		r2.setVerb("GET");
 		
 		//add
