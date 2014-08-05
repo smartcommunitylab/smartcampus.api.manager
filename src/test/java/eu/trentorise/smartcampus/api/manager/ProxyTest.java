@@ -15,8 +15,6 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager;
 
-import java.util.HashMap;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
