@@ -75,6 +75,8 @@ public class RequestHandler{
 	 */
 	public HashMap<String, String> handleUrl(String url, HttpServletRequest request){
 		HashMap<String, String> map = new HashMap<String, String>();
+		// init resource ids list
+		resourceIds = new ArrayList<String>();
 		
 		String basepath = splitBasePath(url);
 		
@@ -105,23 +107,27 @@ public class RequestHandler{
 		}
 		
 		map.put("ApiID", apiId);
-		for(int i=0;i<resourceIds.size();i++){
-			map.put("Resource"+i, resourceIds.get(i));
+		if(resourceIds!=null && resourceIds.size()>0){
+			for (int i = 0; i < resourceIds.size(); i++) {
+				map.put("Resource" + i, resourceIds.get(i));
+			}
 		}
 		
 		// retrieves headers
-		Enumeration<String> headerNames = request.getHeaderNames();
+		if (request != null) {
+			Enumeration<String> headerNames = request.getHeaderNames();
 
-		while (headerNames.hasMoreElements()) {
+			while (headerNames.hasMoreElements()) {
 
-			String headerName = headerNames.nextElement();
+				String headerName = headerNames.nextElement();
 
-			Enumeration<String> headers = request.getHeaders(headerName);
-			while (headers.hasMoreElements()) {
-				String headerValue = headers.nextElement();
-				map.put(headerName, headerValue);
+				Enumeration<String> headers = request.getHeaders(headerName);
+				while (headers.hasMoreElements()) {
+					String headerValue = headers.nextElement();
+					map.put(headerName, headerValue);
+				}
+
 			}
-
 		}
 		return map;
 	}
@@ -236,7 +242,12 @@ public class RequestHandler{
 		}
 		
 		//to avoid = after basepath
-		String basepath = slist[1].substring(slist[1].indexOf("/"),slist[1].indexOf("="));
+		String basepath;
+		if(slist[1].contains("=")){
+			basepath = slist[1].substring(slist[1].indexOf("/"),slist[1].indexOf("="));
+		}else{
+			basepath = slist[1].substring(slist[1].indexOf("/"),slist[1].length());
+		}
 		logger.info("Base path: {}", basepath);
 		
 		return basepath;
