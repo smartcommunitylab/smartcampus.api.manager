@@ -19,8 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import eu.trentorise.smartcampus.api.manager.model.Policy;
-
 /**
  * Class that apply Spike Arrest logic.
  * 
@@ -35,7 +33,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	private static final Logger logger = LoggerFactory.getLogger(SpikeArrestApply.class);
 
 	@Override
-	public void apply(Policy p) {
+	public void apply() {
 		// TODO Auto-generated method stub
 		logger.info("Applying spike arrest policy..");
 	}

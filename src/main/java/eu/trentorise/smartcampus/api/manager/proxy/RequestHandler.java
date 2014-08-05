@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +30,8 @@ import org.springframework.stereotype.Component;
 //import org.springframework.web.HttpRequestHandler;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
+import eu.trentorise.smartcampus.api.manager.model.ObjectInMemory;
+import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
@@ -58,7 +61,53 @@ public class RequestHandler{
 	/**
 	 * Global variable, list of resource id
 	 */
-	private List<String> resourceIds;
+	private String resourceId;
+	
+	private static List<ObjectInMemory> all;
+	
+	/**
+	 * Static memory
+	 */
+	private void initMemory(){
+		all = new ArrayList<ObjectInMemory>();
+		//retrieves all basepath+uri and apiId and resourceId from db
+		List<Api> apilist = apiManager.listApi();
+		
+		if(apilist!=null && apilist.size()>0){
+			for(int i=0;i<apilist.size();i++){
+				String apiId = apilist.get(i).getId();
+				String basepath = apilist.get(i).getBasePath();
+				//get resource
+				List<Resource> rlist = apilist.get(i).getResource();
+				if(rlist!=null && rlist.size()>0){
+					for(int j=0;j<rlist.size();j++){
+						String rId = rlist.get(j).getId();
+						String uri = rlist.get(j).getUri();
+						
+						//save in object
+						ObjectInMemory m = new ObjectInMemory();
+						m.setUrl(basepath+uri);
+						m.setApiId(apiId);
+						m.setResourceId(rId);
+						all.add(m);
+					}
+				}else{
+					//save in object
+					ObjectInMemory m = new ObjectInMemory();
+					m.setUrl(basepath);
+					m.setApiId(apiId);
+					all.add(m);
+				}
+			}
+		}
+		
+		for(int i=0;i<all.size();i++){
+			logger.info("In memory - ");
+			logger.info("url: {} ", all.get(i).getUrl());
+			logger.info("api id: {} ", all.get(i).getApiId());
+			logger.info("resource: {} ", all.get(i).getResourceId());
+		}
+	}
 	
 	/**
 	 * Method that retrieves basepath of api and api resource.
@@ -68,52 +117,38 @@ public class RequestHandler{
 	 * 
 	 * @param url : String, url of api
 	 * @param request : instance of {@link HttpServletRequest}
-	 * @return HashMap with String key, value.
-	 * 			ApiID - key for api id
-	 * 			Resource(i) - for resource id, where i is index
-	 * 			<Header name> - for header
+	 * @return instance of {@link RequestHandlerObject} with api id, resource id
+	 * 			and a map of request headers.
 	 */
-	public HashMap<String, String> handleUrl(String url, HttpServletRequest request){
-		HashMap<String, String> map = new HashMap<String, String>();
-		// init resource ids list
-		resourceIds = new ArrayList<String>();
+	public RequestHandlerObject handleUrl(String url, HttpServletRequest request){
 		
-		String basepath = splitBasePath(url);
+		initMemory();
 		
-		if (basepath != null && !basepath.equalsIgnoreCase("")) {
-			// retrieve api
-			try {
-				List<Api> apiList = apiManager.getApiByBasePath(basepath);
-				if (apiList != null && apiList.size() > 0) {
-					logger.info("Found api: ", apiList.get(0).getName());
-					apiId = apiList.get(0).getId();
-
-					List<Resource> rlist = apiList.get(0).getResource();
-					// retrieve ids resource
-					if (rlist != null && rlist.size() > 0) {
-						for (int i = 0; i < rlist.size(); i++) {
-							resourceIds.add(rlist.get(i).getId());
-						}
-
+		RequestHandlerObject result = new RequestHandlerObject();
+		
+		String path = splitUrl(url);
+		
+		if (path != null && !path.equalsIgnoreCase("")) {
+			//retrieve api id and resource from static resource
+			if(all!=null && all.size()>0){
+				for(int i=0;i<all.size();i++){
+					if(path.equalsIgnoreCase(all.get(i).getUrl())){
+						apiId = all.get(i).getApiId();
+						resourceId =all.get(i).getResourceId();
 					}
 				}
-			} catch (NullPointerException n) {
-				logger.info("There is no api for this basepath {}.",
-						basepath);
+			}
+			if(apiId==null && resourceId==null){
+				logger.info("There is no api and resource for this path {}.",
+						path);
 			}
 
 		} else {
 			logger.info("There is some problems with split method.");
 		}
 		
-		map.put("ApiID", apiId);
-		if(resourceIds!=null && resourceIds.size()>0){
-			for (int i = 0; i < resourceIds.size(); i++) {
-				map.put("Resource" + i, resourceIds.get(i));
-			}
-		}
-		
 		// retrieves headers
+		Map<String, String> map = new HashMap<String, String>();
 		if (request != null) {
 			Enumeration<String> headerNames = request.getHeaderNames();
 
@@ -129,7 +164,16 @@ public class RequestHandler{
 
 			}
 		}
-		return map;
+		
+		logger.info("api id: {} ",apiId);
+		logger.info("resource id: {} ", resourceId);
+		
+		//set result
+		result.setApiId(apiId);
+		result.setResourceId(resourceId);
+		result.setHeaders(map);
+		
+		return result;
 	}
 
 	/**
@@ -139,17 +183,13 @@ public class RequestHandler{
 	 * http(s)://proxy/api_basepath
 	 * 
 	 * @param request : instance of {@link HttpServletRequest}
-	 * @return HashMap with String key, value.
-	 * 			ApiID - key for api id
-	 * 			Resource(i) - for resource id, where i is index
-	 * 			<Header name> - for header
+	 * @return instance of {@link RequestHandlerObject} with api id, resource id
+	 * 			and a map of request headers.
 	 */
-	public HashMap<String, String> handleRequest(HttpServletRequest request) {
+	public RequestHandlerObject handleRequest(HttpServletRequest request) {
 
-		HashMap<String, String> map = new HashMap<String, String>();
-		
-		// init resource ids list
-		resourceIds = new ArrayList<String>();
+		initMemory();
+		RequestHandlerObject result = new RequestHandlerObject();
 
 		String requestUri = request.getRequestURI();
 		String[] slist = requestUri.split("/", 3);
@@ -157,51 +197,50 @@ public class RequestHandler{
 			logger.info("index: {}", i);
 			logger.info("value: {} --", slist[i]);
 		}
-		String basepath = "/" + slist[2];
-		logger.info("(a)Api Basepath: {}", basepath);
-		// retrieve api
-		try {
-			logger.info("1a {}: ", basepath);
-			List<Api> apiList = apiManager.getApiByBasePath(basepath);
-			logger.info("2a {}: ", basepath);
-			if (apiList != null && apiList.size() > 0) {
-				logger.info("(a)Found api: ", apiList.get(0).getName());
-				apiId = apiList.get(0).getId();
-
-				List<Resource> rlist = apiList.get(0).getResource();
-				// retrieve ids resource
-				if (rlist != null && rlist.size() > 0) {
-					for (int i = 0; i < rlist.size(); i++) {
-						resourceIds.add(rlist.get(i).getId());
-					}
-
+		String path = "/" + slist[2];
+		logger.info("(a)Api Basepath: {}", path);
+		
+		//retrieve api id and resource from static resource
+		if(all!=null && all.size()>0){
+			for(int i=0;i<all.size();i++){
+				if(path.equalsIgnoreCase(all.get(i).getUrl())){
+					apiId = all.get(i).getApiId();
+					resourceId =all.get(i).getResourceId();
 				}
 			}
-		} catch (NullPointerException n) {
-			logger.info("There is no api for this basepath {}.", basepath);
 		}
-		
-		map.put("ApiID", apiId);
-		for(int i=0;i<resourceIds.size();i++){
-			map.put("Resource"+i, resourceIds.get(i));
+		if(apiId==null && resourceId==null){
+			logger.info("There is no api and resource for this path {}.",
+					path);
 		}
 		
 		// retrieves headers
-		Enumeration<String> headerNames = request.getHeaderNames();
+		Map<String, String> map = new HashMap<String, String>();
+		if (request != null) {
+			Enumeration<String> headerNames = request.getHeaderNames();
 
-		while (headerNames.hasMoreElements()) {
+			while (headerNames.hasMoreElements()) {
 
-			String headerName = headerNames.nextElement();
+				String headerName = headerNames.nextElement();
 
-			Enumeration<String> headers = request.getHeaders(headerName);
-			while (headers.hasMoreElements()) {
-				String headerValue = headers.nextElement();
-				map.put(headerName, headerValue);
+				Enumeration<String> headers = request.getHeaders(headerName);
+				while (headers.hasMoreElements()) {
+					String headerValue = headers.nextElement();
+					map.put(headerName, headerValue);
+				}
+
 			}
-
 		}
 		
-		return map;
+		logger.info("api id: {} ",apiId);
+		logger.info("resource id: {} ", resourceId);
+
+		// set result
+		result.setApiId(apiId);
+		result.setResourceId(resourceId);
+		result.setHeaders(map);
+		
+		return result;
 
 	}
 	
@@ -219,8 +258,8 @@ public class RequestHandler{
 	 * 
 	 * @return String list of resource id
 	 */
-	public List<String> getResourceIds() {
-		return resourceIds;
+	public String getResourceIds() {
+		return resourceId;
 	}
 	
 	/**
@@ -230,9 +269,9 @@ public class RequestHandler{
 	 * @param url : String
 	 * @return basepath of api 
 	 */
-	private String splitBasePath(String url){
+	private String splitUrl(String url){
 		//String
-		//url sample http(s)://proxy/api_basepath
+		//url sample http(s)://proxy/api_basepath/resource_uri
 		String[] slist = url.split("//");
 		
 		//print data
@@ -242,15 +281,15 @@ public class RequestHandler{
 		}
 		
 		//to avoid = after basepath
-		String basepath;
+		String subUrl;
 		if(slist[1].contains("=")){
-			basepath = slist[1].substring(slist[1].indexOf("/"),slist[1].indexOf("="));
+			subUrl = slist[1].substring(slist[1].indexOf("/"),slist[1].indexOf("="));
 		}else{
-			basepath = slist[1].substring(slist[1].indexOf("/"),slist[1].length());
+			subUrl = slist[1].substring(slist[1].indexOf("/"),slist[1].length());
 		}
-		logger.info("Base path: {}", basepath);
+		logger.info("Base path: {}", subUrl);
 		
-		return basepath;
+		return subUrl;
 	}
 	
 	

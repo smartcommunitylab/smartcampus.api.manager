@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
 
@@ -72,7 +73,7 @@ public class HomeController {
 		try {
 			String decodedurl = URLDecoder.decode(url, "UTF-8");
 			logger.info("Decoded url: {}", decodedurl);
-			HashMap<String, String> r = requestHandler.handleUrl(decodedurl, request);
+			RequestHandlerObject r = requestHandler.handleUrl(decodedurl, request);
 			
 			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
 			
@@ -96,7 +97,7 @@ public class HomeController {
 	public ResultData requestHandl(HttpServletRequest request){
 		logger.info("proxy request handler");
 
-		HashMap<String, String> r = requestHandler.handleRequest(request);
+		RequestHandlerObject r = requestHandler.handleRequest(request);
 
 		return new ResultData(r, HttpServletResponse.SC_OK, "ok");
 

@@ -27,7 +27,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
-import eu.trentorise.smartcampus.api.manager.proxy.PolicyDecisionPort;
+import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
+import eu.trentorise.smartcampus.api.manager.proxy.PolicyDecisionPoint;
 import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,10 +47,10 @@ public class ProxyTest {
 	@Autowired
 	private RequestHandler requestHandler;
 	/**
-	 * Instance of {@link PolicyDecisionPort}.
+	 * Instance of {@link PolicyDecisionPoint}.
 	 */
 	@Autowired
-	private PolicyDecisionPort pdecision;
+	private PolicyDecisionPoint pdecision;
 	
 	/**
 	 * Set up method.
@@ -66,14 +67,14 @@ public class ProxyTest {
 	public void test() {
 		log.info("Test starting..");
 		
-		String url = "http://proxy/vciao/hi";
+		String url = "http://proxy/vciao/hi/r1/2/";
 		//request handler
 		log.info("Request hanlder..");
-		HashMap<String,String> map = requestHandler.handleUrl(url, null);
+		RequestHandlerObject obj = requestHandler.handleUrl(url, null);
 		
 		//policy decision
 		log.info("Policy Decision Port..");
-		pdecision.applyPoliciesBatch(map);
+		pdecision.applyPoliciesBatch(obj);
 		
 		log.info("Test end.");
 	}

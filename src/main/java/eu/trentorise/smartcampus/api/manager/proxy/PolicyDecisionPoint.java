@@ -16,10 +16,8 @@
 package eu.trentorise.smartcampus.api.manager.proxy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Quota;
+import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
 /**
@@ -60,59 +61,33 @@ public class PolicyDecisionPoint {
 	 * Global variables
 	 */
 	private String apiId;
-	private List<String> resourcesId;
+	private String resourceId;
+	private Map<String, String> headers;
 	private List<Policy> pToApply;
 	
 	/**
 	 * Init array global variables.
 	 */
 	private void init(){
-		if(resourcesId==null){
-			resourcesId = new ArrayList<String>();
-		}
 		if(pToApply==null){
 			pToApply = new ArrayList<Policy>();
 		}
 	}
 	
 	/**
-	 * Query hashmap and retrieve data, such as
+	 * Query {@link RequestHandlerObject} object and retrieve data, such as
 	 * ApiID, Resources IDs and Request Headers.
 	 * 
 	 * @param map : HashMap
 	 */
-	private void getData(HashMap<String, String> map){
-		apiId = map.get("ApiID");
-		//remove
-		//map.remove("ApiID");
-		
-		//find how many resources are saved in map
-		List<String> resourceKey = new ArrayList<String>();
-		
-		Set<String> keylist = map.keySet();
-		Iterator<String> iter = keylist.iterator();
-		while(iter.hasNext()){
-			String element = iter.next();
-			if(element.contains("Resource")){
-				resourceKey.add(element);
-			}
-		}
-		
-		//retrieve values from map
-		for(int i=0;i<resourceKey.size();i++){
-			//print key
-			logger.info("GetData(): Resource key: {}", resourceKey.get(i));
-			
-			String rvalue = map.get(resourceKey.get(i));
-			resourcesId.add(rvalue);
-			//remove
-			//map.remove(resourceKey.get(i));
-		}
-		
-		//if remove
-		//now in map exists only headers
+	private void getData(RequestHandlerObject object){
+		apiId = object.getApiId();
+		resourceId = object.getResourceId();
+		headers = object.getHeaders();
 		
 	}
+	
+	//TODO check headers map
 	
 	/**
 	 * Retrieves api policies and resource policies.
@@ -128,17 +103,15 @@ public class PolicyDecisionPoint {
 		}
 		
 		//resource policies
-		if (resourcesId != null && resourcesId.size() > 0) {
-			for (int i = 0; i < resourcesId.size(); i++) {
-				logger.info("policiesList() - ResourceId: {}",
-						resourcesId.get(i));
-				Resource r = manager.getResourceApiByResourceId(apiId,
-						resourcesId.get(i));
-				List<Policy> rplist=r.getPolicy();
-				if(rplist!=null && rplist.size()>0){
-					pToApply.addAll(rplist);
-				}
+		if (resourceId != null) {
+			logger.info("policiesList() - ResourceId: {}", resourceId);
+			Resource r = manager.getResourceApiByResourceId(apiId,resourceId);
+			//retrieve policy resource
+			List<Policy> rplist = r.getPolicy();
+			if (rplist != null && rplist.size() > 0) {
+				pToApply.addAll(rplist);
 			}
+
 		}
 	}
 	
@@ -147,17 +120,23 @@ public class PolicyDecisionPoint {
 	 * 
 	 * @param map : HashMap
 	 */
-	public void applyPoliciesBatch(HashMap<String, String> map){
+	public void applyPoliciesBatch(RequestHandlerObject obj){
 		logger.info("applyPoliciesBatch() - Apply policies....");
 		init();
-		getData(map);
+		getData(obj);
 		policiesList();
 		
 		if (pToApply != null && pToApply.size() > 0) {
 			for (int i = 0; i < pToApply.size(); i++) {
 				logger.info("applyPoliciesBatch - Apply for each");
-				batch.apply(pToApply.get(i));
+				if(pToApply.get(i) instanceof Quota){
+					batch.add(new QuotaApply());
+				}
+				else if(pToApply.get(i) instanceof SpikeArrest){
+					batch.add(new SpikeArrestApply());
+				}
 			}
+			batch.apply();
 		} else {
 			logger.info("applyPoliciesBatch - No policies to apply");
 		}

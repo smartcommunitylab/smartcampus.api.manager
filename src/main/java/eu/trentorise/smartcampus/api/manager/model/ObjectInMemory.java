@@ -13,22 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package eu.trentorise.smartcampus.api.manager.proxy;
+package eu.trentorise.smartcampus.api.manager.model;
 
-import eu.trentorise.smartcampus.api.manager.model.Policy;
 /**
- * Interface that apply policy logic.
+ * In memory object, with url, apiId, resourceId.
  * 
  * @author Giulia Canobbio
  *
  */
-public interface PolicyDatastoreApply {
-
+public class ObjectInMemory {
+	
+	private String url;
+	private String apiId;
+	private String resourceId;
+	
 	/**
-	 * Methods that apply policy checking policy type,
-	 * which can be quota or spike arrest.
 	 * 
-	 * @param p : instance of {@link Policy}
+	 * @return url, String
 	 */
-	public void apply();
+	public String getUrl() {
+		return url;
+	}
+	/**
+	 * 
+	 * @param url : String
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	/**
+	 * 
+	 * @return api id, String
+	 */
+	public String getApiId() {
+		return apiId;
+	}
+	/**
+	 * 
+	 * @param apiId : String
+	 */
+	public void setApiId(String apiId) {
+		this.apiId = apiId;
+	}
+	/**
+	 * 
+	 * @return resource id, String
+	 */
+	public String getResourceId() {
+		return resourceId;
+	}
+	/**
+	 * 
+	 * @param resourceId : String
+	 */
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
+	}
+	
+	
+
 }

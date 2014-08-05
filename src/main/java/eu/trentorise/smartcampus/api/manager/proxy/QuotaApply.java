@@ -19,8 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import eu.trentorise.smartcampus.api.manager.model.Policy;
-
 /**
  * Class that apply Quota logic.
  * 
@@ -36,7 +34,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 	private static final Logger logger = LoggerFactory.getLogger(QuotaApply.class);
 
 	@Override
-	public void apply(Policy p) {
+	public void apply() {
 		// TODO Auto-generated method stub
 		logger.info("Applying quota policy..");
 	}

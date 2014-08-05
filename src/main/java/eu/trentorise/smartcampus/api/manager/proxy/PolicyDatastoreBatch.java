@@ -15,14 +15,12 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.proxy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import eu.trentorise.smartcampus.api.manager.model.Policy;
-import eu.trentorise.smartcampus.api.manager.model.Quota;
-import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 
 /**
  * Class that apply the correct logic to policy.
@@ -36,29 +34,24 @@ public class PolicyDatastoreBatch implements PolicyDatastoreApply{
 	 * Instance of {@link Logger}.
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(PolicyDatastoreBatch.class);
-	/**
-	 * Instance of {@link QuotaApply}.
-	 */
-	@Autowired
-	private QuotaApply qapply;
-	/**
-	 * Instance of {@link SpikeArrestApply}.
-	 */
-	@Autowired
-	private SpikeArrestApply spapply;
+	
+	private List<PolicyDatastoreApply> policies = new ArrayList<PolicyDatastoreApply>();
 
 	@Override
-	public void apply(Policy p) {
-		// TODO Auto-generated method stub
-		if(p instanceof Quota){
-			logger.info("Quota policy..");
-			qapply.apply(p);
-		}else if(p instanceof SpikeArrest){
-			logger.info("Spike Arrest policy..");
-			spapply.apply(p);
-		}else{
-			logger.info("Ops.. Not yet implemented...We are sorry!");
+	public void apply() {
+		logger.info("Apply - PolicyDatastoreBatch");
+		for(int i=0;i<policies.size();i++){
+			policies.get(i).apply();
 		}
+		
+	}
+	
+	public void add(PolicyDatastoreApply p){
+		policies.add(p);
+	}
+	
+	public void remove(PolicyDatastoreApply p){
+		policies.remove(p);
 	}
 
 }
