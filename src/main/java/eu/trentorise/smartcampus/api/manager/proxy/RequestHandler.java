@@ -72,6 +72,7 @@ public class RequestHandler{
 				//get resource
 				List<Resource> rlist = apilist.get(i).getResource();
 				if(rlist!=null && rlist.size()>0){
+					logger.info("In memory - Found resources");
 					for(int j=0;j<rlist.size();j++){
 						String rId = rlist.get(j).getId();
 						String uri = rlist.get(j).getUri();
@@ -84,6 +85,7 @@ public class RequestHandler{
 						all.add(m);
 					}
 				}else{
+					logger.info("In memory - No resource");
 					//save in object
 					ObjectInMemory m = new ObjectInMemory();
 					m.setUrl(basepath);
@@ -97,7 +99,7 @@ public class RequestHandler{
 			logger.info("In memory - ");
 			logger.info("url: {} ", all.get(i).getUrl());
 			logger.info("api id: {} ", all.get(i).getApiId());
-			logger.info("resource: {} ", all.get(i).getResourceId());
+			logger.info("resource id: {} ", all.get(i).getResourceId());
 		}
 	}
 	

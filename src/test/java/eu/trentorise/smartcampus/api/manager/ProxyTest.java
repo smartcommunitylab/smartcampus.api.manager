@@ -61,13 +61,54 @@ public class ProxyTest {
 	}
 	
 	/**
-	 * Test proxy scenario
+	 * Test proxy scenario: api with resource.
+	 * Use as url api basepath + resource uri.
 	 */
 	@Test
 	public void test() {
 		log.info("Test starting..");
 		
 		String url = "http://proxy/vciao/hi/r1/2/";
+		//request handler
+		log.info("Request hanlder..");
+		RequestHandlerObject obj = requestHandler.handleUrl(url, null);
+		
+		//policy decision
+		log.info("Policy Decision Port..");
+		pdecision.applyPoliciesBatch(obj);
+		
+		log.info("Test end.");
+	}
+	
+	/**
+	 * Test proxy scenario: api with resource.
+	 * Use as url only api basepath.
+	 */
+	@Test
+	public void test2() {
+		log.info("Test starting..");
+		
+		String url = "http://proxy/vciao/hi";
+		//request handler
+		log.info("Request hanlder..");
+		RequestHandlerObject obj = requestHandler.handleUrl(url, null);
+		
+		//policy decision
+		log.info("Policy Decision Port..");
+		pdecision.applyPoliciesBatch(obj);
+		
+		log.info("Test end.");
+	}
+	
+	/**
+	 * Test proxy scenario: api without resource.
+	 * Use as url only api basepath.
+	 */
+	@Test
+	public void test3(){
+		log.info("Test starting..");
+		
+		String url = "http://proxy/web/api/v2/amazon";
 		//request handler
 		log.info("Request hanlder..");
 		RequestHandlerObject obj = requestHandler.handleUrl(url, null);
