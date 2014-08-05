@@ -49,6 +49,7 @@ public class Resource implements Serializable{
 	@Indexed(unique=true)
 	private String name;
 	@Field
+	@Indexed(unique=true)
 	private String uri;
 	@Field
 	private String verb;

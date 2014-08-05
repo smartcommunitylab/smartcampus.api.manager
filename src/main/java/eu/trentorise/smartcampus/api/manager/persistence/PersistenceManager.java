@@ -608,6 +608,9 @@ public class PersistenceManager {
 		if(resourceApiExists(apiId, r.getName())){
 			throw new IllegalArgumentException("Resource already exists. Change name.");
 		}
+		if(resourceUriApiExists(apiId, r.getUri())){
+			throw new IllegalArgumentException("Resource already exists. Change uri.");
+		}
 
 		if(r.getId()==null || r.getId().equalsIgnoreCase("")){
 			r.setId(generateId());
@@ -716,12 +719,21 @@ public class PersistenceManager {
 			}
 		}
 		if(oldr!=null){
+			//check new name
 			if(!oldr.getName().equalsIgnoreCase(r.getName())){
 				if(resourceApiExists(apiId, r.getName())){
-					throw new IllegalArgumentException("Resource already exists. Change name.");
+					throw new IllegalArgumentException("Resource already exists. " +
+							"Change name.");
 				}
 			}
 			oldr.setName(r.getName());
+			//check new uri
+			if (!oldr.getUri().equalsIgnoreCase(r.getUri())) {
+				if (resourceUriApiExists(apiId, r.getUri())) {
+					throw new IllegalArgumentException("Resource already exists. " +
+							"Change uri.");
+				}
+			}
 			oldr.setUri(r.getUri());
 			oldr.setVerb(r.getVerb());
 			if(r.getPolicy()!=null){
@@ -802,6 +814,32 @@ public class PersistenceManager {
 			if (rlist != null) {
 				for (int i = 0; i < rlist.size(); i++) {
 					if (rlist.get(i).getName().equalsIgnoreCase(resourceName)) {
+						rs.add(rlist.get(i));
+					}
+				}
+			}
+			return rs;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieves resource data from Api searching by resource uri.
+	 * 
+	 * @param apiId : String
+	 * @param resourceName : String
+	 * @return list of {@link Resource} instances
+	 */
+	public List<Resource> getResourceApiByResourceUri(String apiId, String resourceUri){
+		Api api = getApiById(apiId);
+		try {
+			List<Resource> rlist = api.getResource();
+			List<Resource> rs = new ArrayList<Resource>();
+
+			if (rlist != null) {
+				for (int i = 0; i < rlist.size(); i++) {
+					if (rlist.get(i).getUri().equalsIgnoreCase(resourceUri)) {
 						rs.add(rlist.get(i));
 					}
 				}
@@ -1593,6 +1631,21 @@ public class PersistenceManager {
 	 */
 	public boolean resourceApiExists(String apiId, String resourceName){
 		List<Resource> rlist = getResourceApiByResourceName(apiId, resourceName);
+		if(rlist!=null && rlist.size()>0){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if a resource with a given uri is already saved in db.
+	 * 
+	 * @param apiId : String
+	 * @param resourceName : String
+	 * @return true if a resource with a given name exists, false otherwise
+	 */
+	public boolean resourceUriApiExists(String apiId, String resourceUri){
+		List<Resource> rlist = getResourceApiByResourceUri(apiId, resourceUri);
 		if(rlist!=null && rlist.size()>0){
 			return true;
 		}
