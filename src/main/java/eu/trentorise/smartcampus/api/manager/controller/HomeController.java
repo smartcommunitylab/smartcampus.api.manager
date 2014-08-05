@@ -17,9 +17,6 @@ package eu.trentorise.smartcampus.api.manager.controller;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
+import eu.trentorise.smartcampus.api.manager.proxy.PolicyDecisionPoint;
 import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
 
 /**
@@ -40,11 +38,19 @@ import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
 @Controller
 public class HomeController {
 	/**
-	 * Instance of {@link Logger}
+	 * Instance of {@link Logger}.
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	/**
+	 * Instance of {@link RequestHandler}.
+	 */
 	@Autowired
 	private RequestHandler requestHandler;
+	/**
+	 * Instance of {@link PolicyDecisionPoint}.
+	 */
+	@Autowired
+	private PolicyDecisionPoint pdp;
 	
 	/**
 	 * Return "HelloWorld" string
@@ -74,8 +80,12 @@ public class HomeController {
 			String decodedurl = URLDecoder.decode(url, "UTF-8");
 			logger.info("Decoded url: {}", decodedurl);
 			RequestHandlerObject r = requestHandler.handleUrl(decodedurl, request);
+			pdp.applyPoliciesBatch(r);
 			
-			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
+			if(r.getApiId()==null && r.getResourceId()==null){
+				return new ResultData(r, HttpServletResponse.SC_NOT_FOUND, "not found");
+			}else 
+				return new ResultData(r, HttpServletResponse.SC_OK, "ok");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -98,8 +108,12 @@ public class HomeController {
 		logger.info("proxy request handler");
 
 		RequestHandlerObject r = requestHandler.handleRequest(request);
-
-		return new ResultData(r, HttpServletResponse.SC_OK, "ok");
+		pdp.applyPoliciesBatch(r);
+		
+		if(r.getApiId()==null && r.getResourceId()==null){
+			return new ResultData(r, HttpServletResponse.SC_NOT_FOUND, "not found");
+		}else 
+			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
 
 	}
 	

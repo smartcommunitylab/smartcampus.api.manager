@@ -52,17 +52,9 @@ public class RequestHandler{
 	 */
 	@Autowired
 	private PersistenceManager apiManager;
-	
-	//global variables
 	/**
-	 * Global variable, api id
+	 * Instance of {@link ObjectInMemory}.
 	 */
-	private String apiId;
-	/**
-	 * Global variable, list of resource id
-	 */
-	private String resourceId;
-	
 	private static List<ObjectInMemory> all;
 	
 	/**
@@ -123,7 +115,7 @@ public class RequestHandler{
 	public RequestHandlerObject handleUrl(String url, HttpServletRequest request){
 		
 		initMemory();
-		
+		String apiId = null, resourceId = null;
 		RequestHandlerObject result = new RequestHandlerObject();
 		
 		String path = splitUrl(url);
@@ -189,6 +181,7 @@ public class RequestHandler{
 	public RequestHandlerObject handleRequest(HttpServletRequest request) {
 
 		initMemory();
+		String apiId = null, resourceId = null;
 		RequestHandlerObject result = new RequestHandlerObject();
 
 		String requestUri = request.getRequestURI();
@@ -242,24 +235,6 @@ public class RequestHandler{
 		
 		return result;
 
-	}
-	
-	//getter
-	
-	/**
-	 * 
-	 * @return String api id
-	 */
-	public String getApiId() {
-		return apiId;
-	}
-	
-	/**
-	 * 
-	 * @return String list of resource id
-	 */
-	public String getResourceIds() {
-		return resourceId;
 	}
 	
 	/**

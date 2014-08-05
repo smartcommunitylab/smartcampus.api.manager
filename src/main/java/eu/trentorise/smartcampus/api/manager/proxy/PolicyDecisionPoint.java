@@ -63,16 +63,6 @@ public class PolicyDecisionPoint {
 	private String apiId;
 	private String resourceId;
 	private Map<String, String> headers;
-	private List<Policy> pToApply;
-	
-	/**
-	 * Init array global variables.
-	 */
-	private void init(){
-		if(pToApply==null){
-			pToApply = new ArrayList<Policy>();
-		}
-	}
 	
 	/**
 	 * Query {@link RequestHandlerObject} object and retrieve data, such as
@@ -92,15 +82,14 @@ public class PolicyDecisionPoint {
 	/**
 	 * Retrieves api policies and resource policies.
 	 * 
+	 * @return list of instance {@link Policy}
 	 */
-	private void policiesList(){
+	private List<Policy> policiesList(){
 		logger.info("policiesList() - ApiId: {}", apiId);
+		
+		List<Policy> pToApply = new ArrayList<Policy>();
 		//api policies
 		Api api =  manager.getApiById(apiId);
-		List<Policy> policies = api.getPolicy();
-		if(policies!=null && policies.size()>0){
-			pToApply.addAll(policies);
-		}
 		
 		//resource policies
 		if (resourceId != null) {
@@ -113,6 +102,17 @@ public class PolicyDecisionPoint {
 			}
 
 		}
+		// api policies
+		try {
+			List<Policy> policies = api.getPolicy();
+			if (policies != null && policies.size() > 0) {
+				pToApply.addAll(policies);
+			}
+		} catch (NullPointerException n) {
+			logger.info("policiesList() - No policies for this api {}", apiId);
+		}
+		
+		return pToApply;
 	}
 	
 	/**
@@ -122,9 +122,8 @@ public class PolicyDecisionPoint {
 	 */
 	public void applyPoliciesBatch(RequestHandlerObject obj){
 		logger.info("applyPoliciesBatch() - Apply policies....");
-		init();
 		getData(obj);
-		policiesList();
+		List<Policy> pToApply = policiesList();
 		
 		if (pToApply != null && pToApply.size() > 0) {
 			for (int i = 0; i < pToApply.size(); i++) {
