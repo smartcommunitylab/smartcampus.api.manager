@@ -40,12 +40,12 @@ import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
  */
 @Component
 @Transactional
-public class PolicyDecisionPort {
+public class PolicyDecisionPoint {
 	
 	/**
 	 * Instance of {@link Logger}.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(PolicyDecisionPort.class);
+	private static final Logger logger = LoggerFactory.getLogger(PolicyDecisionPoint.class);
 	/**
 	 * Instance of {@link PersistenceManager}.
 	 */
