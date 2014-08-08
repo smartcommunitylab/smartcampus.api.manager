@@ -39,8 +39,8 @@
           <li ng-class="{active: loc[0] === 'apis'}">
             <a href="apis">Apis</a>
           </li>
-          <li ng-class="{active: loc[0] === 'publish'}">
-          	<a href="#">Publish</a>
+          <li ng-class="{active: loc[0] === 'apps'}">
+          	<a href="apps">Apps</a>
           </li>
         </ul>
        
