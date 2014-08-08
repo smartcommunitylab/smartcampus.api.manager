@@ -322,8 +322,8 @@ public class ScenarioApi {
 		app2.setName("Smartcampus app junit-test");
 		//app2.setKey("junit.test.smartcampus.2.app");
 		
-		apiManager.addAppApi("api1", app1);
-		App app = apiManager.addAppApi("api1", app2);
+		apiManager.addApp(app1);
+		App app = apiManager.addApp(app2);
 		assertNotNull("Error in finding app",app);
 		
 		log.info("Add app api test terminated.");
@@ -335,18 +335,18 @@ public class ScenarioApi {
 	@Test
 	public void retrieveApps(){
 		log.info("Find apps api by apps id..");
-		App app= apiManager.getAppApiByAppId("api1", "junit-test-spring-1");
+		App app= apiManager.getAppById("junit-test-spring-1");
 		assertNotNull("Error in finding by resource id",app);
 		assertTrue("Incorrect id",app.getId().equalsIgnoreCase("junit-test-spring-1"));
 		
 		log.info("Find apps api by apps name..");
-		List<App> app1= apiManager.getAppApiByAppName("api1", "Smartcampus app junit-test");
+		List<App> app1= apiManager.getAppByName("Smartcampus app junit-test");
 		assertNotNull("Error in finding by resource id",app1);
 		assertTrue("Incorrect id",app1.get(0).getName().equalsIgnoreCase("Smartcampus app junit-test"));
 		
 		log.info("Find apps api by apps key..");
-		App a= apiManager.getAppApiByAppId("api1", "junit-test-spring-1");
-		List<App> app2= apiManager.getAppApiByAppKey("api1", a.getKey());
+		App a= apiManager.getAppById("junit-test-spring-1");
+		List<App> app2= apiManager.getAppByKey(a.getKey());
 		assertNotNull("Error in finding by resource id",app2);
 		assertTrue("Incorrect id",app2.get(0).getKey().equalsIgnoreCase(a.getKey()));
 		
@@ -364,7 +364,7 @@ public class ScenarioApi {
 		app1.setId("junit-test-spring-1");
 		app1.setName("Openservice app junit-test-update");
 		app1.setKey("junit.test.openservice.1.app");
-		apiManager.updateAppApi("api1", app1);
+		apiManager.updateApp(app1);
 		
 		log.info("Update app 1 of api terminated.");
 	}
@@ -376,7 +376,7 @@ public class ScenarioApi {
 	public void deleteApp1(){
 		log.info("Delete app 1 of api...");
 		
-		apiManager.deleteAppApi("api1", "junit-test-spring-1");
+		apiManager.deleteApp("junit-test-spring-1");
 		
 		log.info("Delete app 1 of api terminated.");
 	}

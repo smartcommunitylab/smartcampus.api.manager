@@ -92,18 +92,7 @@ public class ApiTest {
 		r1.setName("Counter");
 		r1.setUri("/resource1");
 		r1.setVerb("GET");
-		/*
-		//Policy
-		log.info("Add policy.. Spike Arrest");
-		SpikeArrest p3 = new SpikeArrest();
-		//policy parameter
-		p3.setName("SpikeArrest-3");
-		p3.setNotes("Some notes bla bla bla bla");
-		p3.setCategory("quality");
-		p3.setType("policy");
-		//spike arrest parameter
-		p3.setRate("10pm");
-		*/
+		
 		//App
 		log.info("Add app...");
 		App app1 = new App();
@@ -122,14 +111,7 @@ public class ApiTest {
 		List<Resource> rlist = new ArrayList<Resource>();
 		rlist.add(r1);
 		api.setResource(rlist);
-		/*
-		List<Policy> plist = new ArrayList<Policy>();
-		plist.add(p3);
-		api.setPolicy(plist);
-		*/
-		List<App> alist = new ArrayList<App>();
-		alist.add(app1);
-		api.setApp(alist);
+		
 		
 		//add rest
 		try{
