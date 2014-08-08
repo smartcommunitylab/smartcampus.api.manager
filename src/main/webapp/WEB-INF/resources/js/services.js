@@ -77,22 +77,26 @@ services.factory('Resource', ['$resource',
 
 services.factory('App', ['$resource',
     function($resource){
-		return $resource('api/:apiId/app/:appId', {}, {
+		return $resource('api/app/:appId', {}, {
 			create:{
 				method: 'POST',
-				url: 'api/add/:apiId/app'
+				url: 'api/app/add'
 			},
 			update:{
-				method: 'POST',
-				url: 'api/update/:apiId/app'
+				method: 'PUT',
+				url: 'api/app/update'
 			},
 			remove:{
 				method: 'DELETE',
-				url: 'api/delete/:apiId/app/:appId'
+				url: 'api/delete/:appId'
 			},
 			getApp:{
 				method: 'GET',
-				url: 'api/:apiId/app/:appId'
+				url: 'api/app/:appId'
+			},
+			list:{
+				method: 'GET',
+				url: 'api/app/list'
 			}
 		});
 	}

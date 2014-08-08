@@ -20,7 +20,6 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
@@ -32,7 +31,6 @@ import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy
  * @author Giulia Canobbio
  *
  */
-@Component
 public class QuotaApply implements PolicyDatastoreApply{
 	
 	/**

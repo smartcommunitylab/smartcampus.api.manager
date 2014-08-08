@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
-import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
@@ -164,7 +163,7 @@ public class ApiController {
 	 * 			"Updated app Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/add/{apiId}/app", method = RequestMethod.POST, consumes="application/json")
+	/*@RequestMapping(value = "/add/{apiId}/app", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData addApp(@PathVariable String apiId, @RequestBody App app) {
 		logger.info("Update api app.");
@@ -179,7 +178,7 @@ public class ApiController {
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
 		}
-	}
+	}*/
 	
 	/**
 	 * Rest service that updating a policy api.
@@ -334,7 +333,7 @@ public class ApiController {
 	 * 			"Updated app Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/update/{apiId}/app", method = RequestMethod.POST, consumes="application/json")
+	/*@RequestMapping(value = "/update/{apiId}/app", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData updateApp(@PathVariable String apiId, @RequestBody App app) {
 		logger.info("Update api app.");
@@ -349,7 +348,7 @@ public class ApiController {
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
 		}
-	}
+	}*/
 	
 	/**
 	 * Rest service that updating a policy api.
@@ -477,14 +476,14 @@ public class ApiController {
 	 * @return instance of {@link ResultData} with status (OK) and a string message : 
 	 * 			"Delete done!".
 	 */
-	@RequestMapping(value = "/delete/{apiId}/app/{appId}", method = RequestMethod.DELETE)
+	/*@RequestMapping(value = "/delete/{apiId}/app/{appId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResultData deleteApp(@PathVariable String apiId, @PathVariable String appId){
 		logger.info("Delete api resource.");
 		
 		pmanager.deleteAppApi(apiId,appId);
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
-	}
+	}*/
 	
 	/**
 	 * Rest service that deleting an Policy Api from database by passing its id.

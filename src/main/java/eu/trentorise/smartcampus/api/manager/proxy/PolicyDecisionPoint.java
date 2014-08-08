@@ -58,11 +58,6 @@ public class PolicyDecisionPoint {
 	 */
 	@Autowired
 	private PersistenceManagerProxy proxyManager;
-	/**
-	 * Instance of {@link PolicyDatastoreBatch}.
-	 */
-	@Autowired
-	private PolicyDatastoreBatch batch;
 	/*
 	 * Global variables
 	 */
@@ -133,6 +128,8 @@ public class PolicyDecisionPoint {
 		getData(obj);
 		List<Policy> pToApply = policiesList();
 		
+		PolicyDatastoreBatch batch = new PolicyDatastoreBatch();
+		
 		if (pToApply != null && pToApply.size() > 0) {
 			for (int i = 0; i < pToApply.size(); i++) {
 				logger.info("applyPoliciesBatch - Apply for each");
@@ -150,5 +147,6 @@ public class PolicyDecisionPoint {
 		} else {
 			logger.info("applyPoliciesBatch - No policies to apply");
 		}
+		//batch.clean();
 	}
 }

@@ -46,12 +46,29 @@ public class PolicyDatastoreBatch implements PolicyDatastoreApply{
 		
 	}
 	
+	/**
+	 * Add element to list.
+	 * 
+	 * @param p : instance of {@link PolicyDatastoreApply}
+	 */
 	public void add(PolicyDatastoreApply p){
 		policies.add(p);
 	}
 	
+	/**
+	 * Remove element from list.
+	 * 
+	 * @param p : instance of {@link PolicyDatastoreApply}
+	 */
 	public void remove(PolicyDatastoreApply p){
 		policies.remove(p);
+	}
+	
+	/**
+	 * Clean list.
+	 */
+	public void clean(){
+		policies.clear();
 	}
 
 }

@@ -255,91 +255,86 @@ public class PersistenceManager {
 	
 	/**
 	 * Retrieves all App data saved in db.
-	 * NOT IN USE
 	 * 
 	 * @return list of {@link App} instances
 	 */
-	/*public List<App> listApp(){
+	public List<App> listApp(){
 		return apprepository.findAll();
 	}
-	*/
+	
 	/**
 	 * Retrieves App data searching by id.
-	 * NOT IN USE
 	 * 
 	 * @param id : String
 	 * @return instance of {@link App}
 	 */
-	/*public App getAppById(String id){
+	public App getAppById(String id){
 		List<App> apps = apprepository.findById(id);
 		if(apps!=null && apps.size()>0){
 			return apps.get(0);
 		}
 		return null;
 	}
-	*/
+	
 	/**
 	 * Retrieves App data searching by key.
-	 * NOT IN USE
 	 * 
 	 * @param key : String
 	 * @return list of {@link App} instances
 	 */
-	/*public List<App> getAppByKey(String key){
+	public List<App> getAppByKey(String key){
 		return (List<App>) apprepository.findByKey(key);
-	}*/
+	}
 	
 	/**
 	 * Retrieves App data searching by name.
-	 * NOT IN USE
 	 * 
 	 * @param name : String
 	 * @return list of {@link App}
 	 */
-	/*public List<App> getAppByName(String name){
+	public List<App> getAppByName(String name){
 		return (List<App>) apprepository.findByName(name);
 	}
-	*/
+	
 	/**
 	 * Create a new App and save it in db.
 	 * If name field is null then throws IllegalArgumentException, because
 	 * name is required.
-	 * NOT IN USE
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return saved instance of {@link App}
 	 */
-	/*public App addApp(App app){
+	public App addApp(App app){
 		if(app.getName()==null){
 			throw new IllegalArgumentException("App name is required.");
 		}
 		if(app.getId()==null || app.getId().equalsIgnoreCase("")){
 			app.setId(generateId());
 		}
+		//set app key
+		app.setKey(UUID.randomUUID().toString());
 		return apprepository.save(app);
 	}
-	*/
+	
 	/**
 	 * Update an existing App.
-	 * NOT IN USE
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return updated instace of {@link App}
 	 */
-	/*public App updateApp(App app){
+	public App updateApp(App app){
 		return addApp(app);
 	}
-	*/
+	
 	/**
 	 * Deletes an App from db.
-	 * NOT IN USE
 	 * 
-	 * @param app : instance of {@link App}
+	 * @param appId : String
 	 */
-	/*public void deleteApp(App app){
-		apprepository.delete(app);
+	public void deleteApp(String appId){
+		apprepository.delete(appId);
 	}
-	*/
+	
 	/* 
 	 * Policy 
 	 */
@@ -1136,7 +1131,7 @@ public class PersistenceManager {
 	 * @param app : instance of {@link App}
 	 * @return added instance of {@link App}
 	 */
-	public App addAppApi(String apiId, App app){
+	/*public App addAppApi(String apiId, App app){
 		if(app.getName()==null){
 			throw new IllegalArgumentException("App name is required.");
 		}
@@ -1164,7 +1159,7 @@ public class PersistenceManager {
 		
 		return getAppApiByAppId(apiId, app.getId());
 	}
-	
+	*/
 	/**
 	 * Updates an app in Api instance.
 	 * First this method checks if name is undefined, otherwise it 
@@ -1178,7 +1173,7 @@ public class PersistenceManager {
 	 * @param app : instance of {@link App}
 	 * @return instance of {@link Ap} with updates
 	 */
-	public App updateAppApi(String apiId, App app){
+	/*public App updateAppApi(String apiId, App app){
 		if(app.getName()==null){
 			throw new IllegalArgumentException("App name is required.");
 		}
@@ -1206,7 +1201,7 @@ public class PersistenceManager {
 		updateApi(api);
 		
 		return getAppApiByAppId(apiId, app.getId());
-	}
+	}*/
 	
 	/**
 	 * Deletes an app from Api.
@@ -1214,7 +1209,7 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param appId : String
 	 */
-	public void deleteAppApi(String apiId, String appId){
+	/*public void deleteAppApi(String apiId, String appId){
 		// retrieves api
 		Api api = getApiById(apiId);
 		// retrieves app
@@ -1228,7 +1223,7 @@ public class PersistenceManager {
 		}
 		api.setApp(alist);
 		updateApi(api);
-	}
+	}*/
 	
 	/**
 	 * Retrieves app from Api searching by app id.
@@ -1237,7 +1232,7 @@ public class PersistenceManager {
 	 * @param appId : String
 	 * @return instance of {@link App}
 	 */
-	public App getAppApiByAppId(String apiId, String appId){
+	/*public App getAppApiByAppId(String apiId, String appId){
 		Api api = getApiById(apiId);
 		try {
 			List<App> alist = api.getApp();
@@ -1254,7 +1249,7 @@ public class PersistenceManager {
 		} catch (java.lang.NullPointerException n) {
 			return null;
 		}
-	}
+	}*/
 	
 	/**
 	 * Retrieves apps from Api searching by app name.
@@ -1263,7 +1258,7 @@ public class PersistenceManager {
 	 * @param appName : String
 	 * @return list of {@link App} instances
 	 */
-	public List<App> getAppApiByAppName(String apiId, String appName){
+	/*public List<App> getAppApiByAppName(String apiId, String appName){
 		Api api = getApiById(apiId);
 		try {
 			List<App> alist = api.getApp();
@@ -1280,7 +1275,7 @@ public class PersistenceManager {
 		} catch (java.lang.NullPointerException n) {
 			return null;
 		}
-	}
+	}*/
 	
 	/**
 	 * Retrieves apps from Api searching by app key.
@@ -1289,7 +1284,7 @@ public class PersistenceManager {
 	 * @param appKey
 	 * @return
 	 */
-	public List<App> getAppApiByAppKey(String apiId, String appKey){
+	/*public List<App> getAppApiByAppKey(String apiId, String appKey){
 		Api api = getApiById(apiId);
 		try {
 			List<App> alist = api.getApp();
@@ -1306,7 +1301,7 @@ public class PersistenceManager {
 		} catch (java.lang.NullPointerException n) {
 			return null;
 		}
-	}
+	}*/
 	
 	/*
 	 * Policy in Resource Api
@@ -1372,7 +1367,7 @@ public class PersistenceManager {
 		isPolicyInstanceOf(p);
 		// check category
 		if (p instanceof SpikeArrest || p instanceof Quota) {
-			if (!p.getCategory().equalsIgnoreCase(
+			if (p.getCategory()==null || !p.getCategory().equalsIgnoreCase(
 					POLICY_CATEGORY.QualityOfService.toString())) {
 				p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
 				// throw new
@@ -1614,13 +1609,13 @@ public class PersistenceManager {
 	 * @param appName : String
 	 * @return true if an app with a given name exists, false otherwise
 	 */
-	public boolean appApiExists(String apiId, String appName){
+	/*public boolean appApiExists(String apiId, String appName){
 		List<App> applist = getAppApiByAppName(apiId, appName);
 		if(applist!=null && applist.size()>0){
 			return true;
 		}
 		return false;
-	}
+	}*/
 	
 	/**
 	 * Check if a resource with a given name is already saved in db.

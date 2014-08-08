@@ -16,96 +16,54 @@
 package eu.trentorise.smartcampus.api.manager.model;
 
 import java.io.Serializable;
-import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * App model
- * id : String,
- * name : String,
- * key : String,
- * apis : collection of api id and api status.
+ * Model for api data in app model.
  * 
  * @author Giulia Canobbio
  *
  */
 @Document
-public class App implements Serializable{
-	
+public class ApiData implements Serializable{
 	/**
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Id
-	private String id;
-	@Field("name")
-	@Indexed(unique=true)
-	private String name;
 	@Field
-	@Indexed(unique=true)
-	private String key;
+	private String apiId;
 	@Field
-	private List<ApiData> apis;
+	private String apiStatus;
+	
 	/**
 	 * 
-	 * @return id : String
+	 * @return api id : String
 	 */
-	public String getId() {
-		return id;
+	public String getApiId() {
+		return apiId;
 	}
 	/**
 	 * 
-	 * @param id : String
+	 * @param apiId : String
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setApiId(String apiId) {
+		this.apiId = apiId;
 	}
 	/**
 	 * 
-	 * @return name : String
+	 * @return api status : String
 	 */
-	public String getName() {
-		return name;
+	public String getApiStatus() {
+		return apiStatus;
 	}
 	/**
 	 * 
-	 * @param name : String
+	 * @param apiStatus : String
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	/**
-	 * 
-	 * @return key : String
-	 */
-	public String getKey() {
-		return key;
-	}
-	/**
-	 * 
-	 * @param key : String
-	 */
-	public void setKey(String key) {
-		this.key = key;
-	}
-	/**
-	 * 
-	 * @return list of {@link ApiData} instances
-	 */
-	public List<ApiData> getApis() {
-		return apis;
-	}
-	/**
-	 * 
-	 * @param apis : list of {@link ApiData} instances
-	 */
-	public void setApis(List<ApiData> apis) {
-		this.apis = apis;
+	public void setApiStatus(String apiStatus) {
+		this.apiStatus = apiStatus;
 	}
 	
-
 }

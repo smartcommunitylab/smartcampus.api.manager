@@ -33,9 +33,27 @@ app.controller('apisCtrl', ['$scope', '$location', '$route', 'Api',
     }
 ]);
 
+app.controller('appsCtrl', ['$scope', '$location', '$route', 'App',
+    function($scope, $location, $route, App){
+		App.list({
+        }, function(data){
+            $scope.appsList = data.data;
+        });
+                       	
+		$scope.deleteApp = function (id) {
+			App.remove({
+				apiId : apiid,
+				appId : id
+			}, function(data){
+				$route.reload();
+			});
+		};
+     }
+]);
+
 app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 'Api', 'Resource', 
-                               'Policy', 'App',
-    function($scope, $route, $routeParams, $location, Api, Resource, Policy, App){
+                               'Policy',
+    function($scope, $route, $routeParams, $location, Api, Resource, Policy){
 		var apiid = $routeParams.apiId;
 		var elem = $routeParams.elem;
 		
@@ -43,27 +61,19 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 			if(elem==='resource'){
 				$scope.isTabResourceActive = true;
 				$scope.isTabPolicyActive = false;
-				$scope.isTabAppActive = false;
 				
 			}else if(elem==='policy'){
 				$scope.isTabResourceActive = false;
 				$scope.isTabPolicyActive = true;
-				$scope.isTabAppActive = false;
 				
-			}else if(elem==='app'){
-				$scope.isTabResourceActive = false;
-				$scope.isTabPolicyActive = false;
-				$scope.isTabAppActive = true;
 			}else{
 				console.log('Error. Elem can be resource, policy or app.');
 				$scope.isTabResourceActive = true;
 				$scope.isTabPolicyActive = false;
-				$scope.isTabAppActive = false;
 			}
 		}else{
 			$scope.isTabResourceActive = true;
 			$scope.isTabPolicyActive = false;
-			$scope.isTabAppActive = false;
 		}
 		
 		Api.getApi({
@@ -85,15 +95,6 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 			Policy.remove({
 				apiId : apiid,
 				policyId : id
-			}, function(data){
-				$route.reload();
-			});
-		};
-		
-		$scope.deleteApp = function (id) {
-			App.remove({
-				apiId : apiid,
-				appId : id
 			}, function(data){
 				$route.reload();
 			});
@@ -392,10 +393,6 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', '$timeout'
 				$scope.errorMsg = null;
 				$scope.msg = null;
 		    }, 7000);
-			
-			$scope.goBack = function(){
-				$location.path('/api/'+apiid+'/app');
-			};
         }
 ]);
 

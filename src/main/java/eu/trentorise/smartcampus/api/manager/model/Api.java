@@ -57,14 +57,16 @@ public class Api implements Serializable{
 	private List<Resource> resource;
 	@Field
 	private List<Policy> policy;
-	@Field
-	private List<App> app;
+	/*@Field
+	private List<App> app;*/
 	@Field
 	private String ownerId;
 	@Field
 	private String creationTime;
 	@Field
 	private String updateTime;
+	@Field
+	private List<Status> status;
 	/**
 	 * 
 	 * @return id : String
@@ -139,16 +141,16 @@ public class Api implements Serializable{
 	 * 
 	 * @return app : list of {@link App} instances
 	 */
-	public List<App> getApp() {
+	/*public List<App> getApp() {
 		return app;
-	}
+	}*/
 	/**
 	 * 
 	 * @param app :{@link Resource} instance
 	 */
-	public void setApp(List<App> app) {
+	/*public void setApp(List<App> app) {
 		this.app = app;
-	}
+	}*/
 	/**
 	 * 
 	 * @return owner id : String
@@ -190,5 +192,19 @@ public class Api implements Serializable{
 	 */
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
+	}
+	/**
+	 * 
+	 * @return status, list of string
+	 */
+	public List<Status> getStatus() {
+		return status;
+	}
+	/**
+	 * 
+	 * @param status : list of string
+	 */
+	public void setStatus(List<Status> status) {
+		this.status = status;
 	}
 }

@@ -27,7 +27,13 @@ public class Constants {
 	 * Possible value of verb field in Resource.
 	 */
 	public enum VERB {GET, POST, PUT, DELETE};
-	
+	/**
+	 * Possible value of policy category
+	 */
 	public enum POLICY_CATEGORY {QualityOfService, Security};
+	/**
+	 * possible value of api status
+	 */
+	public enum API_STATUS {SILVER, GOLD, PLATINUM};
 
 }

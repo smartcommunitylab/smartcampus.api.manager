@@ -62,11 +62,6 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/policy/edit.html',
         	access: access.public
         }).
-        when('/create/app/:apiId',{
-        	controller: 'addAppCtrl',
-        	templateUrl: 'partials/app/edit.html',
-        	access: access.public
-        }).
         when('/edit/api/:apiId',{
         	controller: 'editApiCtrl',
         	templateUrl: 'partials/apis/edit.html',
@@ -82,11 +77,6 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/policy/edit.html',
         	access: access.public
         }).
-        when('/edit/:apiId/app/:appId',{
-        	controller: 'editAppCtrl',
-        	templateUrl: 'partials/app/edit.html',
-        	access: access.public
-        }).
         when('/show/:apiId/resource/:resourceId',{
         	controller: 'showResourceCtrl',
         	templateUrl: 'partials/resource/show.html',
@@ -100,6 +90,21 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         when('/edit/:apiId/resource/:resourceId/policy/:policyId',{
         	controller: 'editResourcePolicyCtrl',
         	templateUrl: 'partials/policy/edit.html',
+        	access: access.public
+        }).
+        when('/apps',{
+        	controller: 'appsCtrl',
+        	templateUrl: 'partials/app/list.html',
+        	access: access.public
+        }).
+        when('/create/app/',{
+        	controller: 'addAppCtrl',
+        	templateUrl: 'partials/app/edit.html',
+        	access: access.public
+        }).
+        when('/edit/app/:appId',{
+        	controller: 'editAppCtrl',
+        	templateUrl: 'partials/app/edit.html',
         	access: access.public
         }).
         otherwise({
