@@ -29,6 +29,7 @@ public class RequestHandlerObject {
 	
 	private String apiId;
 	private String resourceId;
+	private String appId;
 	private Map<String,String> headers;
 	
 	/**
@@ -58,6 +59,20 @@ public class RequestHandlerObject {
 	 */
 	public void setResourceId(String resourceId) {
 		this.resourceId = resourceId;
+	}
+	/**
+	 * 
+	 * @return appId : String
+	 */
+	public String getAppId() {
+		return appId;
+	}
+	/**
+	 * 
+	 * @param appId : String
+	 */
+	public void setAppId(String appId) {
+		this.appId = appId;
 	}
 	/**
 	 * 

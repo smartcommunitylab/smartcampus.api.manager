@@ -117,4 +117,25 @@ public class HomeController {
 
 	}
 	
+	/**
+	 * 
+	 * @param appId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	public ResultData requestHandl(@RequestBody String appId, HttpServletRequest request){
+		logger.info("proxy request handler");
+
+		RequestHandlerObject r = requestHandler.handleRequestWithAppId(appId, request);
+		pdp.applyPoliciesBatch(r);
+		
+		if(r.getApiId()==null && r.getResourceId()==null){
+			return new ResultData(r, HttpServletResponse.SC_NOT_FOUND, "not found");
+		}else 
+			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
+
+	}
+	
 }

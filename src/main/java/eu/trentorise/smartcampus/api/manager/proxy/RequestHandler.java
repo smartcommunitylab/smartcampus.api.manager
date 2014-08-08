@@ -172,7 +172,6 @@ public class RequestHandler{
 
 	/**
 	 * Method that retrieves basepath of api and api resource.
-	 * Then it set two global variables.
 	 * It suppose that the request is for example:
 	 * http(s)://proxy/api_basepath
 	 * 
@@ -233,6 +232,76 @@ public class RequestHandler{
 		// set result
 		result.setApiId(apiId);
 		result.setResourceId(resourceId);
+		result.setHeaders(map);
+		
+		return result;
+
+	}
+	
+	/**
+	 * Method that retrieves basepath of api, app id and api resource.
+	 * It suppose that the request is for example:
+	 * http(s)://proxy/api_basepath
+	 * 
+	 * @param appId : String
+	 * @param request : instance of {@link HttpServletRequest}
+	 * @return instance of {@link RequestHandlerObject} with api id, resource id, app id
+	 * 			and a map of request headers.
+	 */
+	public RequestHandlerObject handleRequestWithAppId(String appId, HttpServletRequest request) {
+
+		initMemory();
+		String apiId = null, resourceId = null;
+		RequestHandlerObject result = new RequestHandlerObject();
+
+		String requestUri = request.getRequestURI();
+		String[] slist = requestUri.split("/", 3);
+		for (int i = 0; i < slist.length; i++) {
+			logger.info("index: {}", i);
+			logger.info("value: {} --", slist[i]);
+		}
+		String path = "/" + slist[2];
+		logger.info("(a)Api Basepath: {}", path);
+		
+		//retrieve api id and resource from static resource
+		if(all!=null && all.size()>0){
+			for(int i=0;i<all.size();i++){
+				if(path.equalsIgnoreCase(all.get(i).getUrl())){
+					apiId = all.get(i).getApiId();
+					resourceId =all.get(i).getResourceId();
+				}
+			}
+		}
+		if(apiId==null && resourceId==null){
+			logger.info("There is no api and resource for this path {}.",
+					path);
+		}
+		
+		// retrieves headers
+		Map<String, String> map = new HashMap<String, String>();
+		if (request != null) {
+			Enumeration<String> headerNames = request.getHeaderNames();
+
+			while (headerNames.hasMoreElements()) {
+
+				String headerName = headerNames.nextElement();
+
+				Enumeration<String> headers = request.getHeaders(headerName);
+				while (headers.hasMoreElements()) {
+					String headerValue = headers.nextElement();
+					map.put(headerName, headerValue);
+				}
+
+			}
+		}
+		
+		logger.info("api id: {} ",apiId);
+		logger.info("resource id: {} ", resourceId);
+
+		// set result
+		result.setApiId(apiId);
+		result.setResourceId(resourceId);
+		result.setAppId(appId);
 		result.setHeaders(map);
 		
 		return result;

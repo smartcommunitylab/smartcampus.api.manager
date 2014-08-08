@@ -32,6 +32,7 @@ import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
 
 /**
  * Class that retrieves policies of api and its resources.
@@ -53,6 +54,11 @@ public class PolicyDecisionPoint {
 	@Autowired
 	private PersistenceManager manager;
 	/**
+	 * Instance of {@link PersistenceManagerProxy}.
+	 */
+	@Autowired
+	private PersistenceManagerProxy proxyManager;
+	/**
 	 * Instance of {@link PolicyDatastoreBatch}.
 	 */
 	@Autowired
@@ -62,6 +68,7 @@ public class PolicyDecisionPoint {
 	 */
 	private String apiId;
 	private String resourceId;
+	private String appId;
 	private Map<String, String> headers;
 	
 	/**
@@ -73,6 +80,7 @@ public class PolicyDecisionPoint {
 	private void getData(RequestHandlerObject object){
 		apiId = object.getApiId();
 		resourceId = object.getResourceId();
+		appId = object.getAppId();
 		headers = object.getHeaders();
 		
 	}
@@ -129,7 +137,10 @@ public class PolicyDecisionPoint {
 			for (int i = 0; i < pToApply.size(); i++) {
 				logger.info("applyPoliciesBatch - Apply for each");
 				if(pToApply.get(i) instanceof Quota){
-					batch.add(new QuotaApply());
+					QuotaApply qa = new QuotaApply();
+					qa.setQuotaApply(apiId, resourceId, appId,(Quota)pToApply.get(i));
+					qa.setManager(proxyManager);
+					batch.add(qa);
 				}
 				else if(pToApply.get(i) instanceof SpikeArrest){
 					batch.add(new SpikeArrestApply());
