@@ -97,6 +97,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/app/list.html',
         	access: access.public
         }).
+        when('/app/:appId',{
+        	controller: 'showAppCtrl',
+        	templateUrl: 'partials/app/show.html',
+        	access: access.public
+        }).
         when('/create/app/',{
         	controller: 'addAppCtrl',
         	templateUrl: 'partials/app/edit.html',

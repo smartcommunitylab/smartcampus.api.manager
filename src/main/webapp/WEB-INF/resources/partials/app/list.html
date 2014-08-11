@@ -18,11 +18,13 @@
 								<ul class="list-unstyled" ng-if="appsList.length > 0">
 									<li ng-repeat="app in appsList"
 										class="animated fadeIn service-row">
+											<!-- 
 											<span class="badge pull-right">
-												Id: {{app.id}
-											</span>
+												Id: {{app.id}}
+											</span> 
+											 -->
 											<h3>
-												<b>{{app.name}}</b>
+												<b><a href="app/{{app.id}}" >{{app.name}}</a></b>
 											</h3>
 											<p>{{app.key}}</p>
 											

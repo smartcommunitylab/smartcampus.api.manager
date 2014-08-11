@@ -42,7 +42,6 @@ app.controller('appsCtrl', ['$scope', '$location', '$route', 'App',
                        	
 		$scope.deleteApp = function (id) {
 			App.remove({
-				apiId : apiid,
 				appId : id
 			}, function(data){
 				$route.reload();
@@ -101,6 +100,26 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 		};
 		
 	}
+]);
+
+app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App',
+    function($scope, $location, $routeParams, App){
+		var appid = $routeParams.appId;
+		
+		App.getApp({
+			appId : appid
+		}, function(data){
+			$scope.app = data.data;
+			});
+		
+		$scope.remove = function () {
+			App.remove({
+				appId : appid
+				}, function(data){
+					$location.path('apps');
+					});
+			};
+		}
 ]);
 
 app.controller('addApiCtrl', ['$scope', '$location', 'Api',
