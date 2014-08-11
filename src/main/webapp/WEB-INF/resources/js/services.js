@@ -23,6 +23,18 @@ services.factory('Api', ['$resource',
 			getApi:{
 				method: 'GET',
 				url: 'api/id/:apiId'
+			},
+			createStatus:{
+				method: 'POST',
+                url: 'api/add/:apiId/status'
+			},
+			updateStatus:{
+				method: 'PUT',
+                url: 'api/update/:apiId/status'
+			},
+			removeStatus:{
+				method: 'DELETE',
+                url: 'api/delete/:apiId/status'
 			}
 		});
 	}

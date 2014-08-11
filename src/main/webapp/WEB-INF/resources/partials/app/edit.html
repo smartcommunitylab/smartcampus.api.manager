@@ -11,19 +11,19 @@
             </div>
             <div class="form-group" ng-show="app.id != null" >
                 <label for="appkey">Key</label>
-                <input ng-disabled="app.id != null" type="text" id="appkey" class="form-control" ng-model="app.key" />
+                <input ng-disabled="app.id != null" type="text" id="appkey" class="form-control" 
+                	ng-model="app.key" />
             </div>
-			<!-- 
-			<div class="form-group">
-				<label for="appApiData">Api List</label> 
-				<input type="text" id="appApiData" class="form-control" ng-model="app.apiData" /> 
-					<label
-						ng-repeat="api in app.apiData"> 
-							<input type="checkbox" name="api.name" value="{{api.name}}"
-						ng-model="fruit.selected"> {{fruit.name}}
-					</label>
+			
+			<label for="apilist">Api list</label>
+			<div class="form-group" ng-repeat="api in apisList">
+				<input id="apiName" type="checkbox" value="api.name"> {{api.name}} <br/>
+				<select ng-repeat="s in api.status" 
+					id="apiStatus" class="form-control" ng-model="s.status">
+					<option>{{s.status}}</option>
+				</select>
 			</div>
- -->
+ 
 			<button type="submit" ng-disabled="main.$invalid" class="btn btn-info">
             	<div ng-show="title==='New'">Save</div>
             	<div ng-show="title==='Edit'">Reset key</div>

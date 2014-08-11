@@ -1,5 +1,6 @@
 'use strict';
-var app = angular.module('apiManager', ['ngRoute', 'ngCookies', 'apiManager.directives', 'apiManager.services', 'hljs', 'ui.bootstrap']);
+var app = angular.module('apiManager', ['ngRoute', 'ngCookies', 'apiManager.directives', 
+                                        'apiManager.services', 'hljs', 'ui.bootstrap']);
 
 app.filter('fromNow', function () {
     return function (dateString) {
@@ -62,6 +63,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/policy/edit.html',
         	access: access.public
         }).
+        when('/create/status/:apiId',{
+        	controller: 'addStatusCtrl',
+        	templateUrl: 'partials/status/edit.html',
+        	access: access.public
+        }).
         when('/edit/api/:apiId',{
         	controller: 'editApiCtrl',
         	templateUrl: 'partials/apis/edit.html',
@@ -75,6 +81,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         when('/edit/:apiId/policy/:policyId',{
         	controller: 'editPolicyCtrl',
         	templateUrl: 'partials/policy/edit.html',
+        	access: access.public
+        }).
+        when('/edit/status/:apiId',{
+        	controller: 'editStatusCtrl',
+        	templateUrl: 'partials/status/edit.html',
         	access: access.public
         }).
         when('/show/:apiId/resource/:resourceId',{

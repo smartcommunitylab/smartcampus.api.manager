@@ -99,6 +99,16 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 			});
 		};
 		
+		$scope.deleteStatus = function(status){
+			//TODO error: 415 unsupported media type
+			Api.removeStatus({
+				apiId : apiid
+			}, status,
+					function(data){
+				$route.reload();
+			});
+		};
+		
 	}
 ]);
 
@@ -196,10 +206,16 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
      }
 ]);
 
-app.controller('addAppCtrl', ['$scope', '$location', '$routeParams', 'App',
-     function ($scope, $location, $routeParams, App) {
+app.controller('addAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Api',
+     function ($scope, $location, $routeParams, App, Api) {
 		$scope.title = 'New';
 		var apiid = $routeParams.apiId;
+		
+		Api.list({
+    		ownerId : '1'
+    	}, function(data){
+    		$scope.apisList = data.data;
+    	});
 	
 		$scope.submit = function () {
 			App.create({
@@ -214,6 +230,28 @@ app.controller('addAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 				});
 		};
      }
+]);
+
+app.controller('addStatusCtrl', ['$scope', '$location', '$routeParams', 'Api',
+    function ($scope, $location, $routeParams, Api) {
+		$scope.title = 'New';
+		var apiid = $routeParams.apiId;
+		
+		$scope.submit = function () {
+			Api.createStatus({
+				apiId: apiid
+				},$scope.status,
+				function (data) {
+					if(data.status == 200){
+						$location.path('api/'+apiid);
+					}else{
+						$scope.errorMsg = data.message;
+					}
+					
+				});
+		};
+		
+	}
 ]);
 
 
@@ -413,6 +451,31 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', '$timeout'
 				$scope.msg = null;
 		    }, 7000);
         }
+]);
+
+app.controller('editStatusCtrl', ['$scope', '$location', '$routeParams', 'Api',
+    function ($scope, $location, $routeParams, Api) {
+		$scope.title = 'Edit';
+		var apiid = $routeParams.apiId;
+		
+		//TODO how to get status data for edit? Do I have to allow edit for status or only delete?
+		
+		$scope.submit = function () {
+			Api.updateStatus({
+				apiId: apiid
+			},$scope.status,
+			function (data) {
+				if(data.status == 200){
+					$location.path('api/'+apiid);
+				}else{
+					$scope.errorMsg = data.message;
+				}
+				
+			});
+
+		};
+		
+	}
 ]);
 
 app.controller('showResourceCtrl', ['$scope', '$location', '$route', '$routeParams', 'Resource',

@@ -6,20 +6,16 @@
         <div class="row">
             <div class="panel panel-default panel-service">
                 <div class="panel-body">
-                    <ul class="list-unstyled">
-                        <li>
-                            <b>Name:</b>
-                            <span>{{app.name}}</span>
-                        </li>
-                        <li>
-                            <b>Key:</b>
-                            <span>{{app.key}}</span>
-                        </li>
-                        <li>
-                            <b>Api list:</b>
-                            <span>{{app.apis}}</span>
-                        </li>
+					<ul class="list-unstyled">
+						<li><b>Name:</b> <span>{{app.name}}</span></li>
+						<li><b>Key:</b> <span>{{app.key}}</span></li>
                     </ul>
+                    
+                     <tabset ng-show="app.apis">
+                    	<tab heading="Api">
+                    		<div ng-include="'partials/app/_api.html'"></div>
+                    	</tab>
+                    </tabset>
                     
                 </div>
             </div>
