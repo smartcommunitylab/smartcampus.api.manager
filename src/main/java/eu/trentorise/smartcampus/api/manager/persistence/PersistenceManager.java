@@ -33,6 +33,7 @@ import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
+import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
@@ -1507,8 +1508,143 @@ public class PersistenceManager {
 		}
 	}
 	
+	/*
+	 * API STATUS
+	 */
+	
 	/**
-	 * Check parameter value for policy.
+	 * Retrieves list of status of an api.
+	 * 
+	 * @param apiId : String
+	 * @return list of {@link Status} instances
+	 */
+	public List<Status> getApiStatus(String apiId){
+		Api api = getApiById(apiId);
+		return api.getStatus();
+	}
+	
+	/**
+	 * Creates a new status entry for an api.
+	 * 
+	 * @param apiId : String
+	 * @param s : instance of {@link Status}
+	 * @return list of {@link Status} instances
+	 */
+	public List<Status> addStatusApi(String apiId, Status s){
+		//TODO
+		
+		//check status field: name and quota
+		if(s.getName() == null || s.getQuota() == 0){
+			throw new IllegalArgumentException("Status name and quota are required.");
+		}
+		
+		/*if(*/statusNameApiExists(apiId, s.getName());//){
+			//throw new IllegalArgumentException("Status with this name already exists.");
+		//}
+		
+		Api api = getApiById(apiId);
+		if(api!=null){
+			List<Status> slist = api.getStatus();
+			
+			if(slist != null){
+				slist.add(s);
+			}else{
+				slist = new ArrayList<Status>();
+				slist.add(s);
+				api.setStatus(slist);
+			}
+		}else{
+			throw new IllegalArgumentException("Api does not exist.");
+		}
+		// update api
+		updateApi(api);
+		
+		return getApiStatus(apiId);
+	}
+	
+	/**
+	 * Updates a status of an api.
+	 * 
+	 * @param apiId : String
+	 * @param s : instance of {@link Status}
+	 * @return list of {@link Status} instances
+	 */
+	public List<Status> updateStatusApi(String apiId, Status s){
+		//TODO
+		
+		// check status field: name and quota
+		if (s.getName() == null || s.getQuota() == 0) {
+			throw new IllegalArgumentException("Status name and quota are required.");
+		}
+
+		/* if( */statusNameApiExists(apiId, s.getName());// ){
+		// throw new IllegalArgumentException("Status with this name already exists.");
+		// }
+
+		Api api = getApiById(apiId);
+		if (api != null) {
+			List<Status> slist = api.getStatus();
+
+			if (slist != null) {
+				//search status by name
+				for(int i=0;i<slist.size();i++){
+					if(slist.get(i).getName().equalsIgnoreCase(s.getName())){
+						slist.get(i).setQuota(s.getQuota());
+					}
+				}
+				
+			} else {
+				slist = new ArrayList<Status>();
+				slist.add(s);
+				api.setStatus(slist);
+			}
+		} else {
+			throw new IllegalArgumentException("Api does not exist.");
+		}
+		// update api
+		updateApi(api);
+
+		return getApiStatus(apiId);
+	}
+	
+	/**
+	 * Deletes a status from an api.
+	 * 
+	 * @param apiId : String
+	 * @param s : instance of {@link Status}
+	 */
+	public void deleteStatusApi(String apiId, Status s){
+		//TODO
+		
+		// check status field: name and quota
+		if (s.getName() == null || s.getQuota() == 0) {
+			throw new IllegalArgumentException("Status name and quota are required.");
+		}
+
+		Api api = getApiById(apiId);
+		if (api != null) {
+			List<Status> slist = api.getStatus();
+
+			if (slist != null) {
+				//search status by name
+				for(int i=0;i<slist.size();i++){
+					if(slist.get(i).getName().equalsIgnoreCase(s.getName())){
+						slist.remove(i);
+					}
+				}
+			} else {
+				throw new IllegalArgumentException("No status api found.");
+			}
+		} else {
+			throw new IllegalArgumentException("Api does not exist.");
+		}
+		// update api
+		updateApi(api);
+				
+	}
+	
+	/**
+	 * Checks parameter value for policy.
 	 * Spike Arrest : name and rate are required.
 	 * Quota : name, interval, timeunit and allow count are required.
 	 * It throws java.lang.IllegalArgumentException if some required policy 
@@ -1565,7 +1701,7 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Check if a policy with a given name is already saved in db.
+	 * Checks if a policy with a given name is already saved in db.
 	 * 
 	 * @param apiId : String
 	 * @param policyName : String
@@ -1580,7 +1716,7 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Check if a policy resource with a given name is already saved in db.
+	 * Checks if a policy resource with a given name is already saved in db.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
@@ -1603,7 +1739,7 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Check if an app with a given name is already saved in db.
+	 * Checks if an app with a given name is already saved in db.
 	 * 
 	 * @param apiId : String
 	 * @param appName : String
@@ -1618,7 +1754,7 @@ public class PersistenceManager {
 	}*/
 	
 	/**
-	 * Check if a resource with a given name is already saved in db.
+	 * Checks if a resource with a given name is already saved in db.
 	 * 
 	 * @param apiId : String
 	 * @param resourceName : String
@@ -1633,7 +1769,7 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Check if a resource with a given uri is already saved in db.
+	 * Checks if a resource with a given uri is already saved in db.
 	 * 
 	 * @param apiId : String
 	 * @param resourceName : String
@@ -1643,6 +1779,28 @@ public class PersistenceManager {
 		List<Resource> rlist = getResourceApiByResourceUri(apiId, resourceUri);
 		if(rlist!=null && rlist.size()>0){
 			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if a status has already a specific name.
+	 * 
+	 * @param apiId : String
+	 * @param statusName : String
+	 * @return true if a status with this name exists, otherwise false.
+	 */
+	public boolean statusNameApiExists(String apiId, String statusName){
+		Api api = getApiById(apiId);
+		if(api!=null){
+			List<Status> slist = api.getStatus();
+			if(slist!=null){
+				for(int i=0;i<slist.size();i++){
+					if(slist.get(i).getName().equalsIgnoreCase(statusName)){
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}

@@ -35,6 +35,7 @@ import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
+import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
 /**
@@ -501,4 +502,79 @@ public class ApiController {
 		pmanager.deletePolicyApi(apiId,policyId);
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 	}
+	
+	/**
+	 * Creates a new status entry for an api.
+	 * 
+	 * @param apiId : String
+	 * @param s : instance of {@link Status}
+	 * @return instance of {@link ResultData} with api status data, status (OK and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Status saved successfully." if it is ok.
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/status", method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addApiStatus(@PathVariable String apiId, @RequestBody Status s){
+		//TODO
+		logger.info("Add api status.");
+		try{
+			List<Status> slist = pmanager.addStatusApi(apiId, s);
+			return new ResultData(slist, HttpServletResponse.SC_OK, "Status saved successfully.");
+		}catch(IllegalArgumentException i){
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Updates a status of an api.
+	 * 
+	 * @param apiId : String
+	 * @param s : instance of {@link Status}
+	 * @return instance of {@link ResultData} with api status data, status (OK and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Status updated successfully." if it is ok.
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/status", method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updateStatus(@PathVariable String apiId, @RequestBody Status s){
+		//TODO
+		logger.info("Update api status.");
+		try{
+			List<Status> slist = pmanager.updateStatusApi(apiId, s);
+			return new ResultData(slist, HttpServletResponse.SC_OK, "Status updated successfully.");
+		}catch(IllegalArgumentException i){
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Deletes a status from an api.
+	 * 
+	 * @param apiId : String
+	 * @param s : instance of {@link Status}
+	 * @return instance of {@link ResultData} with status (OK and
+	 * 			BAD REQUEST) and a string message : 
+	 * 			"Delete done!" if it is ok.
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/delete/{apiId}/status", method = RequestMethod.DELETE)
+	@ResponseBody
+	public ResultData deleteStatus(@PathVariable String apiId, @RequestBody Status s){
+		//TODO
+		logger.info("Delete api status.");
+		try{
+			pmanager.deleteStatusApi(apiId, s);
+			return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
+		}catch(IllegalArgumentException i){
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		}
+	}
+	
+	
 }
