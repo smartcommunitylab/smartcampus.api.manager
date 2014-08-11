@@ -99,10 +99,11 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 			});
 		};
 		
-		$scope.deleteStatus = function(status){
+		$scope.deleteStatus = function(name){
 			//TODO error: 415 unsupported media type
 			Api.removeStatus({
-				apiId : apiid
+				apiId : apiid,
+				statusName : name
 			}, status,
 					function(data){
 				$route.reload();

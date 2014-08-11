@@ -563,13 +563,13 @@ public class ApiController {
 	 * 			"Delete done!" if it is ok.
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/delete/{apiId}/status", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/delete/{apiId}/status/{statusName}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public ResultData deleteStatus(@PathVariable String apiId, @RequestBody Status s){
+	public ResultData deleteStatus(@PathVariable String apiId, @PathVariable String statusName){
 		//TODO
 		logger.info("Delete api status.");
 		try{
-			pmanager.deleteStatusApi(apiId, s);
+			pmanager.deleteStatusApi(apiId, statusName);
 			return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 		}catch(IllegalArgumentException i){
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());

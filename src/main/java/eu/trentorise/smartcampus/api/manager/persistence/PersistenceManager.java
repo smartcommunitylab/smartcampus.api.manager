@@ -1611,14 +1611,14 @@ public class PersistenceManager {
 	 * Deletes a status from an api.
 	 * 
 	 * @param apiId : String
-	 * @param s : instance of {@link Status}
+	 * @param s_name : String
 	 */
-	public void deleteStatusApi(String apiId, Status s){
+	public void deleteStatusApi(String apiId, String s_name/*Status s*/){
 		//TODO
 		
 		// check status field: name and quota
-		if (s.getName() == null || s.getQuota() == 0) {
-			throw new IllegalArgumentException("Status name and quota are required.");
+		if (s_name == null/*s.getName() == null || s.getQuota() == 0*/) {
+			throw new IllegalArgumentException("Status name is required.");
 		}
 
 		Api api = getApiById(apiId);
@@ -1628,7 +1628,7 @@ public class PersistenceManager {
 			if (slist != null) {
 				//search status by name
 				for(int i=0;i<slist.size();i++){
-					if(slist.get(i).getName().equalsIgnoreCase(s.getName())){
+					if(slist.get(i).getName().equalsIgnoreCase(s_name)){
 						slist.remove(i);
 					}
 				}
