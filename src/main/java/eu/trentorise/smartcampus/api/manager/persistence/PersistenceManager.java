@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.trentorise.smartcampus.api.manager.Constants;
 import eu.trentorise.smartcampus.api.manager.Constants.POLICY_CATEGORY;
 import eu.trentorise.smartcampus.api.manager.model.Api;
+import eu.trentorise.smartcampus.api.manager.model.ApiData;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
@@ -334,6 +335,28 @@ public class PersistenceManager {
 	 */
 	public void deleteApp(String appId){
 		apprepository.delete(appId);
+	}
+	
+	/**
+	 * Deletes api data from app.
+	 * 
+	 * @param appId : String
+	 * @param apiId : String
+	 */
+	public void deleteAppApiData(String appId, String apiId){
+		App app = getAppById(appId);
+		if(app!=null){
+			List<ApiData> adlist = app.getApis();
+			if(adlist!=null && adlist.size()>0){
+				for(int i=0; i<adlist.size();i++){
+					if(adlist.get(i).getApiId().equalsIgnoreCase(apiId)){
+						adlist.remove(i);
+					}
+				}
+			}
+		}
+		
+		updateApp(app);
 	}
 	
 	/* 

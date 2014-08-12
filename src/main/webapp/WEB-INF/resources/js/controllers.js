@@ -131,12 +131,21 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App',
 			$scope.app = data.data;
 			});
 		
-		$scope.remove = function () {
-			App.remove({
-				appId : appid
+		$scope.deleteApi = function (id) {
+			App.removeApiData({
+				appId : appid,
+				apiId : id
 				}, function(data){
 					$location.path('apps');
 					});
+			};
+			
+			$scope.remove = function () {
+				App.remove({
+					appId : appid
+				}, function(data){
+					$location.path('apps');
+				});
 			};
 		}
 ]);
@@ -218,21 +227,51 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 app.controller('addAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Api',
      function ($scope, $location, $routeParams, App, Api) {
 		$scope.title = 'New';
-		var apiid = $routeParams.apiId;
+		var list=[];
 		
 		Api.list({
     		ownerId : '1'
     	}, function(data){
     		$scope.apisList = data.data;
     	});
+		
+		$scope.addApiData = function(apiId, apiStatus){
+			console.log('scope.a: '+$scope.a);
+			console.log('param status: '+apiStatus);
+			console.log('param api id: '+apiId);
+			var obj = {apiId: apiId , apiStatus: apiStatus};
+			
+			var index = -1;
+			for(var i=0;i<list.length;i++){
+				if(list[i].apiId === apiId){
+					index = i;
+				}
+			}
+			
+			console.log('index: '+index);
+			if(index > -1){
+				list.splice(index,1);
+			}
+			else{
+				if(!!apiStatus){
+					list.push(obj);
+				}else{
+					console.log('Chose a status!');
+					//$scope.errorMsg = "Error chose a status";
+				}
+				
+			}
+			console.log(list);
+		};
 	
 		$scope.submit = function () {
+			$scope.app.apis = list;
 			App.create({
-				apiId: apiid
+				
 				},$scope.app,
 					function (data) {
 						if(data.status == 200){
-							$location.path('api/'+apiid);
+							$location.path('apps');
 						}else{
 							$scope.errorMsg = data.message;
 						}

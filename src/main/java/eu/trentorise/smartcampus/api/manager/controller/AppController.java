@@ -106,7 +106,7 @@ public class AppController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData addApp(@RequestBody App app) {
-		logger.info("Update api app.");
+		logger.info("Add app.");
 		try{
 			App updateApiA = pmanager.addApp(app);
 			if(updateApiA!=null){
@@ -132,7 +132,7 @@ public class AppController {
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes="application/json")
 	@ResponseBody
 	public ResultData updateApp(@RequestBody App app) {
-		logger.info("Update api app.");
+		logger.info("Update app.");
 		try{
 			App updateApiA = pmanager.updateApp(app);
 			if(updateApiA!=null){
@@ -156,10 +156,27 @@ public class AppController {
 	@RequestMapping(value = "/delete/{appId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResultData deleteApp(@PathVariable String appId){
-		logger.info("Delete api resource.");
+		logger.info("Delete app.");
 		
 		pmanager.deleteApp(appId);
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
+	}
+	
+	/**
+	 * Delete api data from app.
+	 * 
+	 * @param appId : String
+	 * @param apiId : String
+	 * @return instance of {@link ResultData} without data, status (OK) and a string message : 
+	 * 			"Delete api data from app done!" 
+	 */
+	@RequestMapping(value = "/delete/{appId}/api/{apiId}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public ResultData deleteApiData(@PathVariable String appId, @PathVariable String apiId){
+		logger.info("Delete api data from app.");
+		
+		pmanager.deleteAppApiData(appId, apiId);
+		return new ResultData(null, HttpServletResponse.SC_OK, "Delete api data from app done!");
 	}
 
 }

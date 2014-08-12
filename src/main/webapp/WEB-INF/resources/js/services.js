@@ -104,7 +104,7 @@ services.factory('App', ['$resource',
 			},
 			remove:{
 				method: 'DELETE',
-				url: 'api/delete/:appId'
+				url: 'api/app/delete/:appId'
 			},
 			getApp:{
 				method: 'GET',
@@ -113,6 +113,10 @@ services.factory('App', ['$resource',
 			list:{
 				method: 'GET',
 				url: 'api/app/list'
+			},
+			removeApiData:{
+				method: 'DELETE',
+				url: 'api/app/delete/:appId/api/:apiId'
 			}
 		});
 	}
