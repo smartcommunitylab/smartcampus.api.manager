@@ -83,7 +83,7 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/policy/edit.html',
         	access: access.public
         }).
-        when('/edit/status/:apiId',{
+        when('/edit/:apiId/status/:statusName',{
         	controller: 'editStatusCtrl',
         	templateUrl: 'partials/status/edit.html',
         	access: access.public

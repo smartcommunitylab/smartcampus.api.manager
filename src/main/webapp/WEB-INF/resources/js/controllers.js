@@ -60,19 +60,28 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 			if(elem==='resource'){
 				$scope.isTabResourceActive = true;
 				$scope.isTabPolicyActive = false;
+				$scope.isTabStatusActive = false;
 				
 			}else if(elem==='policy'){
 				$scope.isTabResourceActive = false;
 				$scope.isTabPolicyActive = true;
+				$scope.isTabStatusActive = false;
+				
+			}else if(elem==='status'){
+				$scope.isTabResourceActive = false;
+				$scope.isTabPolicyActive = false;
+				$scope.isTabStatusActive = true;
 				
 			}else{
-				console.log('Error. Elem can be resource, policy or app.');
+				console.log('Error. Elem can be resource, policy or status.');
 				$scope.isTabResourceActive = true;
 				$scope.isTabPolicyActive = false;
+				$scope.isTabStatusActive = false;
 			}
 		}else{
 			$scope.isTabResourceActive = true;
 			$scope.isTabPolicyActive = false;
+			$scope.isTabStatusActive = false;
 		}
 		
 		Api.getApi({
@@ -100,7 +109,6 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 		};
 		
 		$scope.deleteStatus = function(name){
-			//TODO error: 415 unsupported media type
 			Api.removeStatus({
 				apiId : apiid,
 				statusName : name
@@ -454,12 +462,18 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', '$timeout'
         }
 ]);
 
-app.controller('editStatusCtrl', ['$scope', '$location', '$routeParams', 'Api',
-    function ($scope, $location, $routeParams, Api) {
+app.controller('editStatusCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'Api',
+    function ($scope, $location, $routeParams, $timeout, Api) {
 		$scope.title = 'Edit';
 		var apiid = $routeParams.apiId;
+		var statusname = $routeParams.statusName;
 		
-		//TODO how to get status data for edit? Do I have to allow edit for status or only delete?
+		Api.getStatus({
+			apiId: apiid,
+			statusName: statusname
+		}, function(data){
+			$scope.status = data.data;
+		});
 		
 		$scope.submit = function () {
 			Api.updateStatus({
@@ -474,6 +488,25 @@ app.controller('editStatusCtrl', ['$scope', '$location', '$routeParams', 'Api',
 				
 			});
 
+		};
+		
+		$scope.remove = function () {
+			Api.removeStatus({
+				apiId : apiid,
+				statusName : statusname
+			}, status,
+			function(data){
+				$location.path('api/'+apiid);
+			});
+		};
+		
+		$timeout(function () {
+			$scope.errorMsg = null;
+			$scope.msg = null;
+	    }, 7000);
+		
+		$scope.goBack = function(){
+			$location.path('/api/'+apiid+'/status');
 		};
 		
 	}

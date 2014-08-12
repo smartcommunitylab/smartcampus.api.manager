@@ -35,6 +35,10 @@ services.factory('Api', ['$resource',
 			removeStatus:{
 				method: 'DELETE',
                 url: 'api/delete/:apiId/status/:statusName'
+			},
+			getStatus:{
+				method: 'GET',
+				url: 'api/:apiId/status/:statusName'
 			}
 		});
 	}

@@ -1524,6 +1524,25 @@ public class PersistenceManager {
 	}
 	
 	/**
+	 * Retrieves an api status searching by name.
+	 * 
+	 * @param apiId : String
+	 * @param statusName : String 
+	 * @return instance of {@link Status}
+	 */
+	public Status getApiStatusByStatusName(String apiId, String statusName){
+		List<Status> slist = getApiStatus(apiId);
+		if(slist!=null && slist.size()>0){
+			for(int i=0;i<slist.size();i++){
+				if(slist.get(i).getName().equals(statusName)){
+					return slist.get(i);
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Creates a new status entry for an api.
 	 * 
 	 * @param apiId : String
@@ -1531,16 +1550,15 @@ public class PersistenceManager {
 	 * @return list of {@link Status} instances
 	 */
 	public List<Status> addStatusApi(String apiId, Status s){
-		//TODO
 		
 		//check status field: name and quota
 		if(s.getName() == null || s.getQuota() == 0){
 			throw new IllegalArgumentException("Status name and quota are required.");
 		}
 		
-		/*if(*/statusNameApiExists(apiId, s.getName());//){
-			//throw new IllegalArgumentException("Status with this name already exists.");
-		//}
+		if(statusNameApiExists(apiId, s.getName())){
+			throw new IllegalArgumentException("Status with this name already exists.");
+		}
 		
 		Api api = getApiById(apiId);
 		if(api!=null){
@@ -1570,16 +1588,15 @@ public class PersistenceManager {
 	 * @return list of {@link Status} instances
 	 */
 	public List<Status> updateStatusApi(String apiId, Status s){
-		//TODO
 		
 		// check status field: name and quota
 		if (s.getName() == null || s.getQuota() == 0) {
 			throw new IllegalArgumentException("Status name and quota are required.");
 		}
 
-		/* if( */statusNameApiExists(apiId, s.getName());// ){
-		// throw new IllegalArgumentException("Status with this name already exists.");
-		// }
+		/*if(statusNameApiExists(apiId, s.getName())){
+			throw new IllegalArgumentException("Status with this name already exists.");
+		}*/
 
 		Api api = getApiById(apiId);
 		if (api != null) {

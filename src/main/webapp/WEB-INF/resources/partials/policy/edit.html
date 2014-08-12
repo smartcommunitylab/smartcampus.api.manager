@@ -68,13 +68,13 @@
 			</div>
 			
             <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Save</button>
-            <button ng-hide="title==='New'" class="btn btn-danger"
+            <button type="button" ng-hide="title==='New'" class="btn btn-danger"
             	ng-confirm-click="remove()"
     			ng-confirm-message="Are you sure that you want to delete this policy?"
     			ng-confirm-condition="true">Delete</button>
-            <button ng-hide="title==='Edit'" type="button" ng-click="back()" 
+            <button type="button" ng-hide="title==='Edit'" ng-click="back()" 
             	class="pull-right btn btn-default">Go back</button>
-            <button ng-show="title==='Edit'" ng-click="goBack()" 
+            <button type="button" ng-show="title==='Edit'" ng-click="goBack()" 
             	class="pull-right btn btn-default">Go back</button>
         </form>
     </div>
