@@ -11,10 +11,15 @@
 						<li><b>Key:</b> <span>{{app.key}}</span></li>
                     </ul>
                     
-                     <tabset ng-show="app.apis">
-                    	<tab heading="Api">
+                     <tabset >
+                    	<tab heading="Api" ng-show="app.apis">
                     		<div ng-include="'partials/app/_api.html'"></div>
                     	</tab>
+                    	
+                    	<tab heading="Change Permission">
+                    		<div ng-include="'partials/app/_permission.html'"></div>
+                    	</tab>
+                    	
                     </tabset>
                     
                 </div>

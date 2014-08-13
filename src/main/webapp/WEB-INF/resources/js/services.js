@@ -114,6 +114,10 @@ services.factory('App', ['$resource',
 				method: 'GET',
 				url: 'api/app/list'
 			},
+			updateApiData:{
+				method: 'PUT',
+				url: 'api/app/update/apidata'
+			},
 			removeApiData:{
 				method: 'DELETE',
 				url: 'api/app/delete/:appId/api/:apiId'
