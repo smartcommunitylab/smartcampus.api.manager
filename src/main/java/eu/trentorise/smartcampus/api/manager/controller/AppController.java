@@ -163,6 +163,31 @@ public class AppController {
 	}
 	
 	/**
+	 * Update api data of an app.
+	 * 
+	 * @param app : instance of {@link App}
+	 * @return instance of {@link ResultData} with updated app data, status (OK or INTERNAL SERVER ERROR) 
+	 * 			and a string message : "Update app api data successfully." 
+	 * 			if it is ok, otherwise "Problem in updating data".
+	 */
+	@RequestMapping(value = "/update/apidata", method = RequestMethod.PUT, consumes="application/json")
+	@ResponseBody
+	public ResultData updateAppApiData(@RequestBody App app) {
+		logger.info("Update app api data.");
+
+		App updateApiA = pmanager.updateAppApiData(app);
+		if (updateApiA != null) {
+			return new ResultData(updateApiA, HttpServletResponse.SC_OK,
+					"Update app api data successfully.");
+		} else {
+			return new ResultData(null,
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Problem in updating data.");
+		}
+
+	}
+	
+	/**
 	 * Delete api data from app.
 	 * 
 	 * @param appId : String

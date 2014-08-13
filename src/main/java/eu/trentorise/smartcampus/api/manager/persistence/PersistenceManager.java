@@ -338,6 +338,18 @@ public class PersistenceManager {
 	}
 	
 	/**
+	 * Update api data in an app.
+	 * 
+	 * @param app : instance of {@link App}
+	 * @return updated instance of {@link App}
+	 */
+	public App updateAppApiData(App app){
+		App savedApp = getAppById(app.getId());
+		savedApp.setApis(app.getApis());
+		return apprepository.save(savedApp);
+	}
+	
+	/**
 	 * Deletes api data from app.
 	 * 
 	 * @param appId : String

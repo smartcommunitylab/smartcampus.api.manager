@@ -75,7 +75,8 @@ public class ApiController {
 		if(api!=null){
 			return new ResultData(api, HttpServletResponse.SC_OK, "Api data found");
 		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, "There is no api data with this id.");
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"There is no api data with this id.");
 		}
 	}
 	
