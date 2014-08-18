@@ -107,7 +107,7 @@ public class RequestHandler{
 	 * Method that retrieves basepath of api and api resource.
 	 * Then it set two global variables.
 	 * It suppose that the request is for example:
-	 * http(s)://proxy/api_basepath
+	 * http(s)://proxy/api_basepath/resource_path
 	 * 
 	 * @param url : String, url of api
 	 * @param request : instance of {@link HttpServletRequest}
@@ -173,7 +173,7 @@ public class RequestHandler{
 	/**
 	 * Method that retrieves basepath of api and api resource.
 	 * It suppose that the request is for example:
-	 * http(s)://proxy/api_basepath
+	 * http(s)://proxy/api_basepath/resource_path
 	 * 
 	 * @param request : instance of {@link HttpServletRequest}
 	 * @return instance of {@link RequestHandlerObject} with api id, resource id
@@ -241,7 +241,7 @@ public class RequestHandler{
 	/**
 	 * Method that retrieves basepath of api, app id and api resource.
 	 * It suppose that the request is for example:
-	 * http(s)://proxy/api_basepath
+	 * http(s)://proxy/api_basepath/resource_path
 	 * 
 	 * @param appId : String
 	 * @param request : instance of {@link HttpServletRequest}
@@ -303,6 +303,51 @@ public class RequestHandler{
 		result.setResourceId(resourceId);
 		result.setAppId(appId);
 		result.setHeaders(map);
+		
+		return result;
+
+	}
+	
+	/**
+	 * Method that retrieves basepath of api, app id and api resource.
+	 * It suppose that the url is for example:
+	 * http(s)://proxy/api_basepath/resource_path
+	 * 
+	 * @param appId : String
+	 * @param url : String
+	 * @return instance of {@link RequestHandlerObject} with api id, resource id, app id
+	 * 			and a map of request headers.
+	 */
+	public RequestHandlerObject handleRequestWithAppId(String appId, String url) {
+
+		initMemory();
+		String apiId = null, resourceId = null;
+		RequestHandlerObject result = new RequestHandlerObject();
+
+		String path = splitUrl(url);
+		logger.info("(a)Api Basepath: {}", path);
+		
+		//retrieve api id and resource from static resource
+		if(all!=null && all.size()>0){
+			for(int i=0;i<all.size();i++){
+				if(path.equalsIgnoreCase(all.get(i).getUrl())){
+					apiId = all.get(i).getApiId();
+					resourceId =all.get(i).getResourceId();
+				}
+			}
+		}
+		if(apiId==null && resourceId==null){
+			logger.info("There is no api and resource for this path {}.",
+					path);
+		}
+		
+		logger.info("api id: {} ",apiId);
+		logger.info("resource id: {} ", resourceId);
+
+		// set result
+		result.setApiId(apiId);
+		result.setResourceId(resourceId);
+		result.setAppId(appId);
 		
 		return result;
 

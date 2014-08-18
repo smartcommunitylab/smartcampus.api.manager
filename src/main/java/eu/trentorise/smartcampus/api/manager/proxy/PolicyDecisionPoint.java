@@ -16,6 +16,7 @@
 package eu.trentorise.smartcampus.api.manager.proxy;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +27,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
+import eu.trentorise.smartcampus.api.manager.model.ApiData;
+import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
+import eu.trentorise.smartcampus.api.manager.model.Status;
+import eu.trentorise.smartcampus.api.manager.model.proxy.AccessApi;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
 
@@ -126,6 +131,10 @@ public class PolicyDecisionPoint {
 	public void applyPoliciesBatch(RequestHandlerObject obj){
 		logger.info("applyPoliciesBatch() - Apply policies....");
 		getData(obj);
+		
+		boolean decision =  decisionApiAppStatus();
+		
+		if(decision){
 		List<Policy> pToApply = policiesList();
 		
 		PolicyDatastoreBatch batch = new PolicyDatastoreBatch();
@@ -136,7 +145,8 @@ public class PolicyDecisionPoint {
 				if(pToApply.get(i) instanceof Quota){
 					QuotaApply qa = new QuotaApply();
 					qa.setQuotaApply(apiId, resourceId, appId,(Quota)pToApply.get(i));
-					qa.setManager(proxyManager);
+					qa.setPManager(proxyManager);
+					qa.setManager(manager);
 					batch.add(qa);
 				}
 				else if(pToApply.get(i) instanceof SpikeArrest){
@@ -148,5 +158,86 @@ public class PolicyDecisionPoint {
 			logger.info("applyPoliciesBatch - No policies to apply");
 		}
 		//batch.clean();
+		}
+	}
+	
+	private boolean decisionApiAppStatus(){
+		//get Status list
+		Api api = manager.getApiById(apiId);
+		List<Status> status = api.getStatus();
+		
+		//get app apiData
+		App app = manager.getAppById(appId);
+		List<ApiData> list = app.getApis();
+		String appApiStatus = "DEFAULT";
+		int quota = 0;
+		
+		//if apiId is in list - retrieve status
+		if(list!=null && list.size()>0){
+			if(list.contains(apiId)){
+				//retrieve status from app data
+				for(int i=0;i<list.size();i++){
+					//find apiId
+					if(list.get(i).getApiId().equalsIgnoreCase(apiId)){
+						appApiStatus = list.get(i).getApiStatus();
+					}
+				}
+			}
+		}
+			
+		// from api status list retrieves quota
+		if (status != null && status.size() > 0) {
+			// retrieves quota
+			for (int i = 0; i < status.size(); i++) {
+				if (status.get(i).getName().equalsIgnoreCase(appApiStatus)) {
+					quota = status.get(i).getQuota();
+				}
+			}
+		}
+			
+		if (quota != 0) {
+			Date today = new Date();
+			// retrieve AccessApi data
+			AccessApi accessApi = proxyManager.retrieveAccessApiByIdParams(apiId,
+					appId);
+			if (accessApi != null) {
+				Date savedDate = accessApi.getTime();
+				// check Date - quota is per day
+				if (today.getTime() - savedDate.getTime() >= 86400) {
+					// start counter from zero : 1 - update
+					accessApi.setCount(1);
+					accessApi.setTime(today);
+					proxyManager.updateAccessApi(accessApi);
+					// GRANT
+					logger.info("Access api --> GRANT ");
+					return true;
+				} else {
+					// check counter
+					int savedCounter = accessApi.getCount();
+					if (savedCounter < quota) {
+						// update
+						accessApi.setCount(savedCounter + 1);
+						accessApi.setTime(today);
+						proxyManager.updateAccessApi(accessApi);
+						// GRANT
+						logger.info("Access api --> GRANT ");
+						return true;
+					}
+				}
+			} else {
+				// update
+				accessApi = new AccessApi();
+				accessApi.setApiId(apiId);
+				accessApi.setAppId(appId);
+				accessApi.setCount(1);
+				accessApi.setTime(today);
+				proxyManager.updateAccessApi(accessApi);
+				logger.info("Access api --> GRANT ");
+				return true;
+			}
+
+		}
+		logger.info("Access api --> DENY ");
+		return false;
 	}
 }
