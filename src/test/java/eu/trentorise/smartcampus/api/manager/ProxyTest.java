@@ -117,5 +117,25 @@ public class ProxyTest {
 		
 		log.info("Test end.");
 	}
+	
+	/**
+	 * Test proxy scenario: api and app.
+	 */
+	@Test
+	public void test4(){
+		log.info("Test starting..");
+		
+		String url = "http://proxy/sample/sample/1";
+		//request handler
+		log.info("Request hanlder..");
+		RequestHandlerObject obj = requestHandler.handleRequestWithAppId(
+				"53f1ed7e0364a8955e70fe5c", url);
+		
+		//policy decision
+		log.info("Policy Decision Port..");
+		pdecision.applyPoliciesBatch(obj);
+		
+		log.info("Test end.");
+	}
 
 }
