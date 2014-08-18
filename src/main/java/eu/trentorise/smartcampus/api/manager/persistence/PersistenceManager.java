@@ -168,6 +168,14 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("This base path is already saved. " +
 					"For adding an api, change it");
 		}
+		//Status DEFAULT
+		Status s = new Status();
+		s.setName("DEFAULT");
+		s.setQuota(10);
+		List<Status> list = new ArrayList<Status>();
+		list.add(s);
+		api.setStatus(list);
+		//date
 		Date today = new Date();
 		api.setCreationTime(today.toString());
 		return apirepository.save(api);
