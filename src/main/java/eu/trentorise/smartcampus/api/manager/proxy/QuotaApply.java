@@ -254,7 +254,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 				decision = true;
 			}
 			
-			if (pq.getCount() <= p.getAllowCount()) {
+			if (resourceQuota==0 && pq.getCount() <= p.getAllowCount()) {
 				decision = true;
 			}
 
