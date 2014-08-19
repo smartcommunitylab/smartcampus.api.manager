@@ -2,7 +2,7 @@
 	
 	<h4><b>{{status.name}}</b></h4>
 	
-    <button ng-hide="status.name === 'DEFAULT'" type="button" class="pull-right btn btn-default btn-sm" 
+    <button type="button" class="pull-right btn btn-default btn-sm" 
     	ng-confirm-click="deleteStatus(status.name)"
     	ng-confirm-message="Are you sure that you want to delete this status?"
     	ng-confirm-condition="true">
