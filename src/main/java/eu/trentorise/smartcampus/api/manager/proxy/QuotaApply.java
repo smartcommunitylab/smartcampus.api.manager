@@ -27,7 +27,6 @@ import eu.trentorise.smartcampus.api.manager.model.ApiData;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Status;
-import eu.trentorise.smartcampus.api.manager.model.proxy.AccessApi;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
@@ -41,25 +40,27 @@ import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy
 public class QuotaApply implements PolicyDatastoreApply{
 	
 	/**
-	 * Instance of {@link Logger}
+	 * Instance of {@link Logger}.
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(QuotaApply.class);
-	//@Autowired
+	/**
+	 * Instance of {@link PersistenceManagerProxy}.
+	 */
 	private PersistenceManagerProxy pmanager;
+	/**
+	 * Instance of {@link PersistenceManager}.
+	 */
 	private PersistenceManager manager;
+	
 	//global variables
 	private Quota p;
 	private String apiId;
 	private String resourceId;
 	private String appId;
 	
-	int interval;
-	String timeUnit;
-	/*int count;
-	int countSilver;
-	int countGold;
-	int countPlatinum;
-	*/
+	private int interval;
+	private String timeUnit;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -72,10 +73,18 @@ public class QuotaApply implements PolicyDatastoreApply{
 		this.appId = appId;
 	}
 	
+	/**
+	 * 
+	 * @param pmanager : instance of {@link PersistenceManagerProxy}
+	 */
 	public void setPManager(PersistenceManagerProxy pmanager){
 		this.pmanager = pmanager;
 	}
 	
+	/**
+	 * 
+	 * @param manager : instance of {@link PersistenceManager}
+	 */
 	public void setManager(PersistenceManager manager){
 		this.manager = manager;
 	}
@@ -91,13 +100,16 @@ public class QuotaApply implements PolicyDatastoreApply{
 		
 		this.interval = p.getInterval();
 		this.timeUnit = p.getTimeUnit();
-		//boolean decision = decisionApiAppStatus();
-		//if(decision){
-			decision(appId, resourceId, apiId);
-		//}
+
+		decision(appId, resourceId, apiId);
 
 	}
 	
+	/**
+	 * If status is different from DEFAULT, then find quota.
+	 * 
+	 * @return quota, int 
+	 */
 	private int getQuotaValue(){
 		int quota = 0;
 
@@ -135,86 +147,6 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 		return quota;
 	}
-	
-	/*private boolean decisionApiAppStatus(){
-		//get Status list
-		Api api = manager.getApiById(apiId);
-		List<Status> status = api.getStatus();
-		
-		//get app apiData
-		App app = manager.getAppById(appId);
-		List<ApiData> list = app.getApis();
-		String appApiStatus = "DEFAULT";
-		int quota = 0;
-		
-		//if apiId is in list - retrieve status
-		if(list!=null && list.size()>0){
-			if(list.contains(apiId)){
-				//retrieve status from app data
-				for(int i=0;i<list.size();i++){
-					//find apiId
-					if(list.get(i).getApiId().equalsIgnoreCase(apiId)){
-						appApiStatus = list.get(i).getApiStatus();
-					}
-				}
-			}
-		}
-			
-		// from api status list retrieves quota
-		if (status != null && status.size() > 0) {
-			// retrieves quota
-			for (int i = 0; i < status.size(); i++) {
-				if (status.get(i).getName().equalsIgnoreCase(appApiStatus)) {
-					quota = status.get(i).getQuota();
-				}
-			}
-		}
-			
-		if (quota != 0) {
-			Date today = new Date();
-			// retrieve AccessApi data
-			AccessApi accessApi = pmanager.retrieveAccessApiByIdParams(apiId,
-					appId);
-			if (accessApi != null) {
-				Date savedDate = accessApi.getTime();
-				// check Date - quota is per day
-				if (DatesDiff(savedDate, today) >= 86400) {
-					// start counter from zero : 1 - update
-					accessApi.setCount(1);
-					accessApi.setTime(today);
-					pmanager.updateAccessApi(accessApi);
-					// GRANT
-					logger.info("Access api --> GRANT ");
-					return true;
-				} else {
-					// check counter
-					int savedCounter = accessApi.getCount();
-					if (savedCounter < quota) {
-						// update
-						accessApi.setCount(savedCounter + 1);
-						accessApi.setTime(today);
-						pmanager.updateAccessApi(accessApi);
-						// GRANT
-						logger.info("Access api --> GRANT ");
-						return true;
-					}
-				}
-			} else {
-				// update
-				accessApi = new AccessApi();
-				accessApi.setApiId(apiId);
-				accessApi.setAppId(appId);
-				accessApi.setCount(1);
-				accessApi.setTime(today);
-				pmanager.updateAccessApi(accessApi);
-				logger.info("Access api --> GRANT ");
-				return true;
-			}
-
-		}
-		logger.info("Access api --> DENY ");
-		return false;
-	}*/
 	
 	private void decision(String appId, String resourceId, String apiId){
 		 	 
@@ -317,17 +249,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 			// status per quella risorsa
 			// NOO --> viene preso il valore <= del valore status -->[DA FARE -
 			// SI TORNA COME PRIMA]
-			/*
-			 * switch (status) { case "default": if
-			 * (pqlist.get(0).getCount()<=resourceQuota[0]) decision=true;
-			 * break; case "silver": if
-			 * (pqlist.get(0).getCount()<=resourceQuota[1]) decision=true;
-			 * break; case "gold": if
-			 * (pqlist.get(0).getCount()<=resourceQuota[2]) decision=true;
-			 * break; case "platinum": if
-			 * (pqlist.get(0).getCount()<=resourceQuota[3]) decision=true;
-			 * break; }
-			 */
+			
 			if (resourceQuota!=0 && pq.getCount() <= resourceQuota) {
 				decision = true;
 			}

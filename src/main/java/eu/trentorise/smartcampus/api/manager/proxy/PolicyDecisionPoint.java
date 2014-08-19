@@ -114,13 +114,33 @@ public class PolicyDecisionPoint {
 		try {
 			List<Policy> policies = api.getPolicy();
 			if (policies != null && policies.size() > 0) {
-				pToApply.addAll(policies);
+				
+				if(listContainsQuota(pToApply)){
+					for(int i=0;i<policies.size();i++){
+						if(policies.get(i) instanceof Quota){
+							logger.info("Quota found. Not add to list of policies");
+						}else{
+							pToApply.add(policies.get(i));
+						}
+					}
+				}
+				
+				//pToApply.addAll(policies);
 			}
 		} catch (NullPointerException n) {
 			logger.info("policiesList() - No policies for this api {}", apiId);
 		}
 		
 		return pToApply;
+	}
+	
+	public boolean listContainsQuota(List<Policy> list){
+		for(int i=0;i<list.size();i++){
+			if(list.get(i) instanceof Quota){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -131,10 +151,7 @@ public class PolicyDecisionPoint {
 	public void applyPoliciesBatch(RequestHandlerObject obj){
 		logger.info("applyPoliciesBatch() - Apply policies....");
 		getData(obj);
-		
-		//boolean decision =  decisionApiAppStatus();
-		
-		//if(decision){
+
 		List<Policy> pToApply = policiesList();
 		
 		PolicyDatastoreBatch batch = new PolicyDatastoreBatch();
@@ -157,87 +174,5 @@ public class PolicyDecisionPoint {
 		} else {
 			logger.info("applyPoliciesBatch - No policies to apply");
 		}
-		//batch.clean();
-		//}
 	}
-	
-	/*private boolean decisionApiAppStatus(){
-		//get Status list
-		Api api = manager.getApiById(apiId);
-		List<Status> status = api.getStatus();
-		
-		//get app apiData
-		App app = manager.getAppById(appId);
-		List<ApiData> list = app.getApis();
-		String appApiStatus = "DEFAULT";
-		int quota = 0;
-		
-		//if apiId is in list - retrieve status
-		if(list!=null && list.size()>0){
-			if(list.contains(apiId)){
-				//retrieve status from app data
-				for(int i=0;i<list.size();i++){
-					//find apiId
-					if(list.get(i).getApiId().equalsIgnoreCase(apiId)){
-						appApiStatus = list.get(i).getApiStatus();
-					}
-				}
-			}
-		}
-			
-		// from api status list retrieves quota
-		if (status != null && status.size() > 0) {
-			// retrieves quota
-			for (int i = 0; i < status.size(); i++) {
-				if (status.get(i).getName().equalsIgnoreCase(appApiStatus)) {
-					quota = status.get(i).getQuota();
-				}
-			}
-		}
-			
-		if (quota != 0) {
-			Date today = new Date();
-			// retrieve AccessApi data
-			AccessApi accessApi = proxyManager.retrieveAccessApiByIdParams(apiId,
-					appId);
-			if (accessApi != null) {
-				Date savedDate = accessApi.getTime();
-				// check Date - quota is per day
-				if (today.getTime() - savedDate.getTime() >= 86400) {
-					// start counter from zero : 1 - update
-					accessApi.setCount(1);
-					accessApi.setTime(today);
-					proxyManager.updateAccessApi(accessApi);
-					// GRANT
-					logger.info("Access api --> GRANT ");
-					return true;
-				} else {
-					// check counter
-					int savedCounter = accessApi.getCount();
-					if (savedCounter < quota) {
-						// update
-						accessApi.setCount(savedCounter + 1);
-						accessApi.setTime(today);
-						proxyManager.updateAccessApi(accessApi);
-						// GRANT
-						logger.info("Access api --> GRANT ");
-						return true;
-					}
-				}
-			} else {
-				// update
-				accessApi = new AccessApi();
-				accessApi.setApiId(apiId);
-				accessApi.setAppId(appId);
-				accessApi.setCount(1);
-				accessApi.setTime(today);
-				proxyManager.updateAccessApi(accessApi);
-				logger.info("Access api --> GRANT ");
-				return true;
-			}
-
-		}
-		logger.info("Access api --> DENY ");
-		return false;
-	}*/
 }
