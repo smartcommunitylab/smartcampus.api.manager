@@ -114,7 +114,7 @@ public class PolicyDecisionPoint {
 		try {
 			List<Policy> policies = api.getPolicy();
 			if (policies != null && policies.size() > 0) {
-				
+				//only one quota policy
 				if(listContainsQuota(pToApply)){
 					for(int i=0;i<policies.size();i++){
 						if(policies.get(i) instanceof Quota){
