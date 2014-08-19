@@ -98,7 +98,45 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 	}
 	
-	private boolean decisionApiAppStatus(){
+	private int getQuotaValue(){
+		int quota = 0;
+
+		// get Status list
+		Api api = manager.getApiById(apiId);
+		List<Status> status = api.getStatus();
+
+		// get app apiData
+		App app = manager.getAppById(appId);
+		List<ApiData> list = app.getApis();
+		String appApiStatus = "DEFAULT";
+
+		// if apiId is in list - retrieve status
+		if (list != null && list.size() > 0) {
+			if (list.contains(apiId)) {
+				// retrieve status from app data
+				for (int i = 0; i < list.size(); i++) {
+					// find apiId
+					if (list.get(i).getApiId().equalsIgnoreCase(apiId)) {
+						appApiStatus = list.get(i).getApiStatus();
+					}
+				}
+			}
+		}
+
+		// from api status list retrieves quota
+		if (status != null && status.size() > 0 && !appApiStatus.equalsIgnoreCase("DEFAULT")) {
+			// retrieves quota
+			for (int i = 0; i < status.size(); i++) {
+				if (status.get(i).getName().equalsIgnoreCase(appApiStatus)) {
+					quota = status.get(i).getQuota();
+				}
+			}
+		}
+
+		return quota;
+	}
+	
+	/*private boolean decisionApiAppStatus(){
 		//get Status list
 		Api api = manager.getApiById(apiId);
 		List<Status> status = api.getStatus();
@@ -176,7 +214,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 		}
 		logger.info("Access api --> DENY ");
 		return false;
-	}
+	}*/
 	
 	private void decision(String appId, String resourceId, String apiId){
 		 	 
@@ -215,14 +253,14 @@ public class QuotaApply implements PolicyDatastoreApply{
 					}
 					
 					int timeLimit =interval*t*1000;  //in milliseconds
-					//int[] resourceQuota= {count,countSilver,countGold, countPlatinum};
+					int resourceQuota= getQuotaValue();
 						
 					if(appId==null){
 					    //appId=0;
-						decision=QuotaDecision(timeLimit, /*resourceQuota,*/ apiId, resourceId, 
+						decision=QuotaDecision(timeLimit, resourceQuota, apiId, resourceId, 
 								currentTime);
 					}else{
-						decision=QuotaDecision(timeLimit, /*resourceQuota,*/ apiId,appId, resourceId, 
+						decision=QuotaDecision(timeLimit, resourceQuota, apiId,appId, resourceId, 
 								currentTime);}
 			  }else{ 
 				  decision=true;
@@ -244,7 +282,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 			logger.info("Quota policy --> DENY ");
 	}
 	
-	private boolean QuotaDecision(int timeLimit, /* int[] resourceQuota, */
+	private boolean QuotaDecision(int timeLimit, int resourceQuota,
 			String apiId, String appId, String resourceId, Date currentTime) {
 
 		// oppure possiamo assumere che questa tabella del database sia
@@ -290,6 +328,10 @@ public class QuotaApply implements PolicyDatastoreApply{
 			 * (pqlist.get(0).getCount()<=resourceQuota[3]) decision=true;
 			 * break; }
 			 */
+			if (resourceQuota!=0 && pq.getCount() <= resourceQuota) {
+				decision = true;
+			}
+			
 			if (pq.getCount() <= p.getAllowCount()) {
 				decision = true;
 			}
@@ -300,7 +342,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 	}
 	
-	private boolean QuotaDecision(int timeLimit, /* int[] resourceQuota, */
+	private boolean QuotaDecision(int timeLimit, int resourceQuota, 
 			String apiId, String resourceId, Date currentTime) {
 
 		// in resource=i appId=0 salvo i count delle request senza appId
@@ -321,7 +363,9 @@ public class QuotaApply implements PolicyDatastoreApply{
 		updatePolicyQuota(pq, apiId, resourceId, null, currentTime,
 				timeLimit);
 
-		if (counter <= p.getAllowCount()) // resourceQuota[0])
+		if (resourceQuota!=0 && counter <= resourceQuota)
+			return true;
+		else if(resourceQuota==0 && counter <= p.getAllowCount())
 			return true;
 		else
 			return false;

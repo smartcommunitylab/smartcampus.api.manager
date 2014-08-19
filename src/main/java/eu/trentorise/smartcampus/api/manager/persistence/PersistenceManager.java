@@ -169,12 +169,12 @@ public class PersistenceManager {
 					"For adding an api, change it");
 		}
 		//Status DEFAULT
-		Status s = new Status();
+		/*Status s = new Status();
 		s.setName("DEFAULT");
 		s.setQuota(10);
 		List<Status> list = new ArrayList<Status>();
 		list.add(s);
-		api.setStatus(list);
+		api.setStatus(list);*/
 		//date
 		Date today = new Date();
 		api.setCreationTime(today.toString());

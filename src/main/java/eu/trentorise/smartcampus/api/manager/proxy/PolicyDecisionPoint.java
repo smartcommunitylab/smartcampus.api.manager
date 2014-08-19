@@ -132,9 +132,9 @@ public class PolicyDecisionPoint {
 		logger.info("applyPoliciesBatch() - Apply policies....");
 		getData(obj);
 		
-		boolean decision =  decisionApiAppStatus();
+		//boolean decision =  decisionApiAppStatus();
 		
-		if(decision){
+		//if(decision){
 		List<Policy> pToApply = policiesList();
 		
 		PolicyDatastoreBatch batch = new PolicyDatastoreBatch();
@@ -158,10 +158,10 @@ public class PolicyDecisionPoint {
 			logger.info("applyPoliciesBatch - No policies to apply");
 		}
 		//batch.clean();
-		}
+		//}
 	}
 	
-	private boolean decisionApiAppStatus(){
+	/*private boolean decisionApiAppStatus(){
 		//get Status list
 		Api api = manager.getApiById(apiId);
 		List<Status> status = api.getStatus();
@@ -239,5 +239,5 @@ public class PolicyDecisionPoint {
 		}
 		logger.info("Access api --> DENY ");
 		return false;
-	}
+	}*/
 }

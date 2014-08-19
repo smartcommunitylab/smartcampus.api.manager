@@ -22,6 +22,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+
+/**
+ * NOT IN USE
+ * 
+ * @author Giulia Canobbio
+ *
+ */
 @Document
 public class AccessApi implements Serializable{
 
