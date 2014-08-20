@@ -186,12 +186,18 @@ public class RequestHandler{
 		RequestHandlerObject result = new RequestHandlerObject();
 
 		String requestUri = request.getRequestURI();
+		logger.info("request uri: {}", requestUri);
 		String[] slist = requestUri.split("/", 3);
 		for (int i = 0; i < slist.length; i++) {
 			logger.info("index: {}", i);
 			logger.info("value: {} --", slist[i]);
 		}
-		String path = "/" + slist[2];
+		String path;
+		if(slist[2].indexOf("/")==0){
+			path = slist[2];
+		}else{
+			path = "/"+ slist[2];
+		}
 		logger.info("(a)Api Basepath: {}", path);
 		
 		//retrieve api id and resource from static resource
@@ -260,7 +266,12 @@ public class RequestHandler{
 			logger.info("index: {}", i);
 			logger.info("value: {} --", slist[i]);
 		}
-		String path = "/" + slist[2];
+		String path;
+		if(slist[2].indexOf("/")==0){
+			path = slist[2];
+		}else{
+			path = "/"+ slist[2];
+		}
 		logger.info("(a)Api Basepath: {}", path);
 		
 		//retrieve api id and resource from static resource

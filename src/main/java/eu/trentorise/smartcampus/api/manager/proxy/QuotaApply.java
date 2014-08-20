@@ -119,7 +119,10 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 		// get app apiData
 		App app = manager.getAppById(appId);
-		List<ApiData> list = app.getApis();
+		List<ApiData> list = null;
+		if(app!=null){
+			list = app.getApis();
+		}
 		String appApiStatus = "DEFAULT";
 
 		// if apiId is in list - retrieve status
@@ -164,7 +167,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 				e.printStackTrace();
 			}
 		   }else{
-			   PolicyQuota q = pmanager.retrievePolicyQuotaByParams(apiId, resourceId);
+			   PolicyQuota q = pmanager.retrievePolicyQuotaByParamIds(apiId, resourceId, appId);
 			   
 			   if(q!=null){
 				   logger.info("Request {} ",resourceId);
