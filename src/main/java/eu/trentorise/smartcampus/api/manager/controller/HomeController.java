@@ -72,7 +72,7 @@ public class HomeController {
 	 * 			status (OK and BAD REQUEST) and a string message : 
 	 * 			"ok", otherwise "Error".
 	 */
-	@RequestMapping(value="/proxy", method = RequestMethod.POST)
+	/*@RequestMapping(value="/proxy", method = RequestMethod.POST)
 	@ResponseBody
 	public ResultData requestHandler(@RequestBody String url, HttpServletRequest request){
 		logger.info("proxy request handler");
@@ -91,7 +91,7 @@ public class HomeController {
 			e.printStackTrace();
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, "Error");
 		}
-	}
+	}*/
 	
 	/**
 	 * Try Request Handler class, with retrieving api url from request.
@@ -106,13 +106,19 @@ public class HomeController {
 	@ResponseBody
 	public ResultData requestHandl(HttpServletRequest request){
 		logger.info("proxy request handler");
-
-		RequestHandlerObject r = requestHandler.handleRequest(request);
+		RequestHandlerObject r;
+		try {
+			r = requestHandler.handleRequest(request);
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+					i.getMessage());
+		}
 		pdp.applyPoliciesBatch(r);
-		
-		if(r.getApiId()==null && r.getResourceId()==null){
-			return new ResultData(r, HttpServletResponse.SC_NOT_FOUND, "not found");
-		}else 
+
+		if (r.getApiId() == null && r.getResourceId() == null) {
+			return new ResultData(r, HttpServletResponse.SC_NOT_FOUND,
+					"not found");
+		} else
 			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
 
 	}
@@ -123,7 +129,7 @@ public class HomeController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	/*@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public ResultData requestHandl(@RequestBody String appId, HttpServletRequest request){
 		logger.info("proxy request handler");
@@ -136,6 +142,6 @@ public class HomeController {
 		}else 
 			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
 
-	}
+	}*/
 	
 }

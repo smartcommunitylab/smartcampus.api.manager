@@ -123,9 +123,12 @@ public class PolicyDecisionPoint {
 							pToApply.add(policies.get(i));
 						}
 					}
+				}else{
+					logger.info("Quota not found. Add all policies to the list.");
+					pToApply.addAll(policies);
 				}
 				
-				//pToApply.addAll(policies);
+				
 			}
 		} catch (NullPointerException n) {
 			logger.info("policiesList() - No policies for this api {}", apiId);

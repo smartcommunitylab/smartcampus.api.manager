@@ -26,10 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 //import org.springframework.web.HttpRequestHandler;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
+import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.ObjectInMemory;
 import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
@@ -53,6 +55,11 @@ public class RequestHandler{
 	@Autowired
 	private PersistenceManager apiManager;
 	/**
+	 * Instance of {@link Environment}.
+	 */
+	@Autowired
+	private Environment env;
+	/**
 	 * Instance of {@link ObjectInMemory}.
 	 */
 	private static List<ObjectInMemory> all;
@@ -69,6 +76,15 @@ public class RequestHandler{
 			for(int i=0;i<apilist.size();i++){
 				String apiId = apilist.get(i).getId();
 				String basepath = apilist.get(i).getBasePath();
+				//save api
+				logger.info("In memory - Save api");
+
+				// save in object
+				ObjectInMemory m1 = new ObjectInMemory();
+				m1.setUrl(basepath);
+				m1.setApiId(apiId);
+				all.add(m1);
+
 				//get resource
 				List<Resource> rlist = apilist.get(i).getResource();
 				if(rlist!=null && rlist.size()>0){
@@ -84,22 +100,24 @@ public class RequestHandler{
 						m.setResourceId(rId);
 						all.add(m);
 					}
-				}else{
+				}/*else{
 					logger.info("In memory - No resource");
 					//save in object
 					ObjectInMemory m = new ObjectInMemory();
 					m.setUrl(basepath);
 					m.setApiId(apiId);
 					all.add(m);
-				}
+				}*/
 			}
 		}
 		
-		for(int i=0;i<all.size();i++){
-			logger.info("In memory - ");
-			logger.info("url: {} ", all.get(i).getUrl());
-			logger.info("api id: {} ", all.get(i).getApiId());
-			logger.info("resource id: {} ", all.get(i).getResourceId());
+		if(all.size()>0){
+			for(int i=0;i<all.size();i++){
+				logger.info("In memory - ");
+				logger.info("url: {} ", all.get(i).getUrl());
+				logger.info("api id: {} ", all.get(i).getApiId());
+				logger.info("resource id: {} ", all.get(i).getResourceId());
+			}
 		}
 	}
 	
@@ -182,7 +200,7 @@ public class RequestHandler{
 	public RequestHandlerObject handleRequest(HttpServletRequest request) {
 
 		initMemory();
-		String apiId = null, resourceId = null;
+		String apiId = null, resourceId = null, appId=null;
 		RequestHandlerObject result = new RequestHandlerObject();
 
 		String requestUri = request.getRequestURI();
@@ -214,6 +232,8 @@ public class RequestHandler{
 					path);
 		}
 		
+		logger.info("Env: {} ",env.getProperty("key.appId"));
+		
 		// retrieves headers
 		Map<String, String> map = new HashMap<String, String>();
 		if (request != null) {
@@ -226,18 +246,34 @@ public class RequestHandler{
 				Enumeration<String> headers = request.getHeaders(headerName);
 				while (headers.hasMoreElements()) {
 					String headerValue = headers.nextElement();
-					map.put(headerName, headerValue);
+					//do not save in headers appId
+					if(!headerName.equalsIgnoreCase("appId")){
+						map.put(headerName, headerValue);
+					}else{
+						//retrieve appId from headers
+						appId = headerValue;
+					}
 				}
 
 			}
 		}
 		
+		//check that appId retrieved from request is correct
+		if(appId!=null){
+			App app = apiManager.getAppById(appId);
+			if(app==null){
+				throw new IllegalArgumentException("App with this id does not exist.");
+			}
+		}
+		
 		logger.info("api id: {} ",apiId);
 		logger.info("resource id: {} ", resourceId);
+		logger.info("app id: {} ",appId);
 
 		// set result
 		result.setApiId(apiId);
 		result.setResourceId(resourceId);
+		result.setAppId(appId);
 		result.setHeaders(map);
 		
 		return result;

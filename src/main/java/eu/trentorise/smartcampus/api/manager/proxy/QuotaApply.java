@@ -158,7 +158,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 		boolean decision = false;
 		
 		//verifica input (resourceId non può essere null...)
-		if(resourceId==null) {
+		/*if(resourceId==null) {
 			logger.info("Error: resource id is null");
 			try {
 				throw new Exception("Resource id cannot be null.");
@@ -166,7 +166,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		   }else{
+		   }else{*/
 			   PolicyQuota q = pmanager.retrievePolicyQuotaByParamIds(apiId, resourceId, appId);
 			   
 			   if(q!=null){
@@ -209,7 +209,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 				  pq.setTime(new Date());
 				  pmanager.addPolicyQuota(pq);
 			  }
-		   }
+		  // }
 		
 		if(decision)
 			logger.info("Quota policy --> GRANT ");
