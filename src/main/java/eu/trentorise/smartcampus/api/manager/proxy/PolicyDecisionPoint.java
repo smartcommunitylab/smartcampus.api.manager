@@ -36,6 +36,7 @@ import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.model.proxy.AccessApi;
+import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
 
@@ -66,10 +67,10 @@ public class PolicyDecisionPoint {
 	/*
 	 * Global variables
 	 */
-	private String apiId;
+	/*private String apiId;
 	private String resourceId;
 	private String appId;
-	private Map<String, String> headers;
+	private Map<String, String> headers;*/
 	
 	/**
 	 * Query {@link RequestHandlerObject} object and retrieve data, such as
@@ -77,13 +78,13 @@ public class PolicyDecisionPoint {
 	 * 
 	 * @param map : HashMap
 	 */
-	private void getData(RequestHandlerObject object){
+	/*private void getData(RequestHandlerObject object){
 		apiId = object.getApiId();
 		resourceId = object.getResourceId();
 		appId = object.getAppId();
 		headers = object.getHeaders();
 		
-	}
+	}*/
 	
 	//TODO check headers map
 	
@@ -92,16 +93,16 @@ public class PolicyDecisionPoint {
 	 * 
 	 * @return list of instance {@link Policy}
 	 */
-	private List<Policy> policiesList(){
-		logger.info("policiesList() - ApiId: {}", apiId);
+	private List<Policy> policiesList(String apiId, String resourceId){
+		//logger.info("policiesList() - ApiId: {}", apiId);
 		
 		List<Policy> pToApply = new ArrayList<Policy>();
 		//api policies
 		Api api =  manager.getApiById(apiId);
-		
+		logger.info("policiesList() - ResourceId: {}", resourceId);
 		//resource policies
 		if (resourceId != null) {
-			logger.info("policiesList() - ResourceId: {}", resourceId);
+			
 			Resource r = manager.getResourceApiByResourceId(apiId,resourceId);
 			//retrieve policy resource
 			List<Policy> rplist = r.getPolicy();
@@ -153,18 +154,24 @@ public class PolicyDecisionPoint {
 	 */
 	public void applyPoliciesBatch(RequestHandlerObject obj){
 		logger.info("applyPoliciesBatch() - Apply policies....");
-		getData(obj);
+		//getData(obj);
+		String apiId = obj.getApiId();
+		String resourceId = obj.getResourceId();
+		String appId = obj.getAppId();
+		//headers = object.getHeaders();
 
-		List<Policy> pToApply = policiesList();
+		List<Policy> pToApply = policiesList(apiId, resourceId);
 		
 		PolicyDatastoreBatch batch = new PolicyDatastoreBatch();
 		
 		if (pToApply != null && pToApply.size() > 0) {
 			for (int i = 0; i < pToApply.size(); i++) {
-				logger.info("applyPoliciesBatch - Apply for each");
+				logger.info("****************************************** FOR **********************");
+				//init a count 0 to avoid concurrency problem
+				initQuotaApplyElement(apiId, resourceId, appId);
+				//logger.info("applyPoliciesBatch - Apply for each");
 				if(pToApply.get(i) instanceof Quota){
-					QuotaApply qa = new QuotaApply();
-					qa.setQuotaApply(apiId, resourceId, appId,(Quota)pToApply.get(i));
+					QuotaApply qa = new QuotaApply(apiId, resourceId, appId,(Quota)pToApply.get(i));
 					qa.setPManager(proxyManager);
 					qa.setManager(manager);
 					batch.add(qa);
@@ -176,6 +183,24 @@ public class PolicyDecisionPoint {
 			batch.apply();
 		} else {
 			logger.info("applyPoliciesBatch - No policies to apply");
+		}
+	}
+	
+	private void initQuotaApplyElement(String apiId, String resourceId, String appId){
+		PolicyQuota p = null;
+		if(appId!=null){
+			p = proxyManager.retrievePolicyQuotaByParamIds(apiId, resourceId, appId);
+		}else{
+			p = proxyManager.retrievePolicyQuotaByParams(apiId, resourceId);
+		}
+		if(p==null){
+			PolicyQuota pq = new PolicyQuota();
+			pq.setApiId(apiId);
+			pq.setAppId(appId);
+			pq.setResourceId(resourceId);
+			pq.setCount(0);
+			pq.setTime(new Date());
+			proxyManager.addPolicyQuota(pq);
 		}
 	}
 }

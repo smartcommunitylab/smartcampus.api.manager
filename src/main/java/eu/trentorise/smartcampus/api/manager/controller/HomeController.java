@@ -105,21 +105,26 @@ public class HomeController {
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public ResultData requestHandl(HttpServletRequest request){
-		logger.info("proxy request handler");
-		RequestHandlerObject r;
+		logger.info("-----------------------------------------------");
+		logger.info("----------------START-------------------------------");
+		
 		try {
-			r = requestHandler.handleRequest(request);
+			RequestHandlerObject r = requestHandler.handleRequest(request);
+			pdp.applyPoliciesBatch(r);
+
+			logger.info("------------------END-----------------------------");
+			logger.info("-----------------------------------------------");
+
+			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
+			
+			
 		} catch (IllegalArgumentException i) {
+			logger.info("Error exception..............................................");
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
 					i.getMessage());
 		}
-		pdp.applyPoliciesBatch(r);
 
-		if (r.getApiId() == null && r.getResourceId() == null) {
-			return new ResultData(r, HttpServletResponse.SC_NOT_FOUND,
-					"not found");
-		} else
-			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
+		
 
 	}
 	

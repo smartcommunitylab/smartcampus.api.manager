@@ -23,24 +23,9 @@ package eu.trentorise.smartcampus.api.manager.model;
  */
 public class ObjectInMemory {
 	
-	private String url;
 	private String apiId;
 	private String resourceId;
 	
-	/**
-	 * 
-	 * @return url, String
-	 */
-	public String getUrl() {
-		return url;
-	}
-	/**
-	 * 
-	 * @param url : String
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
 	/**
 	 * 
 	 * @return api id, String

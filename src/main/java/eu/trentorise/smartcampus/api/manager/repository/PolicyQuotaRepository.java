@@ -55,4 +55,5 @@ public interface PolicyQuotaRepository extends MongoRepository<PolicyQuota,Strin
 	 * @return list of {@link PolicyQuota} instances
 	 */
 	List<PolicyQuota> findByApiIdAndResourceIdAndAppId(String apiid, String resourceid, String appid);
+	
 }

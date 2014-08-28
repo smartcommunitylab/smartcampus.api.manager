@@ -15,20 +15,21 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.proxy;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import org.mockito.internal.util.ObjectMethodsGuru;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-//import org.springframework.web.HttpRequestHandler;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
@@ -44,6 +45,7 @@ import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
  *
  */
 @Component
+@Transactional
 public class RequestHandler{
 	/**
 	 * Instance of {@link Logger}
@@ -62,13 +64,14 @@ public class RequestHandler{
 	/**
 	 * Instance of {@link ObjectInMemory}.
 	 */
-	private static List<ObjectInMemory> all;
+	private static Map<String,ObjectInMemory> all;
 	
 	/**
 	 * Static memory
 	 */
+	@PostConstruct
 	private void initMemory(){
-		all = new ArrayList<ObjectInMemory>();
+		all = new HashMap<String, ObjectInMemory>();
 		//retrieves all basepath+uri and apiId and resourceId from db
 		List<Api> apilist = apiManager.listApi();
 		
@@ -76,47 +79,26 @@ public class RequestHandler{
 			for(int i=0;i<apilist.size();i++){
 				String apiId = apilist.get(i).getId();
 				String basepath = apilist.get(i).getBasePath();
-				//save api
-				logger.info("In memory - Save api");
 
 				// save in object
 				ObjectInMemory m1 = new ObjectInMemory();
-				m1.setUrl(basepath);
 				m1.setApiId(apiId);
-				all.add(m1);
+				all.put(basepath, m1);
 
 				//get resource
 				List<Resource> rlist = apilist.get(i).getResource();
 				if(rlist!=null && rlist.size()>0){
-					logger.info("In memory - Found resources");
 					for(int j=0;j<rlist.size();j++){
 						String rId = rlist.get(j).getId();
 						String uri = rlist.get(j).getUri();
 						
 						//save in object
 						ObjectInMemory m = new ObjectInMemory();
-						m.setUrl(basepath+uri);
 						m.setApiId(apiId);
 						m.setResourceId(rId);
-						all.add(m);
+						all.put(basepath+uri, m);
 					}
-				}/*else{
-					logger.info("In memory - No resource");
-					//save in object
-					ObjectInMemory m = new ObjectInMemory();
-					m.setUrl(basepath);
-					m.setApiId(apiId);
-					all.add(m);
-				}*/
-			}
-		}
-		
-		if(all.size()>0){
-			for(int i=0;i<all.size();i++){
-				logger.info("In memory - ");
-				logger.info("url: {} ", all.get(i).getUrl());
-				logger.info("api id: {} ", all.get(i).getApiId());
-				logger.info("resource id: {} ", all.get(i).getResourceId());
+				}
 			}
 		}
 	}
@@ -134,7 +116,6 @@ public class RequestHandler{
 	 */
 	public RequestHandlerObject handleUrl(String url, HttpServletRequest request){
 		
-		initMemory();
 		String apiId = null, resourceId = null;
 		RequestHandlerObject result = new RequestHandlerObject();
 		
@@ -143,20 +124,21 @@ public class RequestHandler{
 		if (path != null && !path.equalsIgnoreCase("")) {
 			//retrieve api id and resource from static resource
 			if(all!=null && all.size()>0){
-				for(int i=0;i<all.size();i++){
-					if(path.equalsIgnoreCase(all.get(i).getUrl())){
-						apiId = all.get(i).getApiId();
-						resourceId =all.get(i).getResourceId();
-					}
+				if(all.containsKey(path)){
+					ObjectInMemory obj = all.get(path);
+					apiId = obj.getApiId();
+					resourceId = obj.getResourceId();
+				}else{
+					throw new IllegalArgumentException("This path is not correct.");
 				}
+
 			}
 			if(apiId==null && resourceId==null){
-				logger.info("There is no api and resource for this path {}.",
-						path);
+				throw new IllegalArgumentException("There is no api and resource for this path.");
 			}
 
 		} else {
-			logger.info("There is some problems with split method.");
+			throw new IllegalArgumentException("There is some problems with split method.");
 		}
 		
 		// retrieves headers
@@ -199,17 +181,14 @@ public class RequestHandler{
 	 */
 	public RequestHandlerObject handleRequest(HttpServletRequest request) {
 
-		initMemory();
+		if(request!=null){
+		
 		String apiId = null, resourceId = null, appId=null;
 		RequestHandlerObject result = new RequestHandlerObject();
 
 		String requestUri = request.getRequestURI();
-		logger.info("request uri: {}", requestUri);
 		String[] slist = requestUri.split("/", 3);
-		for (int i = 0; i < slist.length; i++) {
-			logger.info("index: {}", i);
-			logger.info("value: {} --", slist[i]);
-		}
+		
 		String path;
 		if(slist[2].indexOf("/")==0){
 			path = slist[2];
@@ -220,19 +199,17 @@ public class RequestHandler{
 		
 		//retrieve api id and resource from static resource
 		if(all!=null && all.size()>0){
-			for(int i=0;i<all.size();i++){
-				if(path.equalsIgnoreCase(all.get(i).getUrl())){
-					apiId = all.get(i).getApiId();
-					resourceId =all.get(i).getResourceId();
-				}
+			if(all.containsKey(path)){
+				ObjectInMemory obj = all.get(path);
+				apiId = obj.getApiId();
+				resourceId = obj.getResourceId();
+			}else{
+				throw new IllegalArgumentException("There is no api and resource for this path in memory.");
 			}
 		}
 		if(apiId==null && resourceId==null){
-			logger.info("There is no api and resource for this path {}.",
-					path);
+			throw new IllegalArgumentException("There is no api and resource for this path {}.");
 		}
-		
-		logger.info("Env: {} ",env.getProperty("key.appId"));
 		
 		// retrieves headers
 		Map<String, String> map = new HashMap<String, String>();
@@ -277,6 +254,9 @@ public class RequestHandler{
 		result.setHeaders(map);
 		
 		return result;
+		}
+		else
+			return null;
 
 	}
 	
@@ -292,16 +272,12 @@ public class RequestHandler{
 	 */
 	public RequestHandlerObject handleRequestWithAppId(String appId, HttpServletRequest request) {
 
-		initMemory();
 		String apiId = null, resourceId = null;
 		RequestHandlerObject result = new RequestHandlerObject();
 
 		String requestUri = request.getRequestURI();
 		String[] slist = requestUri.split("/", 3);
-		for (int i = 0; i < slist.length; i++) {
-			logger.info("index: {}", i);
-			logger.info("value: {} --", slist[i]);
-		}
+
 		String path;
 		if(slist[2].indexOf("/")==0){
 			path = slist[2];
@@ -312,16 +288,16 @@ public class RequestHandler{
 		
 		//retrieve api id and resource from static resource
 		if(all!=null && all.size()>0){
-			for(int i=0;i<all.size();i++){
-				if(path.equalsIgnoreCase(all.get(i).getUrl())){
-					apiId = all.get(i).getApiId();
-					resourceId =all.get(i).getResourceId();
-				}
+			if(all.containsKey(path)){
+				ObjectInMemory obj = all.get(path);
+				apiId = obj.getApiId();
+				resourceId = obj.getResourceId();
+			}else{
+				throw new IllegalArgumentException("There is no api and resource for this path in memory.");
 			}
 		}
 		if(apiId==null && resourceId==null){
-			logger.info("There is no api and resource for this path {}.",
-					path);
+			throw new IllegalArgumentException("There is no api and resource for this path.");
 		}
 		
 		// retrieves headers
@@ -366,8 +342,7 @@ public class RequestHandler{
 	 * 			and a map of request headers.
 	 */
 	public RequestHandlerObject handleRequestWithAppId(String appId, String url) {
-
-		initMemory();
+		
 		String apiId = null, resourceId = null;
 		RequestHandlerObject result = new RequestHandlerObject();
 
@@ -376,16 +351,16 @@ public class RequestHandler{
 		
 		//retrieve api id and resource from static resource
 		if(all!=null && all.size()>0){
-			for(int i=0;i<all.size();i++){
-				if(path.equalsIgnoreCase(all.get(i).getUrl())){
-					apiId = all.get(i).getApiId();
-					resourceId =all.get(i).getResourceId();
-				}
+			if(all.containsKey(path)){
+				ObjectInMemory obj = all.get(path);
+				apiId = obj.getApiId();
+				resourceId = obj.getResourceId();
+			}else{
+				throw new IllegalArgumentException("There is no api and resource for this path in memory.");
 			}
 		}
 		if(apiId==null && resourceId==null){
-			logger.info("There is no api and resource for this path {}.",
-					path);
+			throw new IllegalArgumentException("There is no api and resource for this path.");
 		}
 		
 		logger.info("api id: {} ",apiId);
@@ -412,12 +387,6 @@ public class RequestHandler{
 		//url sample http(s)://proxy/api_basepath/resource_uri
 		String[] slist = url.split("//");
 		
-		//print data
-		for(int i=0;i<slist.length;i++){
-			logger.info("String pieces - index: {}",i);
-			logger.info("String pieces - value: {} --",slist[i]);
-		}
-		
 		//to avoid = after basepath
 		String subUrl;
 		if(slist[1].contains("=")){
@@ -425,7 +394,6 @@ public class RequestHandler{
 		}else{
 			subUrl = slist[1].substring(slist[1].indexOf("/"),slist[1].length());
 		}
-		logger.info("Base path: {}", subUrl);
 		
 		return subUrl;
 	}

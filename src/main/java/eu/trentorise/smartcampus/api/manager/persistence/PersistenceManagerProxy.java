@@ -15,9 +15,15 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.persistence;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +45,11 @@ public class PersistenceManagerProxy {
 	 */
 	@Autowired
 	private AccessApiRepository aapirep;
+	/**
+	 * Instance of {@link MongoOperations}.
+	 */
+	@Autowired
+	private MongoOperations mongoOperations;
 	
 	/*
 	 * POLICY QUOTA MODEL
@@ -68,7 +79,12 @@ public class PersistenceManagerProxy {
 	public PolicyQuota retrievePolicyQuotaByParams(String apiId, String resourceId){
 		List<PolicyQuota> pqlist =  pqrep.findByApiIdAndResourceId(apiId, resourceId);
 		if(pqlist!=null && pqlist.size()>0){
-			return pqlist.get(0);
+			//check that appId is null
+			for(int i=0;i<pqlist.size();i++){
+				if(pqlist.get(i).getAppId()==null){
+					return pqlist.get(i);
+				}
+			}
 		}
 		return null;
 	}
@@ -87,6 +103,41 @@ public class PersistenceManagerProxy {
 			return pqlist.get(0);
 		}
 		return null;
+	}
+	
+	/**
+	 * Find And Modify function.
+	 * 
+	 * @param apiId : String
+	 * @param inTime : boolean
+	 * @return new updated instance of {@link PolicyQuota}
+	 */
+	public PolicyQuota findAndModify(PolicyQuota p/*, 
+			String apiId, String resourceId, String appId, int count*/, boolean inTime){
+		Query query = new Query();
+		Criteria criteria = new Criteria().andOperator(
+				//Criteria.where("_id").is(p.getId()),
+				Criteria.where("appId").is(p.getAppId()),
+				Criteria.where("resourceId").is(p.getResourceId()),
+				Criteria.where("apiId").is(p.getApiId())
+				);
+		query.addCriteria(criteria);
+		
+		Update update = new Update();
+		update.set("time", new Date());
+		if(inTime){
+			System.out.println("Trueeeeeeeeeeeeeeeeeeeeeeeeee");
+			update.inc("count",1);
+		}else{
+			System.out.println("Falseeeeeeeeeeeeeeeeeeeeeeeeee");
+			//update.inc("count",0);
+			update.set("count", 1);
+		}
+		
+		//FindAndModifyOptions().returnNew(true) = newly updated document
+		PolicyQuota pq = mongoOperations.findAndModify(query, update, 
+				new FindAndModifyOptions().returnNew(true), PolicyQuota.class);
+		return pq;
 	}
 	
 	/**
