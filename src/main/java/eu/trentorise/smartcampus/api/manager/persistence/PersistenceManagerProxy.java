@@ -112,11 +112,9 @@ public class PersistenceManagerProxy {
 	 * @param inTime : boolean
 	 * @return new updated instance of {@link PolicyQuota}
 	 */
-	public PolicyQuota findAndModify(PolicyQuota p/*, 
-			String apiId, String resourceId, String appId, int count*/, boolean inTime){
+	public PolicyQuota findAndModify(PolicyQuota p, boolean inTime){
 		Query query = new Query();
 		Criteria criteria = new Criteria().andOperator(
-				//Criteria.where("_id").is(p.getId()),
 				Criteria.where("appId").is(p.getAppId()),
 				Criteria.where("resourceId").is(p.getResourceId()),
 				Criteria.where("apiId").is(p.getApiId())
@@ -126,11 +124,8 @@ public class PersistenceManagerProxy {
 		Update update = new Update();
 		update.set("time", new Date());
 		if(inTime){
-			System.out.println("Trueeeeeeeeeeeeeeeeeeeeeeeeee");
 			update.inc("count",1);
 		}else{
-			System.out.println("Falseeeeeeeeeeeeeeeeeeeeeeeeee");
-			//update.inc("count",0);
 			update.set("count", 1);
 		}
 		

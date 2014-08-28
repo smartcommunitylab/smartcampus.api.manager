@@ -71,6 +71,7 @@ public class RequestHandler{
 	 */
 	@PostConstruct
 	private void initMemory(){
+		logger.info("MEMORY");
 		all = new HashMap<String, ObjectInMemory>();
 		//retrieves all basepath+uri and apiId and resourceId from db
 		List<Api> apilist = apiManager.listApi();
@@ -204,7 +205,8 @@ public class RequestHandler{
 				apiId = obj.getApiId();
 				resourceId = obj.getResourceId();
 			}else{
-				throw new IllegalArgumentException("There is no api and resource for this path in memory.");
+				retrieveUrlFromMemory(path);
+				//throw new IllegalArgumentException("There is no api and resource for this path in memory.");
 			}
 		}
 		if(apiId==null && resourceId==null){
@@ -396,6 +398,71 @@ public class RequestHandler{
 		}
 		
 		return subUrl;
+	}
+	
+	/**
+	 * Memory is built when server is started.
+	 * Therefore new elements are not available.
+	 * This function searches for api/resource in db when they are not in 
+	 * static memory.
+	 * If it does not find element, then an IllegalArgumentException is thrown.
+	 * 
+	 * @param path : String
+	 */
+	private void retrieveUrlFromMemory(String path){
+		
+		if(all!=null && all.size()>0){
+			boolean found = false;
+			
+			//if(!all.containsKey(path)){
+				
+				//search in db - if found add to memory else error
+				List<Api> apilist = apiManager.listApi();
+				
+				
+				if(apilist!=null && apilist.size()>0){
+					for(int i=0;i<apilist.size();i++){
+						String apiId = apilist.get(i).getId();
+						String basepath = apilist.get(i).getBasePath();
+
+						// save in object
+						if(basepath.equalsIgnoreCase(path)){
+							ObjectInMemory m1 = new ObjectInMemory();
+							m1.setApiId(apiId);
+							all.put(basepath, m1);
+							found = true;
+						}
+
+						//get resource
+						if (!found) {
+							List<Resource> rlist = apilist.get(i).getResource();
+							if (rlist != null && rlist.size() > 0) {
+								for (int j = 0; j < rlist.size(); j++) {
+									String rId = rlist.get(j).getId();
+									String uri = rlist.get(j).getUri();
+
+									// save in object
+									if (basepath.equalsIgnoreCase(basepath
+											+ uri)) {
+										ObjectInMemory m = new ObjectInMemory();
+										m.setApiId(apiId);
+										m.setResourceId(rId);
+										all.put(basepath + uri, m);
+										found = true;
+									}
+								}
+							}
+						}
+					}
+				}
+			//}
+			
+			if(!found){
+				throw new IllegalArgumentException("There is no api and resource " +
+						"for this path in memory.");
+				
+			}
+		}
 	}
 	
 	

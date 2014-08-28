@@ -119,7 +119,7 @@ public class HomeController {
 			
 			
 		} catch (IllegalArgumentException i) {
-			logger.info("Error exception..............................................");
+			logger.info("Exception: {}", i.getMessage());
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
 					i.getMessage());
 		}

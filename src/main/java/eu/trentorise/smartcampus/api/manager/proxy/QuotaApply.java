@@ -94,7 +94,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 	@Override
 	public void apply() {
-		// TODO Auto-generated method stub
+		
 		logger.info("Applying quota policy..");
 		logger.info("Api id: {}, ",apiId);
 		logger.info("Resource id: {}, ",resourceId);
@@ -150,9 +150,6 @@ public class QuotaApply implements PolicyDatastoreApply{
 				}
 			}
 		}
-		
-		logger.info("Status {}", appApiStatus);
-		logger.info("Quota {}", quota);
 
 		return quota;
 	}
@@ -172,10 +169,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 					resourceId, appId);
 
 			if (q != null) {
-				logger.info("Found plicy quota {}", q.getId());
-				logger.info("apiId {}", apiId);
-				logger.info("resourceId {}", resourceId);
-				logger.info("appId {}", appId);
+				logger.info("Found policy quota {} for decision", q.getId());
 				
 				// Da interval e timeUnit calcolo valore timeLimit
 				int t = 0;
@@ -194,13 +188,8 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 				int timeLimit = interval * t * 1000; // in milliseconds
 				int resourceQuota = getQuotaValue();
-				
-				//count + 1
-				//updatePolicyQuota(q, apiId, resourceId, appId, currentTime, timeLimit);
-				
 
 				if (appId == null) {
-					// appId=0;
 					decision = QuotaDecision(timeLimit, resourceQuota, apiId,
 							resourceId, currentTime);
 				} else {
@@ -210,17 +199,6 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 			} else {
 				decision = true;
-				logger.info("Not found ---- Creation................");
-
-				// add new entry for policy quota
-				/*PolicyQuota pq = new PolicyQuota();
-				pq.setApiId(apiId);
-				pq.setAppId(appId);
-				pq.setResourceId(resourceId);
-				pq.setCount(0);
-				pq.setTime(new Date());
-				pmanager.addPolicyQuota(pq);
-				*/
 				updatePolicyQuota(null, apiId, resourceId, appId, currentTime, 0);
 			}
 		}
@@ -267,11 +245,11 @@ public class QuotaApply implements PolicyDatastoreApply{
 			// NOO --> viene preso il valore <= del valore status -->[DA FARE -
 			// SI TORNA COME PRIMA]
 			
-			if (resourceQuota!=0 && pq.getCount()/*+1*/ <= resourceQuota) {
+			if (resourceQuota!=0 && pq.getCount() <= resourceQuota) {
 				decision = true;
 			}
 			
-			if (resourceQuota==0 && pq.getCount()/*+1*/ <= p.getAllowCount()) {
+			if (resourceQuota==0 && pq.getCount() <= p.getAllowCount()) {
 				decision = true;
 			}
 
@@ -290,16 +268,13 @@ public class QuotaApply implements PolicyDatastoreApply{
 		// altro?
 
 		PolicyQuota pq = pmanager.retrievePolicyQuotaByParams(apiId, resourceId);
-		//retrievePolicyQuotaByParamIds(apiId, resourceId, null);
-		logger.info("Quota Decision without appId, policyquota id: {}",pq.getId());
 		
-		int counter = 1/*2*/;
+		int counter = 1;
 
 		if (DatesDiff(pq.getTime(), currentTime) < timeLimit) {
 			counter = +pq.getCount();
 		}
 		
-
 		logger.info("Quota Decision without appId, count: {}",counter);
 		
 		updatePolicyQuota(pq, apiId, resourceId, null, currentTime,
@@ -333,13 +308,11 @@ public class QuotaApply implements PolicyDatastoreApply{
 			if (DatesDiff(q.getTime(), currentTime) < timeLimit) {
 				int quotaCount = q.getCount() + 1;
 				q.setCount(quotaCount);
-				logger.info("1 - FindAndModify - count {}", q.getCount());
-				pmanager.findAndModify(q, true);//updatePolicyQuota(q);
+				pmanager.findAndModify(q, true);
 			} else {
 				q.setTime(currentTime);
 				q.setCount(1);
-				logger.info("2 - FindAndModify - count reset");
-				pmanager.findAndModify(q,false);//updatePolicyQuota(q);
+				pmanager.findAndModify(q,false);
 			}
 		}
 	}

@@ -18,7 +18,6 @@ package eu.trentorise.smartcampus.api.manager.proxy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,15 +26,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
-import eu.trentorise.smartcampus.api.manager.model.ApiData;
-import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
-import eu.trentorise.smartcampus.api.manager.model.Status;
-import eu.trentorise.smartcampus.api.manager.model.proxy.AccessApi;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
@@ -64,29 +59,6 @@ public class PolicyDecisionPoint {
 	 */
 	@Autowired
 	private PersistenceManagerProxy proxyManager;
-	/*
-	 * Global variables
-	 */
-	/*private String apiId;
-	private String resourceId;
-	private String appId;
-	private Map<String, String> headers;*/
-	
-	/**
-	 * Query {@link RequestHandlerObject} object and retrieve data, such as
-	 * ApiID, Resources IDs and Request Headers.
-	 * 
-	 * @param map : HashMap
-	 */
-	/*private void getData(RequestHandlerObject object){
-		apiId = object.getApiId();
-		resourceId = object.getResourceId();
-		appId = object.getAppId();
-		headers = object.getHeaders();
-		
-	}*/
-	
-	//TODO check headers map
 	
 	/**
 	 * Retrieves api policies and resource policies.
@@ -99,7 +71,7 @@ public class PolicyDecisionPoint {
 		List<Policy> pToApply = new ArrayList<Policy>();
 		//api policies
 		Api api =  manager.getApiById(apiId);
-		logger.info("policiesList() - ResourceId: {}", resourceId);
+		
 		//resource policies
 		if (resourceId != null) {
 			
@@ -132,7 +104,7 @@ public class PolicyDecisionPoint {
 				
 			}
 		} catch (NullPointerException n) {
-			logger.info("policiesList() - No policies for this api {}", apiId);
+			logger.info("No policies for this api {}", apiId);
 		}
 		
 		return pToApply;
@@ -150,15 +122,15 @@ public class PolicyDecisionPoint {
 	/**
 	 * Apply policy logic to the request.
 	 * 
-	 * @param map : HashMap
+	 * @param obj : instance of {@link RequestHandlerObject}
 	 */
 	public void applyPoliciesBatch(RequestHandlerObject obj){
-		logger.info("applyPoliciesBatch() - Apply policies....");
-		//getData(obj);
+		
 		String apiId = obj.getApiId();
 		String resourceId = obj.getResourceId();
 		String appId = obj.getAppId();
-		//headers = object.getHeaders();
+		//TODO check headers map
+		//headers = obj.getHeaders();
 
 		List<Policy> pToApply = policiesList(apiId, resourceId);
 		
@@ -166,11 +138,11 @@ public class PolicyDecisionPoint {
 		
 		if (pToApply != null && pToApply.size() > 0) {
 			for (int i = 0; i < pToApply.size(); i++) {
-				logger.info("****************************************** FOR **********************");
-				//init a count 0 to avoid concurrency problem
-				initQuotaApplyElement(apiId, resourceId, appId);
-				//logger.info("applyPoliciesBatch - Apply for each");
+				
 				if(pToApply.get(i) instanceof Quota){
+					//init a count 0 to avoid concurrency problem
+					initQuotaApplyElement(apiId, resourceId, appId);
+					
 					QuotaApply qa = new QuotaApply(apiId, resourceId, appId,(Quota)pToApply.get(i));
 					qa.setPManager(proxyManager);
 					qa.setManager(manager);
@@ -182,10 +154,18 @@ public class PolicyDecisionPoint {
 			}
 			batch.apply();
 		} else {
-			logger.info("applyPoliciesBatch - No policies to apply");
+			throw new IllegalArgumentException("There is no policies to apply");
 		}
 	}
 	
+	/**
+	 * Initialize table of Quota Apply with a new country.
+	 * Count element is set to zero.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param appId : String
+	 */
 	private void initQuotaApplyElement(String apiId, String resourceId, String appId){
 		PolicyQuota p = null;
 		if(appId!=null){
