@@ -206,7 +206,9 @@ public class RequestHandler{
 				resourceId = obj.getResourceId();
 			}else{
 				retrieveUrlFromMemory(path);
-				//throw new IllegalArgumentException("There is no api and resource for this path in memory.");
+				ObjectInMemory obj = all.get(path);
+				apiId = obj.getApiId();
+				resourceId = obj.getResourceId();
 			}
 		}
 		if(apiId==null && resourceId==null){
