@@ -56,6 +56,8 @@
 						<input type="text" class="form-control" id="qalllowcount" 
 						placeholder="Integer value ex. 2000" ng-model="policy.allowCount" integer >
 					</div>
+					
+					<!-- New status policy -->
 					<div class="form-group" ng-show="apiStatus">
 						<label for="qstatus">Set a count for the following status (one or more):</label> 
 						<div ng-repeat="n in apiStatus">
@@ -70,6 +72,21 @@
 								ng-click="addStatus(n.name,qstatusquota)">
         						<i class="fa fa-add">+</i>
     						</button>
+						</div>
+					</div>
+					
+					<!-- Edit status policy -->
+					<div class="form-group" ng-show="policy.qstatus">
+						<label for="qstatus">Set a count for the following status (one or more):</label> 
+						<div ng-repeat="n in policy.qstatus">
+							<u>Status {{n.name}}</u>
+                			 <input type="text" class="form-control" id="qstatusQuota" 
+								placeholder="{{n.name}} quota Integer value ex. 20"
+								ng-model="n.quota" integer />
+							<!-- <button type="button" class="pull-right btn btn-default btn-sm" 
+								ng-click="addStatus(n.name,qstatusquota)">
+        						<i class="fa fa-add">+</i>
+    						</button>  -->
 						</div>
 					</div>
 			</div>
