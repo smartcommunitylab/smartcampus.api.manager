@@ -39,6 +39,10 @@ services.factory('Api', ['$resource',
 			getStatus:{
 				method: 'GET',
 				url: 'api/:apiId/status/:statusName'
+			},
+			getStatusList:{
+				method: 'GET',
+				url: 'api/:apiId/status'
 			}
 		});
 	}

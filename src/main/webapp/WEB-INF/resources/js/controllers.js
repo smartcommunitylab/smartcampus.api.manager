@@ -270,10 +270,42 @@ app.controller('addResourceCtrl', ['$scope', '$location', '$routeParams', 'Resou
      }
 ]);
 
-app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy',
-     function ($scope, $location, $routeParams, Policy) {
+app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy', 'Api',
+     function ($scope, $location, $routeParams, Policy, Api) {
 		$scope.title = 'New';
 		var apiid = $routeParams.apiId;
+		var qstatus = [];
+		
+		Api.getStatusList({
+			apiId : apiid
+		}, function(data){
+			$scope.apiStatus = data.data;
+		});
+		
+		$scope.addStatus = function(name,quota){
+			console.log('param name: '+name);
+			console.log('param quota: '+quota);
+			var obj = {name: name , quota: quota};
+			
+			var index = -1;
+			for(var i=0;i<qstatus.length;i++){
+				if(qstatus[i].name === name){
+					index = i;
+				}
+			}
+			
+			console.log('index: '+index);
+			if(index > -1){
+				if(qstatus[index].quota!==quota){
+					qstatus.splice(index,1);
+					qstatus.push(obj);
+				}else console.log('Already in db');
+			}
+			else{
+				qstatus.push(obj);
+			}
+			console.log(qstatus);
+		};
 		
 		$scope.submit = function () {
 			var type = $scope.policy.type;
@@ -290,6 +322,11 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 				});
 			}
 			else if(type=='Quota'){
+				//check qstatus list - add only data where quota is different from 0
+				console.log('Check qstatus');
+				console.log(qstatus);
+				$scope.policy.qstatus = qstatus;
+				
 				Policy.createQuota({
 					apiId: apiid
 					},$scope.policy,
