@@ -1595,7 +1595,7 @@ public class PersistenceManager {
 	public List<Status> addStatusApi(String apiId, Status s){
 		
 		//check status field: name and quota
-		if(s.getName() == null || s.getQuota() == 0){
+		if(s.getName() == null /*|| s.getQuota() == 0*/){
 			throw new IllegalArgumentException("Status name and quota are required.");
 		}
 		
@@ -1633,7 +1633,7 @@ public class PersistenceManager {
 	public List<Status> updateStatusApi(String apiId, Status s){
 		
 		// check status field: name and quota
-		if (s.getName() == null || s.getQuota() == 0) {
+		if (s.getName() == null /*|| s.getQuota() == 0*/) {
 			throw new IllegalArgumentException("Status name and quota are required.");
 		}
 
@@ -1648,8 +1648,8 @@ public class PersistenceManager {
 			if (slist != null) {
 				//search status by name
 				for(int i=0;i<slist.size();i++){
-					if(slist.get(i).getName().equalsIgnoreCase(s.getName())){
-						slist.get(i).setQuota(s.getQuota());
+					if(!slist.get(i).getName().equalsIgnoreCase(s.getName())){
+						slist.get(i).setName(s.getName());//Quota(s.getQuota());
 					}
 				}
 				

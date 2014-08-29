@@ -530,6 +530,29 @@ public class ApiController {
 	}
 	
 	/**
+	 * Rest service that retrieving list of api status..
+	 * 
+	 * @param apiId : String
+	 * @return instance of {@link ResultData} with data, status (OK or NOT FOUND) and a string message : 
+	 * 			"Status list found." or if data is null "There is no status for this api."
+	 */
+	@RequestMapping(value = "/{apiId}/status", method = RequestMethod.GET, 
+			produces="application/json")
+	@ResponseBody
+	public ResultData getApiStatus(@PathVariable String apiId) {
+		logger.info("List api by owner id.");
+		List<Status> s = pmanager.getApiStatus(apiId);
+
+		if(s!=null && s.size()>0){
+			return new ResultData(s, HttpServletResponse.SC_OK, "Status list found.");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"There is no status for this api.");
+		}
+		
+	}
+	
+	/**
 	 * Creates a new status entry for an api.
 	 * 
 	 * @param apiId : String

@@ -26,6 +26,7 @@ import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.ApiData;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
+import eu.trentorise.smartcampus.api.manager.model.QuotaStatus;
 import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
@@ -142,11 +143,21 @@ public class QuotaApply implements PolicyDatastoreApply{
 		}
 
 		// from api status list retrieves quota
-		if (status != null && status.size() > 0 && !appApiStatus.equalsIgnoreCase("DEFAULT")) {
+		/*if (status != null && status.size() > 0 && !appApiStatus.equalsIgnoreCase("DEFAULT")) {
 			// retrieves quota
 			for (int i = 0; i < status.size(); i++) {
 				if (status.get(i).getName().equalsIgnoreCase(appApiStatus)) {
 					quota = status.get(i).getQuota();
+				}
+			}
+		}*/
+		
+		//from policy status retrieves quota
+		List<QuotaStatus> qslist = p.getQstatus();
+		if(qslist != null && qslist.size()>0 && !appApiStatus.equalsIgnoreCase("DEFAULT")){
+			for (int i = 0; i < qslist.size(); i++) {
+				if (qslist.get(i).getName().equalsIgnoreCase(appApiStatus)) {
+					quota = qslist.get(i).getQuota();
 				}
 			}
 		}

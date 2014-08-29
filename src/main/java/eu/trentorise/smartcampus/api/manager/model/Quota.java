@@ -15,6 +15,8 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.model;
 
+import java.util.List;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -25,6 +27,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * timeUnit : (required) String, valid values: second, minute, hour, day, or month.
  * allow count : (required) Integer, specifies a message count.
  * identifier : (optional) String, variable used for uniquely identifying the client app.
+ * quota status : List of {@link QuotaStatus} instances, that has name and quota value.
  * 
  * @author Giulia Canobbio
  *
@@ -45,6 +48,8 @@ public class Quota extends Policy{
 	private Integer allowCount;
 	@Field("quota-Identifier")
 	private String identifier;
+	@Field
+	private List<QuotaStatus> qstatus;
 	
 	/**
 	 * 
@@ -101,5 +106,19 @@ public class Quota extends Policy{
 	 */
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
+	}
+	/**
+	 * 
+	 * @return list of {@link QuotaStatus} instances
+	 */
+	public List<QuotaStatus> getQstatus() {
+		return qstatus;
+	}
+	/**
+	 * 
+	 * @param qstatus : list of {@link QuotaStatus} instances
+	 */
+	public void setQstatus(List<QuotaStatus> qstatus) {
+		this.qstatus = qstatus;
 	}
 }

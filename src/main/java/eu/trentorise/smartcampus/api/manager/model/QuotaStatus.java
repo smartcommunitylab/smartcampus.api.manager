@@ -28,7 +28,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  *
  */
 @Document
-public class Status implements Serializable{
+public class QuotaStatus implements Serializable{
 	
 	/**
 	 * Default serial version
@@ -37,8 +37,8 @@ public class Status implements Serializable{
 	@Field
 	@Indexed(unique=true)
 	private String name;
-	/*@Field
-	private int quota;*/
+	@Field
+	private int quota;
 	
 	/**
 	 * 
@@ -58,16 +58,16 @@ public class Status implements Serializable{
 	 * 
 	 * @return quota, int
 	 */
-	/*public int getQuota() {
+	public int getQuota() {
 		return quota;
-	}*/
+	}
 	/**
 	 * 
 	 * @param quota : int
 	 */
-	/*public void setQuota(int quota) {
+	public void setQuota(int quota) {
 		this.quota = quota;
-	}*/
+	}
 	
 	
 }
