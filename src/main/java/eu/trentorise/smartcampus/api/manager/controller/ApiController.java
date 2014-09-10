@@ -81,6 +81,28 @@ public class ApiController {
 	}
 	
 	/**
+	 * Rest service that retrieving api name.
+	 * 
+	 * @param apiId : String
+	 * @return instance of {@link ResultData} with api name having the given id, 
+	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			"Api name found" if it is ok, otherwise "There is no api data with this id.".
+	 */
+	@RequestMapping(value = "/name/{apiId}", method = RequestMethod.GET, produces="application/json")
+	@ResponseBody
+	public ResultData getApiNameById(@PathVariable String apiId){
+		logger.info("Api name.");
+		Api api = pmanager.getApiById(apiId);
+		if(api!=null){
+			logger.info("Name {}", api.getName());
+			return new ResultData(api.getName(), HttpServletResponse.SC_OK, "Api name found");
+		}else{
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"There is no api with this id.");
+		}
+	}
+	
+	/**
 	 * Rest service that retrieving api data having a specific owner id.
 	 * 
 	 * @param ownerId : String, path variable

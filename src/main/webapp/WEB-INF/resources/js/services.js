@@ -24,6 +24,10 @@ services.factory('Api', ['$resource',
 				method: 'GET',
 				url: 'api/id/:apiId'
 			},
+			getApiName:{
+				method: 'GET',
+				url: 'api/name/:apiId'
+			},
 			createStatus:{
 				method: 'POST',
                 url: 'api/add/:apiId/status'
