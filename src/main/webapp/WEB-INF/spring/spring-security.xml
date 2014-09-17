@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:sec="http://www.springframework.org/schema/security" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+	
+	<sec:http pattern="/resources/**" security="none"></sec:http>
+	<sec:http pattern="/css/**" security="none"></sec:http>
+	<sec:http pattern="/fonts/**" security="none"></sec:http>
+	<sec:http pattern="/js/**" security="none"></sec:http>
+	<sec:http pattern="/partials/**" security="none"></sec:http>
+
+
+	<sec:http pattern="/**" authentication-manager-ref="basic-auth" use-expressions="true">
+		<sec:http-basic />
+		<sec:intercept-url pattern="/" access="permitAll" />
+		<sec:intercept-url pattern="/**" access="hasRole('ROLE_PROVIDER')" />
+	</sec:http>
+
+	<!-- BASIC AUTHENTICATION -->
+	<sec:authentication-manager id="basic-auth">
+		<sec:authentication-provider>
+			<sec:user-service>
+				<!-- INSERT THE USERS CREDENTIALS -->
+				<sec:user name="1" password="1" authorities="ROLE_PROVIDER" />
+				<sec:user name="2" password="2" authorities="ROLE_PROVIDER" />
+				<sec:user name="3" password="3" authorities="ROLE_USER" />
+			</sec:user-service>
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+
+</beans>
