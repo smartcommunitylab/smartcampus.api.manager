@@ -18,7 +18,7 @@ services.factory('Api', ['$resource',
 			},
 			list:{
 				method: 'GET',
-				url: 'api/:ownerId'
+				url: 'api/ownerId'
 			},
 			getApi:{
 				method: 'GET',

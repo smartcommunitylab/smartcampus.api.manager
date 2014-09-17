@@ -18,7 +18,7 @@ app.controller('breadCtrl', [
 app.controller('apisCtrl', ['$scope', '$location', '$route', 'Api',
     function($scope, $location, $route, Api){
     	Api.list({
-    		ownerId : '1'
+    		//ownerId : '1'
     	}, function(data){
     		$scope.apisList = data.data;
     	});
@@ -205,8 +205,8 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 		var appid = $routeParams.appId;
 		
 		var listApi = function(id,status){
-			console.log(id);
-			console.log(status);
+			//console.log(id);
+			//console.log(status);
 			
 			if(!$scope.list){
 				$scope.list = [];
@@ -223,7 +223,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 				$scope.list.push(obj);
 			});
 			
-			console.log($scope.list);
+			//console.log($scope.list);
 		};
 		
 		App.getApp({
@@ -231,7 +231,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 		}, function(data){
 			$scope.app = data.data;
 			
-			console.log($scope.app);
+			//console.log($scope.app);
 			
 			//get name of api
 			for(var i=0;i<$scope.app.apis.length;i++){
@@ -272,7 +272,7 @@ app.controller('addApiCtrl', ['$scope', '$location', 'Api',
 		$scope.title = 'New';
 
         $scope.submit = function () {
-        	$scope.api.ownerId = '1';
+        	//$scope.api.ownerId = '1';
             Api.create($scope.api,
                 function (data) {
             		if(data.status == 200){
