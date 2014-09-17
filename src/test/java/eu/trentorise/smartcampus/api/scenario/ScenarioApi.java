@@ -35,6 +35,7 @@ import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Scenario 1:
@@ -102,9 +103,12 @@ public class ScenarioApi {
 
 		Api nApi = apiManager.addApi(api);
 		assertNotNull("Error in saving a new api..",nApi);
-		
-		apiManager.addResourceApi("api1", r1);
-		apiManager.addResourceApi("api1", r2);
+		try{
+			apiManager.addResourceApi("api1", r1);
+			apiManager.addResourceApi("api1", r2);
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		
 		log.info("Add api test terminated.");
 	}
@@ -123,8 +127,12 @@ public class ScenarioApi {
 		p1.setType("Spike Arrest");
 		p1.setRate("12ps");
 		
-		Resource r = apiManager.addPolicyResourceApi("api1", "resource1", p1);
-		assertNotNull("Problem in saving",r);
+		try{
+			Resource r = apiManager.addPolicyResourceApi("api1", "resource1", p1);
+			assertNotNull("Problem in saving",r);
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 	}
 	
 	/**
@@ -141,8 +149,12 @@ public class ScenarioApi {
 		p1.setType("policy");
 		p1.setRate("12ps");
 		
-		Resource r = apiManager.updatePolicyResourceApi("api1", "resource1", p1);
-		assertNotNull("Problem in saving",r);
+		try{
+			Resource r = apiManager.updatePolicyResourceApi("api1", "resource1", p1);
+			assertNotNull("Problem in saving",r);
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 	}
 	
 	/**
@@ -151,9 +163,12 @@ public class ScenarioApi {
 	@Test
 	public void deletePolicyResource1(){
 		log.info("Delete policy to resource 1 ...");
-		
-		Resource r = apiManager.deletePolicyResourceApi("api1", "resource1", "resource-p1");
-		assertNotNull("Problem in saving",r);
+		try{
+			Resource r = apiManager.deletePolicyResourceApi("api1", "resource1", "resource-p1");
+			assertNotNull("Problem in saving",r);
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 	}
 	
 	/**
@@ -163,14 +178,22 @@ public class ScenarioApi {
 	@Test
 	public void retrieveResources(){
 		log.info("Find resource api by resource id..");
-		Resource r = apiManager.getResourceApiByResourceId("api1", "resource1");
-		assertNotNull("Error in finding by resource id",r);
-		assertTrue("Incorrect id",r.getId().equalsIgnoreCase("resource1"));
 		
-		log.info("Find resource api by resource name..");
-		List<Resource> rlist = apiManager.getResourceApiByResourceName("api1", "Like");
-		assertNotNull("Error in finding by resource name",rlist);
-		assertTrue("Incorrect name",rlist.get(0).getName().equalsIgnoreCase("Like"));
+		try {
+			Resource r = apiManager.getResourceApiByResourceId("api1",
+					"resource1");
+			assertNotNull("Error in finding by resource id", r);
+			assertTrue("Incorrect id", r.getId().equalsIgnoreCase("resource1"));
+
+			log.info("Find resource api by resource name..");
+			List<Resource> rlist = apiManager.getResourceApiByResourceName(
+					"api1", "Like");
+			assertNotNull("Error in finding by resource name", rlist);
+			assertTrue("Incorrect name", rlist.get(0).getName()
+					.equalsIgnoreCase("Like"));
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		
 		log.info("Search terminated.");
 	}
@@ -187,7 +210,11 @@ public class ScenarioApi {
 		r1.setName("Counter");
 		r1.setUri("/resource1");
 		r1.setVerb("POST");
-		apiManager.updateResourceApi("api1", r1);
+		try{
+			apiManager.updateResourceApi("api1", r1);
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		
 		log.info("Update resource 1 of api terminated.");
 	}
@@ -198,10 +225,12 @@ public class ScenarioApi {
 	@Test
 	public void deleteResource1(){
 		log.info("Delete resource 1 of api...");
-		
-		//get resource 1 and delete it
-		apiManager.deleteResourceApi("api1", "resource1");
-		
+		try{
+			//get resource 1 and delete it
+			apiManager.deleteResourceApi("api1", "resource1");
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		log.info("Delete resource 1 of api terminated.");
 		
 	}
@@ -233,9 +262,13 @@ public class ScenarioApi {
 		//spike arrest parameter
 		p3.setRate("10pm");
 		
-		log.info("Policy 1: {}", apiManager.addPolicyApi("api1", p1));
-		Policy policy = apiManager.addPolicyApi("api1", p3);
-		assertNotNull("Error in finding by api",policy);
+		try{
+			log.info("Policy 1: {}", apiManager.addPolicyApi("api1", p1));
+			Policy policy = apiManager.addPolicyApi("api1", p3);
+			assertNotNull("Error in finding by api",policy);
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		
 		log.info("Add policy api test terminated.");
 	}
@@ -247,25 +280,36 @@ public class ScenarioApi {
 	@Test
 	public void retrievePolicies(){
 		log.info("Find policies api by policies id..");
-		Quota p= (Quota) apiManager.getPolicyApiByPolicyId("api1", "api-p1");
-		assertNotNull("Error in finding by resource id",p);
-		assertTrue("Incorrect id",p.getId().equalsIgnoreCase("api-p1"));
 		
-		log.info("Find policies api by policies name..");
-		List<Policy> plist = apiManager.getPolicyApiByPolicyName("api1", "Quota-1");
-		assertNotNull("Error in finding by resource name",plist);
-		assertTrue("Incorrect name",plist.get(0).getName().equalsIgnoreCase("Quota-1"));
-		
-		log.info("Find policies api by policies category..");
-		List<Policy> pclist = apiManager.getPolicyApiByPolicyCategory("api1", "quality");
-		assertNotNull("Error in finding by resource name",pclist);
-		assertTrue("Incorrect category",pclist.get(0).getCategory().equalsIgnoreCase("quality"));
-		
-		log.info("Find policies api by policies type..");
-		List<Policy> ptlist = apiManager.getPolicyApiByPolicyType("api1", "Spike Arrest");
-		assertNotNull("Error in finding by resource name",ptlist);
-		assertTrue("Incorrect type",ptlist.get(0).getType().equalsIgnoreCase("Spike Arrest"));
-		
+		try {
+			Quota p = (Quota) apiManager.getPolicyApiByPolicyId("api1",
+					"api-p1");
+			assertNotNull("Error in finding by resource id", p);
+			assertTrue("Incorrect id", p.getId().equalsIgnoreCase("api-p1"));
+
+			log.info("Find policies api by policies name..");
+			List<Policy> plist = apiManager.getPolicyApiByPolicyName("api1",
+					"Quota-1");
+			assertNotNull("Error in finding by resource name", plist);
+			assertTrue("Incorrect name", plist.get(0).getName()
+					.equalsIgnoreCase("Quota-1"));
+
+			log.info("Find policies api by policies category..");
+			List<Policy> pclist = apiManager.getPolicyApiByPolicyCategory(
+					"api1", "quality");
+			assertNotNull("Error in finding by resource name", pclist);
+			assertTrue("Incorrect category", pclist.get(0).getCategory()
+					.equalsIgnoreCase("quality"));
+
+			log.info("Find policies api by policies type..");
+			List<Policy> ptlist = apiManager.getPolicyApiByPolicyType("api1",
+					"Spike Arrest");
+			assertNotNull("Error in finding by resource name", ptlist);
+			assertTrue("Incorrect type", ptlist.get(0).getType()
+					.equalsIgnoreCase("Spike Arrest"));
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		log.info("Search terminated.");
 	}
 	
@@ -284,8 +328,12 @@ public class ScenarioApi {
 		p1.setAllowCount(12);
 		p1.setInterval(4000);
 		p1.setTimeUnit("second");
-		apiManager.updatePolicyApi("api1", p1);
 		
+		try{
+			apiManager.updatePolicyApi("api1", p1);
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		log.info("Update policy 1 of api terminated.");
 	}
 	
@@ -296,9 +344,12 @@ public class ScenarioApi {
 	public void deletePolicy1(){
 		log.info("Delete policy 1 of api...");
 		
-		//get resource 1 and delete it
-		apiManager.deletePolicyApi("api1", "api-p1");
-		
+		try{
+			//get resource 1 and delete it
+			apiManager.deletePolicyApi("api1", "api-p1");
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		log.info("Delete policy 1 of api terminated.");
 		
 	}
@@ -389,9 +440,13 @@ public class ScenarioApi {
 		log.info("Delete resources and api...");
 		//retrieve api by id
 		log.info("Retrieve api");
-		Api api = apiManager.getApiById("api1");
+		try{
+			Api api = apiManager.getApiById("api1");
 
-		apiManager.deleteApi(api);
+			apiManager.deleteApi(api);
+		} catch (CustomAuthenticationException e) {
+			log.info(e.getMessage());
+		}
 		
 		log.info("Delete resources and api terminated.");
 	}
