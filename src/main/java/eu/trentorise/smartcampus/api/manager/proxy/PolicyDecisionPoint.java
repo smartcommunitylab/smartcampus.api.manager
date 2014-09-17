@@ -34,6 +34,7 @@ import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Class that retrieves policies of api and its resources.
@@ -70,6 +71,7 @@ public class PolicyDecisionPoint {
 		
 		List<Policy> pToApply = new ArrayList<Policy>();
 		//api policies
+		try{
 		Api api =  manager.getApiById(apiId);
 		
 		//resource policies
@@ -84,7 +86,7 @@ public class PolicyDecisionPoint {
 
 		}
 		// api policies
-		try {
+
 			List<Policy> policies = api.getPolicy();
 			if (policies != null && policies.size() > 0) {
 				//only one quota policy
@@ -105,6 +107,8 @@ public class PolicyDecisionPoint {
 			}
 		} catch (NullPointerException n) {
 			logger.info("No policies for this api {}", apiId);
+		} catch (CustomAuthenticationException e) {
+			logger.info("Exception: {}", e.getMessage());
 		}
 		
 		return pToApply;

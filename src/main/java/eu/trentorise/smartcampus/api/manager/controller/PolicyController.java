@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
-import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Controller that retrieves Policy data.
@@ -57,20 +57,27 @@ public class PolicyController {
 	 * @param apiId : String
 	 * @param policyId : String
 	 * @return instance of {@link ResultData} with api policy data having the given id, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Policy data found" if it is ok, otherwise "There is no policy data for this api.".
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"Policy data found" if it is ok, otherwise "There is no policy data for this api."
+	 * 			or exception error message.
 	 */
 	@RequestMapping(value = "/{apiId}/policy/{policyId}", method = RequestMethod.GET, 
 			produces="application/json")
 	@ResponseBody
 	public ResultData getPolicyApiById(@PathVariable String apiId, @PathVariable String policyId){
 		logger.info("Policy by id.");
-		Policy p = pmanager.getPolicyApiByPolicyId(apiId, policyId);
-		if(p!=null){
-			return new ResultData(p, HttpServletResponse.SC_OK, "Policy data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"There is no policy data for this api.");
+		Policy p;
+		try {
+			p = pmanager.getPolicyApiByPolicyId(apiId, policyId);
+			
+			if(p!=null){
+				return new ResultData(p, HttpServletResponse.SC_OK, "Policy data found");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no policy data for this api.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 

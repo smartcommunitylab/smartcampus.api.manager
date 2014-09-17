@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +37,9 @@ import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
+import eu.trentorise.smartcampus.api.manager.persistence.PermissionManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Controller with CRUD methods on Api.
@@ -59,24 +62,35 @@ public class ApiController {
 	@Autowired
 	private PersistenceManager pmanager;
 	
+	@Autowired
+	private PermissionManager security;
+	
 	/**
 	 * Rest service that retrieving api data by id.
 	 * 
 	 * @param apiId : String
 	 * @return instance of {@link ResultData} with api data having the given id, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Api data found" if it is ok, otherwise "There is no api data with this id.".
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"Api data found" if it is ok, "There is no api data with this id."
+	 * 			otherwise exception CustomAuthentication message.
 	 */
 	@RequestMapping(value = "/id/{apiId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
 	public ResultData getApiById(@PathVariable String apiId){
 		logger.info("Api by id.");
-		Api api = pmanager.getApiById(apiId);
-		if(api!=null){
-			return new ResultData(api, HttpServletResponse.SC_OK, "Api data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"There is no api data with this id.");
+		Api api;
+		try {
+			api = pmanager.getApiById(apiId);
+			
+			if(api!=null){
+				return new ResultData(api, HttpServletResponse.SC_OK, "Api data found");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no api data with this id.");
+			}
+			
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -85,17 +99,22 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @return instance of {@link ResultData} with api name having the given id, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Api name found" if it is ok, otherwise "There is no api data with this id.".
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"Api name found" if it is ok, "There is no api data with this id."
+	 * 			otherwise "User is not allowed".
 	 */
-	@RequestMapping(value = "/name/{apiId}", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(value = "/name/{apiName}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
-	public ResultData getApiNameById(@PathVariable String apiId){
+	public ResultData getApiNameById(@PathVariable String apiName){
 		logger.info("Api name.");
-		Api api = pmanager.getApiById(apiId);
+		Api api = pmanager.getApiByName(apiName);
 		if(api!=null){
 			logger.info("Name {}", api.getName());
-			return new ResultData(api.getName(), HttpServletResponse.SC_OK, "Api name found");
+			if(security.canUserDoThisOperation(api.getOwnerId())){
+				return new ResultData(api.getName(), HttpServletResponse.SC_OK, "Api name found");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, "User is not allowed");
+			}
 		}else{
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
 					"There is no api with this id.");
@@ -107,19 +126,27 @@ public class ApiController {
 	 * 
 	 * @param ownerId : String, path variable
 	 * @return instance of {@link ResultData} with api data having the given owner id, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"All data" if it is ok, otherwise "There is no api data for this owner.".
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"All data" if it is ok, "There is no api data for this owner."
+	 * 			otherwise exception CustomAuthentication message.
 	 */
-	@RequestMapping(value = "/{ownerId}", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(value = "/ownerId", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
-	public ResultData getApiByOwnerId(@PathVariable String ownerId) {
+	public ResultData getApiByOwnerId(/*@PathVariable String ownerId*/) {
 		logger.info("List api by owner id.");
-		List<Api> apiList = pmanager.getApiByOwnerId(ownerId);
-
-		if(apiList!=null && apiList.size()>0){
-			return new ResultData(apiList, HttpServletResponse.SC_OK, "All data.");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, "There is no api data for this owner.");
+		List<Api> apiList;
+		try {
+			String user = SecurityContextHolder.getContext().getAuthentication().getName();
+			apiList = pmanager.getApiByOwnerId(user);
+			
+			if(apiList!=null && apiList.size()>0){
+				return new ResultData(apiList, HttpServletResponse.SC_OK, "All data.");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no api data for this owner.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
 	}
@@ -128,7 +155,7 @@ public class ApiController {
 	 * Rest service that adding an Api to database.
 	 * 
 	 * @param api : instance of {@link Api}
-	 * @return instance of {@link ResultData} with api data, status (OK, INTERNAL SERVER ERROR and
+	 * @return instance of {@link ResultData} with api data, status (OK, INTERNAL SERVER ERROR or
 	 * 			BAD REQUEST) and a string message : 
 	 * 			"Saved Successfully" if it is ok, otherwise "Problem in saving data".
 	 * 			If exception is threw then it is the exception message.
@@ -136,7 +163,7 @@ public class ApiController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData add(@RequestBody Api api) {
-		logger.info("Add api to db.");
+		logger.info("Add api to db.");		
 		try {
 			Api savedApi = pmanager.addApi(api);
 			if (savedApi != null) {
@@ -155,8 +182,8 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param resource : instance of {@link Resource}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"Updated resource Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */ 
@@ -174,6 +201,8 @@ public class ApiController {
 			}
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -182,7 +211,7 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param app : instance of {@link App}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR or
 	 * 			BAD REQUEST) and a string message : 
 	 * 			"Updated app Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
@@ -210,7 +239,7 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Policy}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR or
 	 * 			BAD REQUEST) and a string message : 
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
@@ -238,8 +267,8 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link SpikeArrest}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -257,6 +286,8 @@ public class ApiController {
 			}
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
 	}
@@ -266,8 +297,8 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Quota}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -285,6 +316,8 @@ public class ApiController {
 			}
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
 	}
@@ -295,8 +328,8 @@ public class ApiController {
 	 * returns a bad request error.
 	 * 
 	 * @param api : instance of {@link Api}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"Updated Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -314,6 +347,8 @@ public class ApiController {
 			}
 		} catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -325,8 +360,8 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param resource : instance of {@link Resource}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"Updated resource Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */ 
@@ -344,6 +379,8 @@ public class ApiController {
 			}
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -352,7 +389,7 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param app : instance of {@link App}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR or
 	 * 			BAD REQUEST) and a string message : 
 	 * 			"Updated app Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
@@ -380,7 +417,7 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Policy}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR or
 	 * 			BAD REQUEST) and a string message : 
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
@@ -408,8 +445,8 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link SpikeArrest}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -427,6 +464,8 @@ public class ApiController {
 			}
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
 	}
@@ -436,8 +475,8 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Quota}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -455,6 +494,8 @@ public class ApiController {
 			}
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
 	}
@@ -480,15 +521,18 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
-	 * @return instance of {@link ResultData} with status (OK) and a string message : 
-	 * 			"Delete done!".
+	 * @return instance of {@link ResultData} with status (OK or FORBIDDEN) and a string message : 
+	 * 			"Delete done!" or exception CustomAuthentication message.
 	 */
 	@RequestMapping(value = "/delete/{apiId}/resource/{resourceId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResultData deleteResource(@PathVariable String apiId, @PathVariable String resourceId){
 		logger.info("Delete api resource.");
-		
-		pmanager.deleteResourceApi(apiId,resourceId);
+		try {
+			pmanager.deleteResourceApi(apiId,resourceId);
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 	}
 	
@@ -514,15 +558,19 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param policyId : String
-	 * @return instance of {@link ResultData} with status (OK) and a string message : 
-	 * 			"Delete done!".
+	 * @return instance of {@link ResultData} with status (OK or FORBIDDEN) and a string message : 
+	 * 			"Delete done!" otherwise exception error message.
 	 */
 	@RequestMapping(value = "/delete/{apiId}/policy/{policyId}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResultData deletePolicy(@PathVariable String apiId, @PathVariable String policyId){
 		logger.info("Delete api resource.");
 		
-		pmanager.deletePolicyApi(apiId,policyId);
+		try {
+			pmanager.deletePolicyApi(apiId,policyId);
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 	}
 	
@@ -531,8 +579,9 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param statusName : String
-	 * @return instance of {@link ResultData} with data, status (OK or NOT FOUND) and a string message : 
-	 * 			"Status api found." or if data is null "There is no status with this name."
+	 * @return instance of {@link ResultData} with data, status (OK, NOT FOUND or FORBIDDEN) and 
+	 * 			a string message : "Status api found." or if data is null 
+	 * 			"There is no status with this name." otherwise exception error message.
 	 */
 	@RequestMapping(value = "/{apiId}/status/{statusName}", method = RequestMethod.GET, 
 			produces="application/json")
@@ -540,14 +589,20 @@ public class ApiController {
 	public ResultData getApiStatusByStatusName(@PathVariable String apiId, 
 			@PathVariable String statusName) {
 		logger.info("List api by owner id.");
-		Status s = pmanager.getApiStatusByStatusName(apiId, statusName);
-
-		if(s!=null){
-			return new ResultData(s, HttpServletResponse.SC_OK, "Status api found.");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"There is no status with this name.");
+		
+		try {
+			Status s = pmanager.getApiStatusByStatusName(apiId, statusName);
+			
+			if(s!=null){
+				return new ResultData(s, HttpServletResponse.SC_OK, "Status api found.");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no status with this name.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
+
 		
 	}
 	
@@ -555,21 +610,27 @@ public class ApiController {
 	 * Rest service that retrieving list of api status..
 	 * 
 	 * @param apiId : String
-	 * @return instance of {@link ResultData} with data, status (OK or NOT FOUND) and a string message : 
-	 * 			"Status list found." or if data is null "There is no status for this api."
+	 * @return instance of {@link ResultData} with data, status (OK, NOT FOUND or FORBIDDEN) and 
+	 * 			a string message : "Status list found." or if data is null "There is no status for this api."
+	 * 			otherwise exception error message.
 	 */
 	@RequestMapping(value = "/{apiId}/status", method = RequestMethod.GET, 
 			produces="application/json")
 	@ResponseBody
 	public ResultData getApiStatus(@PathVariable String apiId) {
 		logger.info("List api by owner id.");
-		List<Status> s = pmanager.getApiStatus(apiId);
-
-		if(s!=null && s.size()>0){
-			return new ResultData(s, HttpServletResponse.SC_OK, "Status list found.");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"There is no status for this api.");
+		List<Status> s;
+		try {
+			s = pmanager.getApiStatus(apiId);
+			
+			if(s!=null && s.size()>0){
+				return new ResultData(s, HttpServletResponse.SC_OK, "Status list found.");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no status for this api.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
 	}
@@ -579,8 +640,8 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param s : instance of {@link Status}
-	 * @return instance of {@link ResultData} with api status data, status (OK and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with api status data, status (OK, BAD REQUEST or FORBIDDEN) 
+	 * 			and a string message : 
 	 * 			"Status saved successfully." if it is ok.
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -588,13 +649,14 @@ public class ApiController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData addApiStatus(@PathVariable String apiId, @RequestBody Status s){
-		//TODO
 		logger.info("Add api status.");
 		try{
 			List<Status> slist = pmanager.addStatusApi(apiId, s);
 			return new ResultData(slist, HttpServletResponse.SC_OK, "Status saved successfully.");
 		}catch(IllegalArgumentException i){
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
 	}
@@ -604,8 +666,8 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param s : instance of {@link Status}
-	 * @return instance of {@link ResultData} with api status data, status (OK and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with api status data, status (OK, BAD REQUEST or FORBIDDEN) 
+	 * 			and a string message : 
 	 * 			"Status updated successfully." if it is ok.
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -613,13 +675,14 @@ public class ApiController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData updateStatus(@PathVariable String apiId, @RequestBody Status s){
-		//TODO
 		logger.info("Update api status.");
 		try{
 			List<Status> slist = pmanager.updateStatusApi(apiId, s);
 			return new ResultData(slist, HttpServletResponse.SC_OK, "Status updated successfully.");
 		}catch(IllegalArgumentException i){
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
 	}
@@ -629,21 +692,22 @@ public class ApiController {
 	 * 
 	 * @param apiId : String
 	 * @param s : instance of {@link Status}
-	 * @return instance of {@link ResultData} with status (OK and
-	 * 			BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with status (OK, BAD REQUEST or FORBIDDEN) 
+	 * 			and a string message : 
 	 * 			"Delete done!" if it is ok.
 	 * 			If exception is threw then it is the exception message.
 	 */
 	@RequestMapping(value = "/delete/{apiId}/status/{statusName}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResultData deleteStatus(@PathVariable String apiId, @PathVariable String statusName){
-		//TODO
 		logger.info("Delete api status.");
 		try{
 			pmanager.deleteStatusApi(apiId, statusName);
 			return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 		}catch(IllegalArgumentException i){
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	

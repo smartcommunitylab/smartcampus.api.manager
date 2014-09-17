@@ -50,6 +50,9 @@ public class App implements Serializable{
 	private String key;
 	@Field
 	private List<ApiData> apis;
+	@Field
+	private String ownerId;
+	
 	/**
 	 * 
 	 * @return id : String
@@ -105,6 +108,20 @@ public class App implements Serializable{
 	 */
 	public void setApis(List<ApiData> apis) {
 		this.apis = apis;
+	}
+	/**
+	 * 
+	 * @return owner id : String
+	 */
+	public String getOwnerId() {
+		return ownerId;
+	}
+	/**
+	 * 
+	 * @param ownerId : String
+	 */
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
 	}
 	
 

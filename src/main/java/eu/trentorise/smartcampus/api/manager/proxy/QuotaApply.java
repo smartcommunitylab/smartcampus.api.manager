@@ -31,6 +31,7 @@ import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Class that apply Quota logic.
@@ -118,48 +119,53 @@ public class QuotaApply implements PolicyDatastoreApply{
 		int quota = 0;
 
 		// get Status list
-		Api api = manager.getApiById(apiId);
-		List<Status> status = api.getStatus();
+		try {
+			Api api = manager.getApiById(apiId);
 
-		// get app apiData
-		App app = manager.getAppById(appId);
-		List<ApiData> list = null;
-		if(app!=null){
-			list = app.getApis();
-		}
-		String appApiStatus = "DEFAULT";
+			List<Status> status = api.getStatus();
 
-		// if apiId is in list - retrieve status
-		if (list != null && list.size() > 0) {
-			if (list.contains(apiId)) {
-				// retrieve status from app data
-				for (int i = 0; i < list.size(); i++) {
-					// find apiId
-					if (list.get(i).getApiId().equalsIgnoreCase(apiId)) {
-						appApiStatus = list.get(i).getApiStatus();
+			// get app apiData
+			App app = manager.getAppById(appId);
+			List<ApiData> list = null;
+			if (app != null) {
+				list = app.getApis();
+			}
+			String appApiStatus = "DEFAULT";
+
+			// if apiId is in list - retrieve status
+			if (list != null && list.size() > 0) {
+				if (list.contains(apiId)) {
+					// retrieve status from app data
+					for (int i = 0; i < list.size(); i++) {
+						// find apiId
+						if (list.get(i).getApiId().equalsIgnoreCase(apiId)) {
+							appApiStatus = list.get(i).getApiStatus();
+						}
 					}
 				}
 			}
-		}
 
-		// from api status list retrieves quota
-		/*if (status != null && status.size() > 0 && !appApiStatus.equalsIgnoreCase("DEFAULT")) {
-			// retrieves quota
-			for (int i = 0; i < status.size(); i++) {
-				if (status.get(i).getName().equalsIgnoreCase(appApiStatus)) {
-					quota = status.get(i).getQuota();
+			// from api status list retrieves quota
+			/*
+			 * if (status != null && status.size() > 0 &&
+			 * !appApiStatus.equalsIgnoreCase("DEFAULT")) { // retrieves quota
+			 * for (int i = 0; i < status.size(); i++) { if
+			 * (status.get(i).getName().equalsIgnoreCase(appApiStatus)) { quota
+			 * = status.get(i).getQuota(); } } }
+			 */
+
+			// from policy status retrieves quota
+			List<QuotaStatus> qslist = p.getQstatus();
+			if (qslist != null && qslist.size() > 0
+					&& !appApiStatus.equalsIgnoreCase("DEFAULT")) {
+				for (int i = 0; i < qslist.size(); i++) {
+					if (qslist.get(i).getName().equalsIgnoreCase(appApiStatus)) {
+						quota = qslist.get(i).getQuota();
+					}
 				}
 			}
-		}*/
-		
-		//from policy status retrieves quota
-		List<QuotaStatus> qslist = p.getQstatus();
-		if(qslist != null && qslist.size()>0 && !appApiStatus.equalsIgnoreCase("DEFAULT")){
-			for (int i = 0; i < qslist.size(); i++) {
-				if (qslist.get(i).getName().equalsIgnoreCase(appApiStatus)) {
-					quota = qslist.get(i).getQuota();
-				}
-			}
+		} catch (CustomAuthenticationException e) {
+			logger.info("Exception {}", e.getMessage());
 		}
 
 		return quota;

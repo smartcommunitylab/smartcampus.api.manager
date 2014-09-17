@@ -33,6 +33,7 @@ import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Controller that retrieves Resource data.
@@ -60,20 +61,26 @@ public class ResourceController {
 	 * @param apiId : String
 	 * @param resourceId : String
 	 * @return instance of {@link ResultData} with api resource data having the given id, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Resource data found" if it is ok, otherwise "There is no resource data for this api.".
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "There is no resource data for this api."
+	 * 			or exception error message.
 	 */
 	@RequestMapping(value = "/{apiId}/resource/{resourceId}", method = RequestMethod.GET, 
 			produces="application/json")
 	@ResponseBody
 	public ResultData getResourceApiById(@PathVariable String apiId, @PathVariable String resourceId){
 		logger.info("Resource by id.");
-		Resource r = pmanager.getResourceApiByResourceId(apiId, resourceId);
-		if(r!=null){
-			return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"There is no resource data for this api.");
+		try {
+			Resource r = pmanager.getResourceApiByResourceId(apiId, resourceId);
+			
+			if(r!=null){
+				return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no resource data for this api.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -84,9 +91,10 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param policyId : String
 	 * @return instance of {@link ResultData} with policy resource data having the given id, 
-	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"Policy Resource data found" if it is ok, 
-	 * 			otherwise "There is no policy resource data for this api.".
+	 * 			otherwise "There is no policy resource data for this api."
+	 * 			or exception error message.
 	 */
 	@RequestMapping(value = "/{apiId}/resource/{resourceId}/policy/{policyId}", method = RequestMethod.GET, 
 			produces="application/json")
@@ -94,12 +102,16 @@ public class ResourceController {
 	public ResultData getResourcePolicyById(@PathVariable String apiId, @PathVariable String resourceId,
 			@PathVariable String policyId){
 		logger.info("Policy Resource by id.");
-		Policy p = pmanager.getPolicyResourceApiByResourceId(apiId, resourceId, policyId);
-		if(p!=null){
-			return new ResultData(p, HttpServletResponse.SC_OK, "Policy Resource data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"There is no policy resource data for this api.");
+		try {
+			Policy p = pmanager.getPolicyResourceApiByResourceId(apiId, resourceId, policyId);
+			if(p!=null){
+				return new ResultData(p, HttpServletResponse.SC_OK, "Policy Resource data found");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no policy resource data for this api.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -136,7 +148,7 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param p : instance of {@link SpikeArrest}
 	 * @return instance of {@link ResultData} with resource data having the new policy, 
-	 * 			status (OK, BAD REQUEST and NOT FOUND) and a string message : 
+	 * 			status (OK, BAD REQUEST, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api."
 	 * 			or if exception is thrown, the error message.
 	 */
@@ -159,6 +171,8 @@ public class ResourceController {
 		} catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
 					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -169,7 +183,7 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param p : instance of {@link Quota}
 	 * @return instance of {@link ResultData} with resource data having the new policy, 
-	 * 			status (OK, BAD REQUEST and NOT FOUND) and a string message : 
+	 * 			status (OK, BAD REQUEST, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api."
 	 * 			or if exception is thrown, the error message.
 	 */
@@ -192,6 +206,8 @@ public class ResourceController {
 		} catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
 					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -228,7 +244,7 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param p : instance of {@link SpikeArrest}
 	 * @return instance of {@link ResultData} with resource data having the updated policy, 
-	 * 			status (OK, BAD REQUEST and NOT FOUND) and a string message : 
+	 * 			status (OK, BAD REQUEST, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api."
 	 * 			or if exception is thrown, the error message.
 	 */
@@ -251,6 +267,8 @@ public class ResourceController {
 		} catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
 					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -261,7 +279,7 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param p : instance of {@link Quota}
 	 * @return instance of {@link ResultData} with resource data having the updated policy, 
-	 * 			status (OK, BAD REQUEST and NOT FOUND) and a string message : 
+	 * 			status (OK, BAD REQUEST, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api."
 	 * 			or if exception is thrown, the error message.
 	 */
@@ -272,8 +290,8 @@ public class ResourceController {
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody Quota p){
 		logger.info("Update policy to resource.");
-		Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
-		try {
+		try{
+			Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
 				return new ResultData(r, HttpServletResponse.SC_OK,
 						"Resource policy updated successfully.");
@@ -284,6 +302,8 @@ public class ResourceController {
 		} catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
 					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
 	
@@ -294,8 +314,8 @@ public class ResourceController {
 	 * @param resourceId : String
 	 * @param policyId : String
 	 * @return instance of {@link ResultData} with resource data without deleted policy, 
-	 * 			status (OK and NOT FOUND) and a string message : 
-	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api.".
+	 * 			status (OK or FORBIDDEN) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise exception error message.
 	 */
 	@RequestMapping(value = "/{apiId}/resource/{resourceId}/delete/{policyId}", 
 			method = RequestMethod.DELETE)
@@ -303,7 +323,11 @@ public class ResourceController {
 	public ResultData deleteResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@PathVariable String policyId){
 		logger.info("Delete policy from resource.");
-		pmanager.deletePolicyResourceApi(apiId, resourceId, policyId);
+		try {
+			pmanager.deletePolicyResourceApi(apiId, resourceId, policyId);
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
 		
 		return new ResultData(null, HttpServletResponse.SC_OK, "Resource delete successfully");
 		
