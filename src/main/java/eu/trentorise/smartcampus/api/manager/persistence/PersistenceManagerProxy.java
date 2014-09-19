@@ -27,9 +27,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.trentorise.smartcampus.api.manager.model.proxy.AccessApi;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
-import eu.trentorise.smartcampus.api.manager.repository.AccessApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyQuotaRepository;
 
 @Component
@@ -40,11 +38,6 @@ public class PersistenceManagerProxy {
 	 */
 	@Autowired
 	private PolicyQuotaRepository pqrep;
-	/**
-	 * Instance of {@link AccessApiRepository}.
-	 */
-	@Autowired
-	private AccessApiRepository aapirep;
 	/**
 	 * Instance of {@link MongoOperations}.
 	 */
@@ -164,65 +157,4 @@ public class PersistenceManagerProxy {
 		pqrep.delete(id);
 	}
 	
-	/*
-	 * ACCESS API MODEL
-	 */
-	
-	/**
-	 * Retrieves AccessApi data searching by id.
-	 * 
-	 * @param id : String
-	 * @return instance of {@link AccessApi}
-	 */
-	public AccessApi retrieveAccessApiById(String id){
-		List<AccessApi> list = aapirep.findById(id);
-		if(list!=null && list.size()>0){
-			return list.get(0);
-		}
-		return null;
-	}
-	
-	/**
-	 * Retrieves AccessApi data searching by api and app ids.
-	 * 
-	 * @param apiId : String
-	 * @param appId : String
-	 * @return instance of {@link AccessApi}
-	 */
-	public AccessApi retrieveAccessApiByIdParams(String apiId, String appId){
-		List<AccessApi> list = aapirep.findByApiIdAndAppId(apiId, appId);
-		if(list!=null && list.size()>0){
-			return list.get(0);
-		}
-		return null;
-	}
-	
-	/**
-	 * Save a new Access Api data in db.
-	 * 
-	 * @param a : instance of {@link AccessApi}
-	 * @return saved instance of {@link AccessApi}
-	 */
-	public AccessApi addAccessApi(AccessApi a){
-		return aapirep.save(a);
-	}
-	
-	/**
-	 * Update an existing Access Api data in db.
-	 * 
-	 * @param a : instance of {@link AccessApi}
-	 * @return updated instance of {@link AccessApi}
-	 */
-	public AccessApi updateAccessApi(AccessApi a){
-		return addAccessApi(a);
-	}
-	
-	/**
-	 * Delete an Access Api entry in db.
-	 * 
-	 * @param id : String
-	 */
-	public void deleteAccessApi(String id){
-		aapirep.delete(id);
-	}
 }
