@@ -56,10 +56,10 @@ public class AppController {
 	private PersistenceManager pmanager;
 	
 	/**
-	 * Rest service that retrieves apps saved in db.
+	 * Rest service that retrieves apps saved in db for the current user.
 	 * 
 	 * @return instance of {@link ResultData} with apps data, 
-	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			status (OK or NOT FOUND) and a string message : 
 	 * 			"App data found" if it is ok, otherwise "There is no app data for this api.".
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET, produces="application/json")
@@ -81,8 +81,9 @@ public class AppController {
 	 * 
 	 * @param appId : String
 	 * @return instance of {@link ResultData} with api app data having the given id, 
-	 * 			status (OK and NOT FOUND) and a string message : 
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"App data found" if it is ok, otherwise "There is no app data.".
+	 * 			If security exception is threw then exception error message is returned.
 	 */
 	@RequestMapping(value = "/{appId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
@@ -108,7 +109,7 @@ public class AppController {
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return instance of {@link ResultData} with new app data, status (OK, INTERNAL SERVER ERROR 
-	 * 			and BAD REQUEST) and a string message : 
+	 * 			or BAD REQUEST) and a string message : 
 	 * 			"Add app successfully." if it is ok, otherwise "Problem in adding data".
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -133,8 +134,8 @@ public class AppController {
 	 * Update a new app.
 	 * 
 	 * @param app : instance of {@link App}
-	 * @return instance of {@link ResultData} with updated app data, status (OK, INTERNAL SERVER ERROR 
-	 * 			and BAD REQUEST) and a string message : 
+	 * @return instance of {@link ResultData} with updated app data, status (OK, INTERNAL SERVER ERROR,
+	 * 			 BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"Update app successfully." if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
@@ -162,8 +163,8 @@ public class AppController {
 	 * Delete an app from db.
 	 * 
 	 * @param appId : String
-	 * @return instance of {@link ResultData} without data, status (OK) and a string message : 
-	 * 			"Delete done." 
+	 * @return instance of {@link ResultData} without data, status (OK or FORBIDDEN) and a string message : 
+	 * 			"Delete done." or security exception error message.
 	 */
 	@RequestMapping(value = "/delete/{appId}", method = RequestMethod.DELETE)
 	@ResponseBody
@@ -182,9 +183,11 @@ public class AppController {
 	 * Update api data of an app.
 	 * 
 	 * @param app : instance of {@link App}
-	 * @return instance of {@link ResultData} with updated app data, status (OK or INTERNAL SERVER ERROR) 
+	 * @return instance of {@link ResultData} with updated app data, status (OK, INTERNAL SERVER ERROR or
+	 * 			FORBIDDEN) 
 	 * 			and a string message : "Update app api data successfully." 
 	 * 			if it is ok, otherwise "Problem in updating data".
+	 * 			If security exception is threw then exception error message is returned.
 	 */
 	@RequestMapping(value = "/update/apidata", method = RequestMethod.PUT, consumes="application/json")
 	@ResponseBody
@@ -212,8 +215,8 @@ public class AppController {
 	 * 
 	 * @param appId : String
 	 * @param apiId : String
-	 * @return instance of {@link ResultData} without data, status (OK) and a string message : 
-	 * 			"Delete api data from app done!" 
+	 * @return instance of {@link ResultData} without data, status (OK or FORBIDDEN) and a string message : 
+	 * 			"Delete api data from app done!" or security error message.
 	 */
 	@RequestMapping(value = "/delete/{appId}/api/{apiId}", method = RequestMethod.DELETE)
 	@ResponseBody

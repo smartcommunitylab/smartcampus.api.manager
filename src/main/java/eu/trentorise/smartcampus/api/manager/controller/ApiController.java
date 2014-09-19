@@ -504,8 +504,8 @@ public class ApiController {
 	 * Rest service that deleting an Api from database by passing its id.
 	 * 
 	 * @param apiId : String
-	 * @return instance of {@link ResultData} with status (OK) and a string message : 
-	 * 			"Delete done!".
+	 * @return instance of {@link ResultData} with status (OK or FORBIDDEN) and a string message : 
+	 * 			"Delete done!" or exception error message.
 	 */
 	@RequestMapping(value = "/delete/{apiId}", method = RequestMethod.DELETE)
 	@ResponseBody

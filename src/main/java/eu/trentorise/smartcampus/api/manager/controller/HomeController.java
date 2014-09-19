@@ -98,8 +98,9 @@ public class HomeController {
 	 * 
 	 * @param request : instance of {@link HttpServletRequest}
 	 * @return instance of {@link ResultData} with data, 
-	 * 			status (OK and BAD REQUEST) and a string message : 
+	 * 			status (OK, BAD REQUEST or FORBIDDEN) and a string message : 
 	 * 			"ok", otherwise "Error".
+	 * 			If security error message is threw then exception error is returned.
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
