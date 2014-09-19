@@ -156,6 +156,7 @@ public class SecurityManager {
 	 * Policy must be a Quota.
 	 * It throws a security exception, if user has not the right
 	 * permissions.
+	 * It throws an exception if a policy quota already exists for the resource.
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Quota}
@@ -165,6 +166,18 @@ public class SecurityManager {
 	public Policy addPolicyApi(String apiId, Quota p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
+			
+			//check if a policy quota is already in
+			List<Policy> listp = api.getPolicy();
+			if(listp!=null && listp.size()>0){
+				for(int i=0;i<listp.size();i++){
+					if(listp.get(i) instanceof Quota){
+						throw new IllegalArgumentException(
+								"A policy quota already exists, you cannot add a new one before deleting it.");
+					}
+				}
+			}
+			
 			return pmanager.addPolicyApi(apiId, p);
 		}
 		else {
@@ -518,6 +531,7 @@ public class SecurityManager {
 	 * adding a Quota policy to a resource in an api.
 	 * It throws a security exception, if user has not the right
 	 * permissions.
+	 * It throws an exception if a policy quota already exists for the resource.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
@@ -529,6 +543,17 @@ public class SecurityManager {
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
+			
+			//check if a policy quota is already in
+			List<Policy> listp = api.getPolicy();
+			if(listp!=null && listp.size()>0){
+				for(int i=0;i<listp.size();i++){
+					if(listp.get(i) instanceof Quota){
+						throw new IllegalArgumentException(
+								"A policy quota already exists, you cannot add a new one before deleting it.");
+					}
+				}
+			}
 			return pmanager.addPolicyResourceApi(apiId, resourceId, p);
 		}
 		else {
