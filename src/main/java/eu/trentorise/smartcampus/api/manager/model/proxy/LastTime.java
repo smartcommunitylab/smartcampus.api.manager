@@ -23,14 +23,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * Policy Quota
- * id, app id, api id, resource id, time and count.
+ * Policy Spike Arrest
+ * id, app id, api id, resource id and time.
  * 
  * @author Giulia Canobbio
  *
  */
 @Document
-public class PolicyQuota implements Serializable{
+public class LastTime implements Serializable{
 
 	/**
 	 * Default serial version
@@ -47,8 +47,6 @@ public class PolicyQuota implements Serializable{
 	private String resourceId;
 	@Field
 	private Date time;
-	@Field
-	private int count;
 	
 	/**
 	 * 
@@ -108,30 +106,18 @@ public class PolicyQuota implements Serializable{
 	}
 	/**
 	 * 
-	 * @return time : String
+	 * @return time : {@link Date}
 	 */
 	public Date getTime() {
 		return time;
 	}
 	/**
 	 * 
-	 * @param time : String
+	 * @param time : {@link Date}
 	 */
 	public void setTime(Date time) {
 		this.time = time;
 	}
-	/**
-	 * 
-	 * @return count : int
-	 */
-	public int getCount() {
-		return count;
-	}
-	/**
-	 * 
-	 * @param count : int
-	 */
-	public void setCount(int count) {
-		this.count = count;
-	}
+
+	
 }

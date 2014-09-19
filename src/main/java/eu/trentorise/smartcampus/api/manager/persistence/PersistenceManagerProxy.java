@@ -27,7 +27,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.trentorise.smartcampus.api.manager.model.proxy.LastTime;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
+import eu.trentorise.smartcampus.api.manager.repository.LastTimeRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyQuotaRepository;
 
 @Component
@@ -43,6 +45,11 @@ public class PersistenceManagerProxy {
 	 */
 	@Autowired
 	private MongoOperations mongoOperations;
+	/**
+	 * Instance of {@link LastTimeRepository}
+	 */
+	@Autowired
+	private LastTimeRepository spikeArRep;
 	
 	/*
 	 * POLICY QUOTA MODEL
@@ -155,6 +162,92 @@ public class PersistenceManagerProxy {
 	 */
 	public void deletePolicyQuota(String id){
 		pqrep.delete(id);
+	}
+	
+	/*
+	 * POLICY SPIKE ARREST 
+	 */
+	
+	/**
+	 * Retrieves policy data spike arrest searching by all parameters:
+	 * api, resource and app id.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param appId : String
+	 * @return instance of {@link LastTime}
+	 */
+	public LastTime retrievePolicySpikeArrestByApiAndRAndAppId(String apiId, String resourceId, String appId){
+		List<LastTime> slist =  spikeArRep.findByApiIdAndResourceIdAndAppId(apiId, resourceId, appId);
+		if(slist!=null && slist.size()>0){
+			return slist.get(0);
+		}
+
+		return null;
+	}
+	
+	/**
+	 * Retrieves policy data spike arrest searching by all parameters:
+	 * api and resource id.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @return instance of {@link LastTime}
+	 */
+	public LastTime retrievePolicySpikeArrestByApiAndResouceId(String apiId, String resourceId){
+		List<LastTime> slist =  spikeArRep.findByApiIdAndResourceId(apiId, resourceId);
+		if(slist!=null && slist.size()>0){
+			//check that appId is null
+			for(int i=0;i<slist.size();i++){
+				if(slist.get(i).getAppId()==null){
+					return slist.get(i);
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Adds new data for spike arrest policy.
+	 * 
+	 * @param lt : instance of {@link LastTime}
+	 * @return new instance of {@link LastTime}
+	 */
+	public LastTime addPolicySpikeArrest(LastTime lt){
+		return spikeArRep.save(lt);
+	}
+	
+	/**
+	 * Find And Modify function.
+	 * 
+	 * @param l : instance of {@link LastTime}
+	 * @return new updated instance of {@link LastTime}
+	 */
+	public LastTime findAndModify(LastTime l){
+		Query query = new Query();
+		Criteria criteria = new Criteria().andOperator(
+				Criteria.where("appId").is(l.getAppId()),
+				Criteria.where("resourceId").is(l.getResourceId()),
+				Criteria.where("apiId").is(l.getApiId())
+				);
+		query.addCriteria(criteria);
+		
+		Update update = new Update();
+		update.set("time", new Date());
+		
+		//FindAndModifyOptions().returnNew(true) = newly updated document
+		LastTime lt = mongoOperations.findAndModify(query, update, 
+				new FindAndModifyOptions().returnNew(true), LastTime.class);
+		return lt;
+	}
+	
+	/**
+	 * Deletes an entry of spike arrest policy.
+	 * 
+	 * @param lastTimeId : String
+	 */
+	public void addPolicySpikeArrest(String lastTimeId){
+		spikeArRep.delete(lastTimeId);
 	}
 	
 }
