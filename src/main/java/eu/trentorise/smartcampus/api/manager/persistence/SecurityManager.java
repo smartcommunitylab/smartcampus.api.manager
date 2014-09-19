@@ -17,7 +17,10 @@ package eu.trentorise.smartcampus.api.manager.persistence;
 
 import java.util.List;
 
+import org.omg.CORBA.PolicyError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
@@ -28,13 +31,37 @@ import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
+/**
+ * Class that checks current user and owner of Api or App
+ * data.
+ * 
+ * @author Giulia Canobbio
+ *
+ */
+@Component
+@Transactional
 public class SecurityManager {
-	
+	/**
+	 * Instance of {@link PersistenceManager}.
+	 */
 	@Autowired
 	private PersistenceManager pmanager;
+	/**
+	 * Instance of {@link PermissionManager}.
+	 */
 	@Autowired
 	private PermissionManager security;
 
+	/**
+	 * This function checks user permission before
+	 * retrieving api data by its id.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @return instance of {@link Api}
+	 * @throws CustomAuthenticationException
+	 */
 	public Api getApiById(String apiId) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -45,6 +72,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * retrieving api data by its name.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiName : String
+	 * @return instance of {@link Api}
+	 * @throws CustomAuthenticationException
+	 */
 	public Api getApiByName(String apiName) throws CustomAuthenticationException{
 		Api api = pmanager.getApiByName(apiName);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -55,11 +92,32 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * retrieving api data by its owner id.
+	 * The owner id is name of the current user.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @return list of {@link Api} instances
+	 * @throws CustomAuthenticationException
+	 */
 	public List<Api> getApiByOwnerId() throws CustomAuthenticationException{
 		String ownerId = security.getUsername();
 		return pmanager.getApiByOwnerId(ownerId);
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * adding a resource to an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resource : instance of {@link Resource}
+	 * @return instance of {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
 	public Resource addResourceApi(String apiId, Resource resource) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -70,6 +128,18 @@ public class SecurityManager {
 		}
 	}
 
+	/**
+	 * This function checks user permission before
+	 * adding a policy to api.
+	 * Policy must be a Spike Arrest.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
 	public Policy addPolicyApi(String apiId, SpikeArrest p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -80,6 +150,18 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * adding a policy to api.
+	 * Policy must be a Quota.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
 	public Policy addPolicyApi(String apiId, Quota p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -90,6 +172,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating api data.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param api : instance of {@link Api}
+	 * @return instance of updated {@link Api}
+	 * @throws CustomAuthenticationException
+	 */
 	public Api updateApiParameter(Api api) throws CustomAuthenticationException{
 		if(api.getId()!=null && api.getId().equalsIgnoreCase("")){
 			Api savedApi = pmanager.getApiById(api.getId());
@@ -103,6 +195,17 @@ public class SecurityManager {
 		else throw new IllegalArgumentException("Api with undefined id does not exist.");
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating a resource in an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resource : instance of {@link Resource}
+	 * @return instance of updated {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
 	public Resource updateResourceApi(String apiId, Resource resource) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -114,6 +217,18 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating a policy in an api.
+	 * Policy must be a Spike Arrest.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of updated {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
 	public Policy updatePolicyApi(String apiId, SpikeArrest p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -124,6 +239,18 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating a policy in an api.
+	 * Policy must be a Quota.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of updated {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
 	public Policy updatePolicyApi(String apiId, Quota p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -134,6 +261,15 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * deleting an api data.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @throws CustomAuthenticationException
+	 */
 	public void deleteApi(String apiId) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -144,6 +280,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * deleting a resource from an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 *  
+	 * @param apiId : String
+	 * @param resourceId : String 
+	 * @throws CustomAuthenticationException
+	 */
 	public void deleteResourceApi(String apiId, String resourceId) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -154,6 +300,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * deleting a policy from an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param policyId : String
+	 * @throws CustomAuthenticationException
+	 */
 	public void deletePolicyApi(String apiId, String policyId) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -164,6 +320,17 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * retrieving status of api data by its status name.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param statusName : String
+	 * @return instance of {@link Status}
+	 * @throws CustomAuthenticationException
+	 */
 	public Status getApiStatusByStatusName(String apiId, String statusName) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -175,6 +342,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * retrieving list of status api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @return list of {@link Status} instance
+	 * @throws CustomAuthenticationException
+	 */
 	public List<Status> getApiStatus(String apiId) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -185,6 +362,17 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * adding status to an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param s : instance of {@link Status}
+	 * @return list of {@link Status} instance
+	 * @throws CustomAuthenticationException
+	 */
 	public List<Status> addStatusApi(String apiId, Status s) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -195,6 +383,17 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating a status in an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param s : instance of {@link Status}
+	 * @return list of {@link Status} instance
+	 * @throws CustomAuthenticationException
+	 */
 	public List<Status> updateStatusApi(String apiId, Status s) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -205,6 +404,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * deleting a status from an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param statusName : String
+	 * @throws CustomAuthenticationException
+	 */
 	public void deleteStatusApi(String apiId, String statusName) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -215,6 +424,17 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * retrieving policy data of an api by policy id.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param policyId : String
+	 * @return instance of {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
 	public Policy getPolicyApiByPolicyId(String apiId, String policyId) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
@@ -225,6 +445,17 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * retrieving resource data of an api by resource id.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @return instance of {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
 	public Resource getResourceApiByResourceId(String apiId, String resourceId) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -236,6 +467,18 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * retrieving policy resource of an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @return instance of {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
 	public Policy getPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -247,6 +490,18 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * adding a Spike Arrest policy to a resource in an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String 
+	 * @param resourceId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
 	public Resource addPolicyResourceApi(String apiId, String resourceId, SpikeArrest p) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -258,6 +513,18 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * adding a Quota policy to a resource in an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
 	public Resource addPolicyResourceApi(String apiId, String resourceId, Quota p) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -269,6 +536,19 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating a policy of a resource in an api.
+	 * Policy must be a Spike Arrest.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of updated {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
 	public Resource updatePolicyResourceApi(String apiId, String resourceId, SpikeArrest p) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -280,6 +560,19 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating a policy of a resource in an api.
+	 * Policy must be a Quota.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of updated {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
 	public Resource updatePolicyResourceApi(String apiId, String resourceId, Quota p) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -291,6 +584,17 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * deleting a policy from a resource in an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @throws CustomAuthenticationException
+	 */
 	public void deletePolicyResourceApi(String apiId, String resourceId, String policyId) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
@@ -302,6 +606,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * retrieving app data by its id.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param appId : String
+	 * @return instance of {@link App}
+	 * @throws CustomAuthenticationException
+	 */
 	public App getAppById(String appId) throws CustomAuthenticationException{
 		App app = pmanager.getAppById(appId);
 		if(security.canUserDoThisOperation(app.getOwnerId())){
@@ -312,6 +626,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating an app.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param app : instance of {@link App}
+	 * @return instance of updated {@link App}
+	 * @throws CustomAuthenticationException
+	 */
 	public App updateApp(App app) throws CustomAuthenticationException{
 		App savedApp = pmanager.getAppById(app.getId());
 		if(security.canUserDoThisOperation(savedApp.getOwnerId())){
@@ -322,6 +646,15 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * deleting an app.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param appId : String
+	 * @throws CustomAuthenticationException
+	 */
 	public void deleteApp(String appId) throws CustomAuthenticationException{
 		App app = pmanager.getAppById(appId);
 		if(security.canUserDoThisOperation(app.getOwnerId())){
@@ -332,6 +665,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * updating list of api from an app.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param app : instance of {@link App}
+	 * @return instance of updated {@link App}
+	 * @throws CustomAuthenticationException
+	 */
 	public App updateAppApiData(App app) throws CustomAuthenticationException{
 		App sapp = pmanager.getAppById(app.getId());
 		if(security.canUserDoThisOperation(sapp.getOwnerId())){
@@ -342,6 +685,16 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function checks user permission before
+	 * deleting list of api from an app.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param appId : String
+	 * @param apiId : String
+	 * @throws CustomAuthenticationException
+	 */
 	public void deleteAppApiData(String appId, String apiId) throws CustomAuthenticationException{
 		App app = pmanager.getAppById(appId);
 		if(security.canUserDoThisOperation(app.getOwnerId())){
