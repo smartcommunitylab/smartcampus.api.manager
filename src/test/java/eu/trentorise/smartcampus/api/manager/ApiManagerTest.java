@@ -31,7 +31,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
-import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Testing api manager.
@@ -133,13 +132,10 @@ public class ApiManagerTest {
 	@Test
 	public void getApiById(){
 		log.info("Find api by id..");
-		try {
-			Api api = apiManager.getApiById("ndkdhfkdifuret94860936093");
-			assertNotNull("Api not found", api);
-			log.info("Found api by id terminated.");
-		} catch (CustomAuthenticationException e) {
-			log.info(e.getMessage());
-		}
+		Api api = apiManager.getApiById("ndkdhfkdifuret94860936093");
+		assertNotNull("Api not found", api);
+		log.info("Found api by id terminated.");
+		
 	}
 	
 	/**
@@ -165,13 +161,9 @@ public class ApiManagerTest {
 	@Test
 	public void getApiByOwnerId(){
 		log.info("Find api by id..");
-		try {
-			List<Api> api = apiManager.getApiByOwnerId("junit-test");
-			assertNotNull("Api not found", api);
-			log.info("Found api by id terminated.");
-		} catch (CustomAuthenticationException e) {
-			log.info(e.getMessage());
-		}
+		List<Api> api = apiManager.getApiByOwnerId("junit-test");
+		assertNotNull("Api not found", api);
+		log.info("Found api by id terminated.");
 	}
 	
 	/**
@@ -185,18 +177,15 @@ public class ApiManagerTest {
 		api.setName("Geocoding");
 		api.setBasePath("/v0/geocoding");
 		
-		try {
-			apiManager.deleteApi(api);
+		apiManager.deleteApi(api);
 			
-			List<Api> apilist = apiManager.getApiByOwnerId("junit-test");
-			for (int i = 0; i < apilist.size(); i++) {
-				apiManager.deleteApi(apilist.get(i));
-			}
-
-			log.info("Delete api terminated.");
-		} catch (CustomAuthenticationException e) {
-			log.info(e.getMessage());
+		List<Api> apilist = apiManager.getApiByOwnerId("junit-test");
+		for (int i = 0; i < apilist.size(); i++) {
+			apiManager.deleteApi(apilist.get(i));
 		}
+
+		log.info("Delete api terminated.");
+		
 	}
 
 }

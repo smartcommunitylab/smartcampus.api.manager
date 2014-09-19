@@ -34,7 +34,6 @@ import org.springframework.web.client.RestTemplate;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
-import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;

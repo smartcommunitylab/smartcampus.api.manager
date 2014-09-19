@@ -75,9 +75,6 @@ public class PersistenceManager {
 	@Autowired
 	private ResourceRepository resourcerepository;
 	
-	@Autowired
-	private PermissionManager security;
-	
 	/**
 	 * Generates an id for data when id string is not set or is empty.
 	 * 
@@ -105,17 +102,12 @@ public class PersistenceManager {
 	 * 
 	 * @param id : String
 	 * @return instance of {@link Api}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Api getApiById(String id) throws CustomAuthenticationException{
+	public Api getApiById(String id){
 		List<Api> api = apirepository.findById(id);
 		if(api!=null && api.size()>0){
-			if(security.canUserDoThisOperation(api.get(0).getOwnerId())){
-				return api.get(0);
-			}
-			else {
-				throw new CustomAuthenticationException("You are not allowed");
-			}
+			return api.get(0);
+			
 		}
 		return null;
 	}
@@ -135,7 +127,7 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Retries Api data searching by base path.
+	 * Retrieves Api data searching by base path.
 	 * 
 	 * @param basePath : String
 	 * @return list of instance of {@link Api}
@@ -149,14 +141,9 @@ public class PersistenceManager {
 	 * 
 	 * @param ownerId : String
 	 * @return list of instance of {@link Api}
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Api> getApiByOwnerId(String ownerId) throws CustomAuthenticationException{
-		if(security.canUserDoThisOperation(ownerId)){
-			return (List<Api>) apirepository.findByOwnerId(ownerId);
-		}else{
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public List<Api> getApiByOwnerId(String ownerId){
+		return (List<Api>) apirepository.findByOwnerId(ownerId);
 	}
 	
 	/**
@@ -245,9 +232,8 @@ public class PersistenceManager {
 	 * 
 	 * @param api : instance of {@link Api}
 	 * @return updated instance of {@link Api}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Api updateApiParameter(Api api) throws CustomAuthenticationException{
+	public Api updateApiParameter(Api api){
 		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
 			throw new IllegalArgumentException("Api with undefined id does not exist.");
 		}
@@ -255,12 +241,8 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Api name, base path and owner id are required.");
 		}
 		//retrieve Api
-		Api savedApi;
-		try {
-			savedApi = getApiById(api.getId());
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api savedApi = getApiById(api.getId());
+		
 		//set name and basepath if different
 		if(!savedApi.getName().equalsIgnoreCase(api.getName()) || 
 				!savedApi.getBasePath().equalsIgnoreCase(api.getBasePath())){
@@ -277,32 +259,18 @@ public class PersistenceManager {
 	 * Deletes Api data from db.
 	 * 
 	 * @param api : instance of {@link Api}
-	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteApi(Api api) throws CustomAuthenticationException{
-		if(security.canUserDoThisOperation(api.getOwnerId())){
-			apirepository.delete(api);
-		}
-		else {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
-		
+	public void deleteApi(Api api){
+		apirepository.delete(api);
 	}
 	
 	/**
 	 * Deletes Api data from db using api id.
 	 * 
 	 * @param apiId : String
-	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteApi(String apiId) throws CustomAuthenticationException{
-		Api api = getApiById(apiId);
-		if(security.canUserDoThisOperation(api.getOwnerId())){
-			apirepository.delete(apiId);
-		}
-		else {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public void deleteApi(String apiId){
+		apirepository.delete(apiId);
 	}
 	
 	/* 
@@ -323,18 +291,13 @@ public class PersistenceManager {
 	 * 
 	 * @param id : String
 	 * @return instance of {@link App}
-	 * @throws CustomAuthenticationException 
 	 */
-	public App getAppById(String id) throws CustomAuthenticationException{
+	public App getAppById(String id){
 		List<App> apps = apprepository.findById(id);
 		
 		if(apps!=null && apps.size()>0){
-			if(security.canUserDoThisOperation(apps.get(0).getOwnerId())){
-				return apps.get(0);
-			}
-		}
-		else {
-			throw new CustomAuthenticationException("You are not allowed");
+			return apps.get(0);
+			
 		}
 		return null;
 	}
@@ -387,9 +350,8 @@ public class PersistenceManager {
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return updated instace of {@link App}
-	 * @throws CustomAuthenticationException 
 	 */
-	public App updateApp(App app) throws CustomAuthenticationException{
+	public App updateApp(App app){
 		String name = app.getName();
 		//Different name or api list
 		if(app.getId()==null){
@@ -417,16 +379,9 @@ public class PersistenceManager {
 	 * Deletes an App from db.
 	 * 
 	 * @param appId : String
-	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteApp(String appId) throws CustomAuthenticationException{
-		App app = getAppById(appId);
-		if(security.canUserDoThisOperation(app.getOwnerId())){
-			apprepository.delete(appId);
-		}
-		else {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public void deleteApp(String appId){
+		apprepository.delete(appId);
 	}
 	
 	/**
@@ -434,9 +389,8 @@ public class PersistenceManager {
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return updated instance of {@link App}
-	 * @throws CustomAuthenticationException 
 	 */
-	public App updateAppApiData(App app) throws CustomAuthenticationException{
+	public App updateAppApiData(App app){
 		App savedApp = getAppById(app.getId());
 		savedApp.setApis(app.getApis());
 		return apprepository.save(savedApp);
@@ -447,9 +401,8 @@ public class PersistenceManager {
 	 * 
 	 * @param appId : String
 	 * @param apiId : String
-	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteAppApiData(String appId, String apiId) throws CustomAuthenticationException{
+	public void deleteAppApiData(String appId, String apiId){
 		App app = getAppById(appId);
 		if(app!=null){
 			List<ApiData> adlist = app.getApis();
@@ -723,14 +676,12 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param r : instance of {@link Resource}
 	 * @return added instance of {@link Resource}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Resource addResourceApi(String apiId, Resource r) throws CustomAuthenticationException{
+	public Resource addResourceApi(String apiId, Resource r){
 		//check resource fields
 		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
 		}
-		
 		if(resourceApiExists(apiId, r.getName())){
 			throw new IllegalArgumentException("Resource already exists. Change name.");
 		}
@@ -772,11 +723,8 @@ public class PersistenceManager {
 		
 		//get api and add resource
 		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		api = getApiById(apiId);
+		
 		List<Resource> rlist = api.getResource();
 		if(rlist!=null){
 			rlist.add(r);
@@ -806,9 +754,8 @@ public class PersistenceManager {
 	 * @param apiId : String 
 	 * @param r : instance of {@link Resource}
 	 * @return updated instance of {@link Resource}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Resource updateResourceApi(String apiId, Resource r) throws CustomAuthenticationException{
+	public Resource updateResourceApi(String apiId, Resource r){
 		//check resource fields
 		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
 			throw new IllegalArgumentException("Resource name, uri and verb are required.");
@@ -841,12 +788,8 @@ public class PersistenceManager {
 		}
 		
 		//retrieve api searching by id
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api api = getApiById(apiId);
+		
 		//retrieve resource
 		List<Resource> rlist = api.getResource();
 		Resource oldr = null;
@@ -890,16 +833,11 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
-	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteResourceApi(String apiId, String resourceId) throws CustomAuthenticationException{
+	public void deleteResourceApi(String apiId, String resourceId){
 		//retrieves api
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api api = getApiById(apiId);
+		
 		//retrieves resource
 		List<Resource> rlist = api.getResource();
 
@@ -921,15 +859,10 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param resourceId : String
 	 * @return instance of {@link Resouce}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Resource getResourceApiByResourceId(String apiId, String resourceId) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public Resource getResourceApiByResourceId(String apiId, String resourceId){
+		Api api = getApiById(apiId);
+		
 		try {
 			List<Resource> rlist = api.getResource();
 			Resource r = null;
@@ -953,15 +886,9 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param resourceName : String
 	 * @return list of {@link Resource} instances
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Resource> getResourceApiByResourceName(String apiId, String resourceName) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public List<Resource> getResourceApiByResourceName(String apiId, String resourceName){
+		Api api = getApiById(apiId);
 		try {
 			List<Resource> rlist = api.getResource();
 			List<Resource> rs = new ArrayList<Resource>();
@@ -985,15 +912,10 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param resourceName : String
 	 * @return list of {@link Resource} instances
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Resource> getResourceApiByResourceUri(String apiId, String resourceUri) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public List<Resource> getResourceApiByResourceUri(String apiId, String resourceUri){
+		Api api = getApiById(apiId);
+		
 		try {
 			List<Resource> rlist = api.getResource();
 			List<Resource> rs = new ArrayList<Resource>();
@@ -1021,9 +943,8 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param p : instance of {@link Policy}
 	 * @return added instance of {@link Policy}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Policy addPolicyApi(String apiId, Policy p) throws CustomAuthenticationException{
+	public Policy addPolicyApi(String apiId, Policy p){
 		//checks policy fields
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
@@ -1039,12 +960,8 @@ public class PersistenceManager {
 			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
 		}
 		// get api and add policy
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api api = getApiById(apiId);
+		
 		List<Policy> plist = (List<Policy>) api.getPolicy();
 		if (plist != null) {
 			plist.add(p);
@@ -1072,9 +989,8 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param p : instance of {@link Policy}
 	 * @return updated instance of {@link Policy}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Policy updatePolicyApi(String apiId, Policy p) throws CustomAuthenticationException{
+	public Policy updatePolicyApi(String apiId, Policy p){
 		//checks policy fields
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
@@ -1088,12 +1004,8 @@ public class PersistenceManager {
 				//throw new IllegalArgumentException("Policy category is wrong.");
 			}
 		}
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api api = getApiById(apiId);
+		
 		//retrieve policy
 		List<Policy> plist = (List<Policy>) api.getPolicy();
 		Policy oldp = null;
@@ -1122,16 +1034,11 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param policyId : String
-	 * @throws CustomAuthenticationException 
 	 */
-	public void deletePolicyApi(String apiId, String policyId) throws CustomAuthenticationException{
+	public void deletePolicyApi(String apiId, String policyId){
 		// retrieves api
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api api = getApiById(apiId);
+		
 		// retrieves policy
 		List<Policy> plist = (List<Policy>) api.getPolicy();
 
@@ -1153,15 +1060,10 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param policyId : String
 	 * @return instance of {@link Policy}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Policy getPolicyApiByPolicyId(String apiId, String policyId) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public Policy getPolicyApiByPolicyId(String apiId, String policyId){
+		Api api = getApiById(apiId);
+		
 		try {
 			List<Policy> plist = (List<Policy>) api.getPolicy();
 			Policy p = null;
@@ -1185,15 +1087,10 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param policyId : String
 	 * @return instance of {@link SpikeArrest}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Policy getSpikeArrestPolicyApiByPolicyId(String apiId, String policyId) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public Policy getSpikeArrestPolicyApiByPolicyId(String apiId, String policyId){
+		Api api = getApiById(apiId);
+		
 		try {
 			List<Policy> plist = api.getPolicy();
 			SpikeArrest p = null;
@@ -1217,15 +1114,10 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param policyId : String
 	 * @return instance of {@link Quota}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Policy getQuotaPolicyApiByPolicyId(String apiId, String policyId) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public Policy getQuotaPolicyApiByPolicyId(String apiId, String policyId){
+		Api api = getApiById(apiId);
+		
 		try {
 			List<Policy> plist = api.getPolicy();
 			Quota p = null;
@@ -1249,15 +1141,9 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param policyName : String
 	 * @return list of {@link Policy} instances
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Policy> getPolicyApiByPolicyName(String apiId, String policyName) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public List<Policy> getPolicyApiByPolicyName(String apiId, String policyName){
+		Api api = getApiById(apiId);
 		try {
 			List<Policy> plist = (List<Policy>) api.getPolicy();
 			List<Policy> ps = new ArrayList<Policy>();
@@ -1281,15 +1167,10 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param policyCategory : String
 	 * @return list of {@link Policy} instances
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Policy> getPolicyApiByPolicyCategory(String apiId, String policyCategory) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public List<Policy> getPolicyApiByPolicyCategory(String apiId, String policyCategory){
+		Api api = getApiById(apiId);
+
 		try {
 			List<Policy> plist = (List<Policy>) api.getPolicy();
 			List<Policy> ps = new ArrayList<Policy>();
@@ -1314,15 +1195,9 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param policyType : String
 	 * @return list of {@link Policy} instances
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Policy> getPolicyApiByPolicyType(String apiId, String policyType) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public List<Policy> getPolicyApiByPolicyType(String apiId, String policyType){
+		Api api = getApiById(apiId);
 		try {
 			List<Policy> plist = (List<Policy>) api.getPolicy();
 			List<Policy> ps = new ArrayList<Policy>();
@@ -1535,9 +1410,8 @@ public class PersistenceManager {
 	 * @param resourceId : String
 	 * @param p : instance of {@link Policy}
 	 * @return updated instance of {@link Resource}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Resource addPolicyResourceApi(String apiId, String resourceId, Policy p) throws CustomAuthenticationException{
+	public Resource addPolicyResourceApi(String apiId, String resourceId, Policy p){
 		// checks policy fields
 		if (p.getName() == null || p.getType() == null) {
 			throw new IllegalArgumentException(
@@ -1555,12 +1429,8 @@ public class PersistenceManager {
 			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
 		}
 		// get resource api and add policy
-		Resource r;
-		try {
-			r = getResourceApiByResourceId(apiId, resourceId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Resource r = getResourceApiByResourceId(apiId, resourceId);
+
 		List<Policy> plist = (List<Policy>) r.getPolicy();
 		if (plist != null) {
 			plist.add(p);
@@ -1583,9 +1453,8 @@ public class PersistenceManager {
 	 * @param resourceId : String
 	 * @param p : instance of {@link Policy}
 	 * @return updated instance of {@link Resource}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Resource updatePolicyResourceApi(String apiId, String resourceId, Policy p) throws CustomAuthenticationException{
+	public Resource updatePolicyResourceApi(String apiId, String resourceId, Policy p){
 		// checks policy fields
 		if (p.getName() == null || p.getType() == null) {
 			throw new IllegalArgumentException(
@@ -1602,12 +1471,8 @@ public class PersistenceManager {
 			}
 		}
 		// get resource api and add policy
-		Resource r;
-		try {
-			r = getResourceApiByResourceId(apiId, resourceId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Resource r = getResourceApiByResourceId(apiId, resourceId);
+
 		// retrieve policy
 		List<Policy> plist = (List<Policy>) r.getPolicy();
 		Policy oldp = null;
@@ -1638,16 +1503,11 @@ public class PersistenceManager {
 	 * @param resourceId : String
 	 * @param policyId : String
 	 * @return updated instance of {@link Resource}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Resource deletePolicyResourceApi(String apiId, String resourceId, String policyId) throws CustomAuthenticationException{
+	public Resource deletePolicyResourceApi(String apiId, String resourceId, String policyId){
 		// retrieves resource
-		Resource r;
-		try {
-			r = getResourceApiByResourceId(apiId, resourceId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Resource r = getResourceApiByResourceId(apiId, resourceId);
+
 		// retrieves policy
 		List<Policy> plist = (List<Policy>) r.getPolicy();
 
@@ -1664,21 +1524,16 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Retrieve policy resource by policyId
+	 * Retrieve policy resource by policyId.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
 	 * @param policyId : String
 	 * @return instance of {@link Policy} resource
-	 * @throws CustomAuthenticationException 
 	 */
-	public Policy getPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId) throws CustomAuthenticationException{
-		Resource resource;
-		try {
-			resource = getResourceApiByResourceId(apiId, resourceId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public Policy getPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId){
+		Resource resource = getResourceApiByResourceId(apiId, resourceId);
+
 		try {
 			List<Policy> plist = (List<Policy>) resource.getPolicy();
 			Policy p = null;
@@ -1697,22 +1552,17 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Retrieve spike arrest policy resource by policyId
+	 * Retrieve spike arrest policy resource by policyId.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
 	 * @param policyId : String
 	 * @return instance of {@link SpikeArrest} resource
-	 * @throws CustomAuthenticationException 
 	 */
 	public Policy getSpikeArrestPolicyResourceApiByResourceId(String apiId, String resourceId, 
-			String policyId) throws CustomAuthenticationException{
-		Resource resource;
-		try {
-			resource = getResourceApiByResourceId(apiId, resourceId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+			String policyId){
+		Resource resource = getResourceApiByResourceId(apiId, resourceId);
+		
 		try {
 			List<Policy> plist = resource.getPolicy();
 			SpikeArrest p = null;
@@ -1731,21 +1581,16 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Retrieve quota policy resource by policyId
+	 * Retrieve quota policy resource by policyId.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
 	 * @param policyId : String
 	 * @return instance of {@link Quota} resource
-	 * @throws CustomAuthenticationException 
 	 */
-	public Policy getQuotaPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId) throws CustomAuthenticationException{
-		Resource resource;
-		try {
-			resource = getResourceApiByResourceId(apiId, resourceId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public Policy getQuotaPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId){
+		Resource resource = getResourceApiByResourceId(apiId, resourceId);
+
 		try {
 			List<Policy> plist = resource.getPolicy();
 			Quota p = null;
@@ -1772,15 +1617,9 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @return list of {@link Status} instances
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Status> getApiStatus(String apiId) throws CustomAuthenticationException{
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public List<Status> getApiStatus(String apiId){
+		Api api = getApiById(apiId);
 		return api.getStatus();
 	}
 	
@@ -1790,15 +1629,10 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param statusName : String 
 	 * @return instance of {@link Status}
-	 * @throws CustomAuthenticationException 
 	 */
-	public Status getApiStatusByStatusName(String apiId, String statusName) throws CustomAuthenticationException{
-		List<Status> slist;
-		try {
-			slist = getApiStatus(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+	public Status getApiStatusByStatusName(String apiId, String statusName){
+		List<Status> slist = getApiStatus(apiId);
+		
 		if(slist!=null && slist.size()>0){
 			for(int i=0;i<slist.size();i++){
 				if(slist.get(i).getName().equals(statusName)){
@@ -1815,9 +1649,8 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param s : instance of {@link Status}
 	 * @return list of {@link Status} instances
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Status> addStatusApi(String apiId, Status s) throws CustomAuthenticationException{
+	public List<Status> addStatusApi(String apiId, Status s){
 		
 		//check status field: name and quota
 		if(s.getName() == null /*|| s.getQuota() == 0*/){
@@ -1828,12 +1661,8 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Status with this name already exists.");
 		}
 		
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api api = getApiById(apiId);
+		
 		if(api!=null){
 			List<Status> slist = api.getStatus();
 			
@@ -1859,9 +1688,8 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param s : instance of {@link Status}
 	 * @return list of {@link Status} instances
-	 * @throws CustomAuthenticationException 
 	 */
-	public List<Status> updateStatusApi(String apiId, Status s) throws CustomAuthenticationException{
+	public List<Status> updateStatusApi(String apiId, Status s){
 		
 		// check status field: name and quota
 		if (s.getName() == null /*|| s.getQuota() == 0*/) {
@@ -1872,12 +1700,7 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Status with this name already exists.");
 		}*/
 
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api api = getApiById(apiId);
 		if (api != null) {
 			List<Status> slist = api.getStatus();
 
@@ -1908,20 +1731,15 @@ public class PersistenceManager {
 	 * 
 	 * @param apiId : String
 	 * @param s_name : String
-	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteStatusApi(String apiId, String s_name/*Status s*/) throws CustomAuthenticationException{
+	public void deleteStatusApi(String apiId, String s_name/*Status s*/) {
 		// check status field: name and quota
 		if (s_name == null/*s.getName() == null || s.getQuota() == 0*/) {
 			throw new IllegalArgumentException("Status name is required.");
 		}
 
-		Api api;
-		try {
-			api = getApiById(apiId);
-		} catch (CustomAuthenticationException e) {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		Api api = getApiById(apiId);
+		
 		if (api != null) {
 			List<Status> slist = api.getStatus();
 
@@ -2006,9 +1824,8 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param policyName : String
 	 * @return true if a policy with a given name exists, false otherwise
-	 * @throws CustomAuthenticationException 
 	 */
-	public boolean policyApiExists(String apiId, String policyName) throws CustomAuthenticationException{
+	public boolean policyApiExists(String apiId, String policyName){
 		List<Policy> plist = getPolicyApiByPolicyName(apiId, policyName);
 		if(plist!=null && plist.size()>0){
 			return true;
@@ -2023,9 +1840,8 @@ public class PersistenceManager {
 	 * @param resourceId : String
 	 * @param policyName : String
 	 * @return true if a policy resource with a given name exists, false otherwise
-	 * @throws CustomAuthenticationException 
 	 */
-	public boolean policyResourceApiExists(String apiId, String resourceId, String policyName) throws CustomAuthenticationException{
+	public boolean policyResourceApiExists(String apiId, String resourceId, String policyName){
 		Resource r = getResourceApiByResourceId(apiId, resourceId);
 
 		List<Policy> plist = (List<Policy>) r.getPolicy();
@@ -2061,9 +1877,8 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param resourceName : String
 	 * @return true if a resource with a given name exists, false otherwise
-	 * @throws CustomAuthenticationException 
 	 */
-	public boolean resourceApiExists(String apiId, String resourceName) throws CustomAuthenticationException{
+	public boolean resourceApiExists(String apiId, String resourceName){
 		List<Resource> rlist = getResourceApiByResourceName(apiId, resourceName);
 		if(rlist!=null && rlist.size()>0){
 			return true;
@@ -2079,7 +1894,7 @@ public class PersistenceManager {
 	 * @return true if a resource with a given name exists, false otherwise
 	 * @throws CustomAuthenticationException 
 	 */
-	public boolean resourceUriApiExists(String apiId, String resourceUri) throws CustomAuthenticationException{
+	public boolean resourceUriApiExists(String apiId, String resourceUri){
 		List<Resource> rlist = getResourceApiByResourceUri(apiId, resourceUri);
 		if(rlist!=null && rlist.size()>0){
 			return true;
@@ -2095,7 +1910,7 @@ public class PersistenceManager {
 	 * @return true if a status with this name exists, otherwise false.
 	 * @throws CustomAuthenticationException 
 	 */
-	public boolean statusNameApiExists(String apiId, String statusName) throws CustomAuthenticationException{
+	public boolean statusNameApiExists(String apiId, String statusName){
 		Api api = getApiById(apiId);
 		if(api!=null){
 			List<Status> slist = api.getStatus();

@@ -180,9 +180,8 @@ public class RequestHandler{
 	 * @param request : instance of {@link HttpServletRequest}
 	 * @return instance of {@link RequestHandlerObject} with api id, resource id
 	 * 			and a map of request headers.
-	 * @throws CustomAuthenticationException 
 	 */
-	public RequestHandlerObject handleRequest(HttpServletRequest request) throws CustomAuthenticationException {
+	public RequestHandlerObject handleRequest(HttpServletRequest request){
 
 		if(request!=null){
 		

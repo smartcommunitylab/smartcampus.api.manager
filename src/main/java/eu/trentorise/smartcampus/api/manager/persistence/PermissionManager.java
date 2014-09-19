@@ -20,14 +20,36 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Class that checks if current user is the same that want to
+ * do some actions such as update, delete or retrieve data from db.
+ * 
+ * @author Giulia Canobbio
+ *
+ */
 @Component
 @Transactional
 public class PermissionManager {
 	
+	/**
+	 * Retrieves name of current user from spring context.
+	 * 
+	 * @return name of user : String
+	 */
 	public String getUsername(){
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 	
+	/**
+	 * Function that compares name of current user with a
+	 * parameter id.
+	 * We assume that user name is user id in our db for now
+	 * TODO
+	 * 
+	 * @param id : String
+	 * @return boolean value: if user name is equal to id then true,
+	 * 			otherwise false.
+	 */
 	public boolean canUserDoThisOperation(String id){
 		String user = getUsername();
 		

@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
-import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
@@ -46,10 +46,10 @@ public class PolicyController {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(PolicyController.class);
 	/**
-	 * Instance of {@link PersistenceManager}.
+	 * Instance of {@link SecurityManager}.
 	 */
 	@Autowired
-	private PersistenceManager pmanager;
+	private SecurityManager manager;
 	
 	/**
 	 * Rest service that retrieves policy of an Api by policy and api id.
@@ -68,7 +68,7 @@ public class PolicyController {
 		logger.info("Policy by id.");
 		Policy p;
 		try {
-			p = pmanager.getPolicyApiByPolicyId(apiId, policyId);
+			p = manager.getPolicyApiByPolicyId(apiId, policyId);
 			
 			if(p!=null){
 				return new ResultData(p, HttpServletResponse.SC_OK, "Policy data found");

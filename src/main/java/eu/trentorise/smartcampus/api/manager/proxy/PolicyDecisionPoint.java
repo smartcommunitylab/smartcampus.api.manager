@@ -107,8 +107,6 @@ public class PolicyDecisionPoint {
 			}
 		} catch (NullPointerException n) {
 			logger.info("No policies for this api {}", apiId);
-		} catch (CustomAuthenticationException e) {
-			logger.info("Exception: {}", e.getMessage());
 		}
 		
 		return pToApply;

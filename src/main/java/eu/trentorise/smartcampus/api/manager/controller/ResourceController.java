@@ -32,7 +32,7 @@ import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
-import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
@@ -50,10 +50,10 @@ public class ResourceController {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
 	/**
-	 * Instance of {@link PersistenceManager}.
+	 * Instance of {@link SecurityManager}.
 	 */
 	@Autowired
-	private PersistenceManager pmanager;
+	private SecurityManager manager;
 	
 	/**
 	 * Rest service that retrieves resource of an Api by resource and api id.
@@ -71,7 +71,7 @@ public class ResourceController {
 	public ResultData getResourceApiById(@PathVariable String apiId, @PathVariable String resourceId){
 		logger.info("Resource by id.");
 		try {
-			Resource r = pmanager.getResourceApiByResourceId(apiId, resourceId);
+			Resource r = manager.getResourceApiByResourceId(apiId, resourceId);
 			
 			if(r!=null){
 				return new ResultData(r, HttpServletResponse.SC_OK, "Resource data found");
@@ -103,7 +103,7 @@ public class ResourceController {
 			@PathVariable String policyId){
 		logger.info("Policy Resource by id.");
 		try {
-			Policy p = pmanager.getPolicyResourceApiByResourceId(apiId, resourceId, policyId);
+			Policy p = manager.getPolicyResourceApiByResourceId(apiId, resourceId, policyId);
 			if(p!=null){
 				return new ResultData(p, HttpServletResponse.SC_OK, "Policy Resource data found");
 			}else{
@@ -160,7 +160,7 @@ public class ResourceController {
 			@RequestBody SpikeArrest p){
 		logger.info("Add policy to resource.");
 		try {
-			Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
+			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
 				return new ResultData(r, HttpServletResponse.SC_OK,
 						"Resource policy added successfully.");
@@ -195,7 +195,7 @@ public class ResourceController {
 			@RequestBody Quota p){
 		logger.info("Add policy to resource.");
 		try {
-			Resource r = pmanager.addPolicyResourceApi(apiId, resourceId, p);
+			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
 				return new ResultData(r, HttpServletResponse.SC_OK,
 						"Resource policy added successfully.");
@@ -256,7 +256,7 @@ public class ResourceController {
 			@RequestBody SpikeArrest p){
 		logger.info("Update policy to resource.");
 		try {
-			Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
+			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
 				return new ResultData(r, HttpServletResponse.SC_OK,
 						"Resource policy updated successfully.");
@@ -291,7 +291,7 @@ public class ResourceController {
 			@RequestBody Quota p){
 		logger.info("Update policy to resource.");
 		try{
-			Resource r = pmanager.updatePolicyResourceApi(apiId, resourceId, p);
+			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
 				return new ResultData(r, HttpServletResponse.SC_OK,
 						"Resource policy updated successfully.");
@@ -324,7 +324,7 @@ public class ResourceController {
 			@PathVariable String policyId){
 		logger.info("Delete policy from resource.");
 		try {
-			pmanager.deletePolicyResourceApi(apiId, resourceId, policyId);
+			manager.deletePolicyResourceApi(apiId, resourceId, policyId);
 		} catch (CustomAuthenticationException e) {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}

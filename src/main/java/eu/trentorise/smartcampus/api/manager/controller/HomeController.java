@@ -122,8 +122,6 @@ public class HomeController {
 			logger.info("Exception: {}", i.getMessage());
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
 					i.getMessage());
-		} catch (CustomAuthenticationException e) {
-			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 
 		

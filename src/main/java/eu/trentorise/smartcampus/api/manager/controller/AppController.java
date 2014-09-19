@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
@@ -54,6 +55,11 @@ public class AppController {
 	 */
 	@Autowired
 	private PersistenceManager pmanager;
+	/**
+	 * Instance of {@link SecurityManager}.
+	 */
+	@Autowired
+	private SecurityManager smanager;
 	
 	/**
 	 * Rest service that retrieves apps saved in db for the current user.
@@ -90,7 +96,7 @@ public class AppController {
 	public ResultData getResourceAppById(@PathVariable String appId){
 		logger.info("App by id.");
 		try {
-			App a = pmanager.getAppById(appId);
+			App a = smanager.getAppById(appId);
 			if (a != null) {
 				return new ResultData(a, HttpServletResponse.SC_OK,
 						"App data found");
@@ -144,7 +150,7 @@ public class AppController {
 	public ResultData updateApp(@RequestBody App app) {
 		logger.info("Update app.");
 		try{
-			App updateApiA = pmanager.updateApp(app);
+			App updateApiA = smanager.updateApp(app);
 			if(updateApiA!=null){
 				return new ResultData(updateApiA, HttpServletResponse.SC_OK, "Update app successfully.");
 			} else {
@@ -171,7 +177,7 @@ public class AppController {
 	public ResultData deleteApp(@PathVariable String appId){
 		logger.info("Delete app.");
 		try{
-			pmanager.deleteApp(appId);
+			smanager.deleteApp(appId);
 		} catch (CustomAuthenticationException e) {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN,
 				e.getMessage());
@@ -194,7 +200,7 @@ public class AppController {
 	public ResultData updateAppApiData(@RequestBody App app) {
 		logger.info("Update app api data.");
 		try {
-			App updateApiA = pmanager.updateAppApiData(app);
+			App updateApiA = smanager.updateAppApiData(app);
 			if (updateApiA != null) {
 				return new ResultData(updateApiA, HttpServletResponse.SC_OK,
 						"Update app api data successfully.");
@@ -223,7 +229,7 @@ public class AppController {
 	public ResultData deleteApiData(@PathVariable String appId, @PathVariable String apiId){
 		logger.info("Delete api data from app.");
 		try{
-			pmanager.deleteAppApiData(appId, apiId);
+			smanager.deleteAppApiData(appId, apiId);
 		} catch (CustomAuthenticationException e) {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}

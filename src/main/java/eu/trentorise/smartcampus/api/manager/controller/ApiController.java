@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,8 +36,8 @@ import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
-import eu.trentorise.smartcampus.api.manager.persistence.PermissionManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
@@ -60,10 +59,12 @@ public class ApiController {
 	 * Instance of {@link PersistenceManager}.
 	 */
 	@Autowired
-	private PersistenceManager pmanager;
-	
+	private PersistenceManager manager;
+	/**
+	 * Instance of {@link SecurityManager}
+	 */
 	@Autowired
-	private PermissionManager security;
+	private SecurityManager pmanager;
 	
 	/**
 	 * Rest service that retrieving api data by id.
@@ -105,19 +106,21 @@ public class ApiController {
 	 */
 	@RequestMapping(value = "/name/{apiName}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
-	public ResultData getApiNameById(@PathVariable String apiName){
+	public ResultData getApiByName(@PathVariable String apiName){
 		logger.info("Api name.");
-		Api api = pmanager.getApiByName(apiName);
-		if(api!=null){
-			logger.info("Name {}", api.getName());
-			if(security.canUserDoThisOperation(api.getOwnerId())){
+		
+		try {
+			Api api = pmanager.getApiByName(apiName);
+			if(api!=null){
+				logger.info("Name {}", api.getName());
 				return new ResultData(api.getName(), HttpServletResponse.SC_OK, "Api name found");
 			}else{
-				return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, "User is not allowed");
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no api with this id.");
 			}
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"There is no api with this id.");
+			
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, "User is not allowed");
 		}
 	}
 	
@@ -134,10 +137,9 @@ public class ApiController {
 	@ResponseBody
 	public ResultData getApiByOwnerId(/*@PathVariable String ownerId*/) {
 		logger.info("List api by owner id.");
-		List<Api> apiList;
+	
 		try {
-			String user = SecurityContextHolder.getContext().getAuthentication().getName();
-			apiList = pmanager.getApiByOwnerId(user);
+			List<Api> apiList = pmanager.getApiByOwnerId();
 			
 			if(apiList!=null && apiList.size()>0){
 				return new ResultData(apiList, HttpServletResponse.SC_OK, "All data.");
@@ -165,7 +167,7 @@ public class ApiController {
 	public ResultData add(@RequestBody Api api) {
 		logger.info("Add api to db.");		
 		try {
-			Api savedApi = pmanager.addApi(api);
+			Api savedApi = manager.addApi(api);
 			if (savedApi != null) {
 				return new ResultData(savedApi, HttpServletResponse.SC_OK, "Saved successfully.");
 			} else {
