@@ -314,8 +314,8 @@ public class PersistenceManager {
 	 * 
 	 * @return list of {@link App} instances
 	 */
-	public List<App> listApp(){
-		return apprepository.findAll();
+	public List<App> listApp(String user){
+		return apprepository.findByOwnerId(user);//findAll();
 	}
 	
 	/**
@@ -323,11 +323,18 @@ public class PersistenceManager {
 	 * 
 	 * @param id : String
 	 * @return instance of {@link App}
+	 * @throws CustomAuthenticationException 
 	 */
-	public App getAppById(String id){
+	public App getAppById(String id) throws CustomAuthenticationException{
 		List<App> apps = apprepository.findById(id);
+		
 		if(apps!=null && apps.size()>0){
-			return apps.get(0);
+			if(security.canUserDoThisOperation(apps.get(0).getOwnerId())){
+				return apps.get(0);
+			}
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
 		}
 		return null;
 	}
@@ -367,7 +374,9 @@ public class PersistenceManager {
 		if(app.getId()==null || app.getId().equalsIgnoreCase("")){
 			app.setId(generateId());
 		}
-		app.setOwnerId("1");
+		//owner id
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		app.setOwnerId(user);
 		//set app key
 		app.setKey(UUID.randomUUID().toString());
 		return apprepository.save(app);
@@ -378,18 +387,46 @@ public class PersistenceManager {
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return updated instace of {@link App}
+	 * @throws CustomAuthenticationException 
 	 */
-	public App updateApp(App app){
-		return addApp(app);
+	public App updateApp(App app) throws CustomAuthenticationException{
+		String name = app.getName();
+		//Different name or api list
+		if(app.getId()==null){
+			throw new IllegalArgumentException("App id is required.");
+		}
+		if(name==null){
+			throw new IllegalArgumentException("App name is required.");
+		}
+		//Retrieve old api
+		App oldApp = getAppById(app.getId());
+		
+		//set new name
+		if(!oldApp.getName().equalsIgnoreCase(name)){
+			oldApp.setName(name);
+		}
+		//set new api list
+		if(!oldApp.getApis().equals(app.getApis())){
+			oldApp.setApis(app.getApis());
+		}
+		
+		return apprepository.save(oldApp);
 	}
 	
 	/**
 	 * Deletes an App from db.
 	 * 
 	 * @param appId : String
+	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteApp(String appId){
-		apprepository.delete(appId);
+	public void deleteApp(String appId) throws CustomAuthenticationException{
+		App app = getAppById(appId);
+		if(security.canUserDoThisOperation(app.getOwnerId())){
+			apprepository.delete(appId);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
 	}
 	
 	/**
@@ -397,8 +434,9 @@ public class PersistenceManager {
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return updated instance of {@link App}
+	 * @throws CustomAuthenticationException 
 	 */
-	public App updateAppApiData(App app){
+	public App updateAppApiData(App app) throws CustomAuthenticationException{
 		App savedApp = getAppById(app.getId());
 		savedApp.setApis(app.getApis());
 		return apprepository.save(savedApp);
@@ -409,8 +447,9 @@ public class PersistenceManager {
 	 * 
 	 * @param appId : String
 	 * @param apiId : String
+	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteAppApiData(String appId, String apiId){
+	public void deleteAppApiData(String appId, String apiId) throws CustomAuthenticationException{
 		App app = getAppById(appId);
 		if(app!=null){
 			List<ApiData> adlist = app.getApis();

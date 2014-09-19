@@ -15,9 +15,6 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.controller;
 
-import java.io.IOException;
-import java.net.URLDecoder;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,6 +29,7 @@ import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.proxy.PolicyDecisionPoint;
 import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Handles requests for the application home page.
@@ -123,6 +121,8 @@ public class HomeController {
 			logger.info("Exception: {}", i.getMessage());
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
 					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 
 		

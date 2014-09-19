@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ import eu.trentorise.smartcampus.api.manager.model.ObjectInMemory;
 import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Handle request on api.
@@ -178,8 +180,9 @@ public class RequestHandler{
 	 * @param request : instance of {@link HttpServletRequest}
 	 * @return instance of {@link RequestHandlerObject} with api id, resource id
 	 * 			and a map of request headers.
+	 * @throws CustomAuthenticationException 
 	 */
-	public RequestHandlerObject handleRequest(HttpServletRequest request) {
+	public RequestHandlerObject handleRequest(HttpServletRequest request) throws CustomAuthenticationException {
 
 		if(request!=null){
 		
@@ -241,9 +244,11 @@ public class RequestHandler{
 		//check that appId retrieved from request is correct
 		if(appId!=null){
 			App app = apiManager.getAppById(appId);
+			
 			if(app==null){
 				throw new IllegalArgumentException("App with this id does not exist.");
 			}
+			
 		}
 		
 		logger.info("api id: {} ",apiId);

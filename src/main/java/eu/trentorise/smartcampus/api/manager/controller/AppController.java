@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Controller that retrieves App data.
@@ -64,7 +66,8 @@ public class AppController {
 	@ResponseBody
 	public ResultData getAppList(){
 		logger.info("App list.");
-		List<App> alist = pmanager.listApp();
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		List<App> alist = pmanager.listApp(user);
 		if(alist!=null){
 			return new ResultData(alist, HttpServletResponse.SC_OK, "App data found");
 		}else{
@@ -85,12 +88,18 @@ public class AppController {
 	@ResponseBody
 	public ResultData getResourceAppById(@PathVariable String appId){
 		logger.info("App by id.");
-		App a = pmanager.getAppById(appId);
-		if(a!=null){
-			return new ResultData(a, HttpServletResponse.SC_OK, "App data found");
-		}else{
-			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
-					"There is no app data.");
+		try {
+			App a = pmanager.getAppById(appId);
+			if (a != null) {
+				return new ResultData(a, HttpServletResponse.SC_OK,
+						"App data found");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"There is no app data.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN,
+					e.getMessage());
 		}
 	}
 	
@@ -143,6 +152,9 @@ public class AppController {
 			}
 		}catch (IllegalArgumentException i) {
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN,
+					e.getMessage());
 		}
 	}
 	
@@ -157,8 +169,12 @@ public class AppController {
 	@ResponseBody
 	public ResultData deleteApp(@PathVariable String appId){
 		logger.info("Delete app.");
-		
-		pmanager.deleteApp(appId);
+		try{
+			pmanager.deleteApp(appId);
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN,
+				e.getMessage());
+		}
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 	}
 	
@@ -174,15 +190,19 @@ public class AppController {
 	@ResponseBody
 	public ResultData updateAppApiData(@RequestBody App app) {
 		logger.info("Update app api data.");
-
-		App updateApiA = pmanager.updateAppApiData(app);
-		if (updateApiA != null) {
-			return new ResultData(updateApiA, HttpServletResponse.SC_OK,
-					"Update app api data successfully.");
-		} else {
-			return new ResultData(null,
-					HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Problem in updating data.");
+		try {
+			App updateApiA = pmanager.updateAppApiData(app);
+			if (updateApiA != null) {
+				return new ResultData(updateApiA, HttpServletResponse.SC_OK,
+						"Update app api data successfully.");
+			} else {
+				return new ResultData(null,
+						HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Problem in updating data.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN,
+					e.getMessage());
 		}
 
 	}
@@ -199,8 +219,11 @@ public class AppController {
 	@ResponseBody
 	public ResultData deleteApiData(@PathVariable String appId, @PathVariable String apiId){
 		logger.info("Delete api data from app.");
-		
-		pmanager.deleteAppApiData(appId, apiId);
+		try{
+			pmanager.deleteAppApiData(appId, apiId);
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete api data from app done!");
 	}
 

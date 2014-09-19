@@ -51,5 +51,13 @@ public interface AppRepository extends MongoRepository<App,String>{
 	 * @return list of  {@link App} instances
 	 */
 	public List<App> findByName(String name);
+	
+	/**
+	 * Retrieves App data searching by owner id.
+	 * 
+	 * @param ownerid : String
+	 * @return list of {@link App} instances
+	 */
+	List<App> findByOwnerId(String ownerid);
 
 }
