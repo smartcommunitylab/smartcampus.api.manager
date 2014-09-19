@@ -277,18 +277,32 @@ public class PersistenceManager {
 	 * Deletes Api data from db.
 	 * 
 	 * @param api : instance of {@link Api}
+	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteApi(Api api){
-		apirepository.delete(api);
+	public void deleteApi(Api api) throws CustomAuthenticationException{
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			apirepository.delete(api);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+		
 	}
 	
 	/**
 	 * Deletes Api data from db using api id.
 	 * 
 	 * @param apiId : String
+	 * @throws CustomAuthenticationException 
 	 */
-	public void deleteApi(String apiId){
-		apirepository.delete(apiId);
+	public void deleteApi(String apiId) throws CustomAuthenticationException{
+		Api api = getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			apirepository.delete(apiId);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
 	}
 	
 	/* 

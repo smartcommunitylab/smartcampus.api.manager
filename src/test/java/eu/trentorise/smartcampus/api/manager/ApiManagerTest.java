@@ -184,8 +184,10 @@ public class ApiManagerTest {
 		api.setId("ndkdhfkdifuret94860936093");
 		api.setName("Geocoding");
 		api.setBasePath("/v0/geocoding");
-		apiManager.deleteApi(api);
+		
 		try {
+			apiManager.deleteApi(api);
+			
 			List<Api> apilist = apiManager.getApiByOwnerId("junit-test");
 			for (int i = 0; i < apilist.size(); i++) {
 				apiManager.deleteApi(apilist.get(i));

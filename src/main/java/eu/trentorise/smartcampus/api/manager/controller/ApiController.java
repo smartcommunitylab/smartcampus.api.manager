@@ -511,8 +511,12 @@ public class ApiController {
 	@ResponseBody
 	public ResultData delete(@PathVariable String apiId) {
 		logger.info("Delete api to db.");
+		try{
+			pmanager.deleteApi(apiId);
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
 		
-		pmanager.deleteApi(apiId);
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");	
 	}
 	
