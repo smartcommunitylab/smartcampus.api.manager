@@ -94,25 +94,15 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 					"Api or Resource id cannot be null.");
 		} else {
 			
-			// retrieve spike arrest apply data
-			LastTime ltime = pmanager
-					.retrievePolicySpikeArrestByApiAndResouceId(apiId,
-							resourceId);
-			
-			if (ltime != null) {
-				logger.info("Last time {}", ltime);
-				if (appId == null) {
-					decision = SpikeArrestDecision(rate, apiId, resourceId,
-							currentTime);
+			if (appId == null) {
+				decision = SpikeArrestDecision(rate, apiId, resourceId,
+						currentTime);
 
-				} else {
-					decision = SpikeArrestDecision(rate, apiId, appId,
-							resourceId, currentTime);
-				}
 			} else {
-				updateSpikeArrestApply(null, apiId, resourceId, appId, currentTime);
-				decision = true;
+				decision = SpikeArrestDecision(rate, apiId, appId, resourceId,
+						currentTime);
 			}
+
 		}
 
 		if (decision)
@@ -139,21 +129,28 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 		
 		LastTime lastTimeApp= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, null); 
 		LastTime ltime = pmanager.retrievePolicySpikeArrestByApiAndResouceId(apiId, resourceId);
-		list.add(lastTimeApp);
-		list.add(ltime);
 		
-		logger.info("Lt with appid null: {}",lastTimeApp);
-		logger.info("Lt without app id: {}", ltime);
+		if(ltime!=null){
+			list.add(ltime);
+		}
+		if(lastTimeApp!=null){
+			list.add(lastTimeApp);
+		}
 		
-		Date maxLastTime= getMax(list);
-		int t=intervalTimeValue(rate);
-	
+		if(list.size()>0){
+			Date maxLastTime= getMax(list);
+			int t=intervalTimeValue(rate);
 		
-		if(	DatesDiff(maxLastTime,currentTime) >t){
-			updateSpikeArrestApply(lastTimeApp, apiId, resourceId, null, currentTime);
-			return true;  
-		}else
-			return false;
+		
+			if(	DatesDiff(maxLastTime,currentTime) >t){
+				updateSpikeArrestApply(lastTimeApp, apiId, resourceId, null, currentTime);
+				return true;  
+			}else
+				return false;
+		}else{
+			updateSpikeArrestApply(null, apiId, resourceId, null, currentTime);
+			return true;
+		}
 		
 	}	
 	
@@ -176,13 +173,12 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 		int t= intervalTimeValue(rate);
 		
 		LastTime lastTime= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId); 	
-		logger.info("Lt wiht app id: {}",lastTime);
 	
 		if(lastTime==null || DatesDiff(lastTime.getTime(),currentTime)>t){
 			updateSpikeArrestApply(lastTime, apiId, resourceId, appId, currentTime);
-			return true;}
-		else
-			return false;
+			return true;
+		}
+		else return false;
 				   	    	    	 
 	}
 	
@@ -212,7 +208,6 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 */
 	private long DatesDiff(Date d1, Date d2) {
 		long millisDiff = d2.getTime() - d1.getTime();
-		System.out.print("Differenza " + millisDiff + "\n");
 		return millisDiff;
 	}
 
@@ -234,7 +229,6 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 		} else {
 			t = 1000 / Integer.parseInt(timeValue);
 		} // result is in milliseconds
-		System.out.print("t:" + t + "\n");
 		return t;
 	}
 	
