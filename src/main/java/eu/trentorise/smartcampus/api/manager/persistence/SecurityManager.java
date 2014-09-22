@@ -74,22 +74,25 @@ public class SecurityManager {
 	
 	/**
 	 * This function checks user permission before
-	 * retrieving api data by its name.
+	 * retrieving api name.
 	 * It throws a security exception, if user has not the right
 	 * permissions.
 	 * 
-	 * @param apiName : String
-	 * @return instance of {@link Api}
+	 * @param apiId : String
+	 * @return name of api, String
 	 * @throws CustomAuthenticationException
 	 */
-	public Api getApiByName(String apiName) throws CustomAuthenticationException{
-		Api api = pmanager.getApiByName(apiName);
-		if(security.canUserDoThisOperation(api.getOwnerId())){
-			return api;
+	public String getApiByName(String apiId) throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if (api != null) {
+			String owner = api.getOwnerId();
+			if (security.canUserDoThisOperation(owner)) {
+				return api.getName();
+			} else {
+				throw new CustomAuthenticationException("You are not allowed");
+			}
 		}
-		else {
-			throw new CustomAuthenticationException("You are not allowed");
-		}
+		return null;
 	}
 	
 	/**

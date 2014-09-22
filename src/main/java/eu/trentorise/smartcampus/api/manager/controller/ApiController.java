@@ -104,16 +104,16 @@ public class ApiController {
 	 * 			"Api name found" if it is ok, "There is no api data with this id."
 	 * 			otherwise "User is not allowed".
 	 */
-	@RequestMapping(value = "/name/{apiName}", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(value = "/name/{apiId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
-	public ResultData getApiByName(@PathVariable String apiName){
+	public ResultData getApiByName(@PathVariable String apiId){
 		logger.info("Api name.");
 		
 		try {
-			Api api = pmanager.getApiByName(apiName);
+			String api = pmanager.getApiByName(apiId);
 			if(api!=null){
-				logger.info("Name {}", api.getName());
-				return new ResultData(api.getName(), HttpServletResponse.SC_OK, "Api name found");
+				//logger.info("Name {}", api.getName());
+				return new ResultData(api/*.getName()*/, HttpServletResponse.SC_OK, "Api name found");
 			}else{
 				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
 						"There is no api with this id.");

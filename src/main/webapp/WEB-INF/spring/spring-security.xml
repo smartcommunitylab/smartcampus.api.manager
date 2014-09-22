@@ -23,7 +23,7 @@
 	<sec:http pattern="/**" authentication-manager-ref="basic-auth" use-expressions="true">
 		<sec:http-basic />
 		<sec:intercept-url pattern="/" access="permitAll" />
-		<sec:intercept-url pattern="/**" access="hasRole('ROLE_PROVIDER')" />
+		<sec:intercept-url pattern="/api/**" access="hasRole('ROLE_PROVIDER')" />
 	</sec:http>
 
 	<!-- BASIC AUTHENTICATION -->
