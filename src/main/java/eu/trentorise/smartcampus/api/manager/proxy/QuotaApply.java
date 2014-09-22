@@ -167,13 +167,20 @@ public class QuotaApply implements PolicyDatastoreApply{
 		return quota;
 	}
 	
+	/**
+	 * Checks if access to an api resource can be granted or not.
+	 * 
+	 * @param appId : String
+	 * @param resourceId : String
+	 * @param apiId : String
+	 */
 	private void decision(String appId, String resourceId, String apiId) {
 
 		Date currentTime = new Date();
 
 		boolean decision = false;
 
-		// verifica input (resourceId non può essere null...)
+		// check input because resource id cannot be null
 		if (apiId == null && resourceId == null) {
 			throw new IllegalArgumentException(
 					"Api or Resource id cannot be null.");
@@ -184,7 +191,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 			if (q != null) {
 				logger.info("Found policy quota {} for decision", q.getId());
 				
-				// Da interval e timeUnit calcolo valore timeLimit
+				// interval and timeUnit is used for calculating timeLimit
 				int t = 0;
 				// time unit
 				if (timeUnit.equalsIgnoreCase("second")) {
@@ -222,21 +229,19 @@ public class QuotaApply implements PolicyDatastoreApply{
 			logger.info("Quota policy --> DENY ");
 	}
 	
+	/**
+	 * Checks if an access of app to a api resource can be granted.
+	 * 
+	 * @param timeLimit : int
+	 * @param resourceQuota : int
+	 * @param apiId : String
+	 * @param appId : String
+	 * @param resourceId : String
+	 * @param currentTime : Date
+	 * @return if access is granted then true else false
+	 */
 	private boolean QuotaDecision(int timeLimit, int resourceQuota,
 			String apiId, String appId, String resourceId, Date currentTime) {
-
-		// oppure possiamo assumere che questa tabella del database sia
-		// inizializzata (anche con valori default) in seguito all'iscrizione
-		// dell'app
-		/*
-		 * List<QuotaStatus> quotastatus
-		 * =quotastatusr.findByApiIdAndResourceIdAndAppId(apiId,
-		 * resourceId,appId); DB_QuotaStatus_update(quotastatus, apiId,
-		 * resourceId, appId);
-		 */
-		// STATUS ASSOCIATO SOLO ALL'APP List<QuotaStatus> quotastatus =
-		// quotastatusr.findByAppId(appId);
-		// DB_QuotaStatus_update(quotastatus,appId);
 
 		PolicyQuota pq = pmanager.retrievePolicyQuotaByParamIds(apiId,
 				resourceId, appId);
@@ -250,13 +255,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 			updatePolicyQuota(pq, apiId, resourceId, appId,
 					currentTime, timeLimit);
 
-			// String status = quotastatus.get(0).getStatus();
 			boolean decision = false;
-			// oss: se resourceQuota[1]=0 --> che per quella risorsa non è
-			// specificato il count silver --> nessuna app può avere quello
-			// status per quella risorsa
-			// NOO --> viene preso il valore <= del valore status -->[DA FARE -
-			// SI TORNA COME PRIMA]
 			
 			if (resourceQuota!=0 && pq.getCount() <= resourceQuota) {
 				decision = true;
@@ -272,13 +271,18 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 	}
 	
+	/**
+	 * Checks if anonymous access to api resource can be granted.
+	 * 
+	 * @param timeLimit : int
+	 * @param resourceQuota : int
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param currentTime : Date
+	 * @return if access is granted then true else false
+	 */
 	private boolean QuotaDecision(int timeLimit, int resourceQuota, 
 			String apiId, String resourceId, Date currentTime) {
-
-		// in resource=i appId=0 salvo i count delle request senza appId
-		// counter viene calcolato come somma delle richieste con appId e senza
-		// quota viene settato con il valore di default, ne consideriamo un
-		// altro?
 
 		PolicyQuota pq = pmanager.retrievePolicyQuotaByParams(apiId, resourceId);
 		
@@ -302,11 +306,28 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 	}
 
+	/**
+	 * Calculates difference from d2 to d1 in milliseconds.
+	 * 
+	 * @param d1 : Date
+	 * @param d2 : Date
+	 * @return long value
+	 */
 	private long DatesDiff(Date d1, Date d2) {
 		long millisDiff = d2.getTime() - d1.getTime();
 		return millisDiff;
 	}
 
+	/**
+	 * Update table policy quota.
+	 * 
+	 * @param q : instance of {@link PolicyQuota}
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param appId : String
+	 * @param currentTime : Date
+	 * @param timeLimit : int
+	 */
 	private void updatePolicyQuota(PolicyQuota q, String apiId,
 			String resourceId, String appId, Date currentTime, int timeLimit) {
 		if (q == null) {

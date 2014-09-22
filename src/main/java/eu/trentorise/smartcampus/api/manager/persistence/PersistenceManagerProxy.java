@@ -246,7 +246,7 @@ public class PersistenceManagerProxy {
 	 * 
 	 * @param lastTimeId : String
 	 */
-	public void addPolicySpikeArrest(String lastTimeId){
+	public void deletePolicySpikeArrest(String lastTimeId){
 		spikeArRep.delete(lastTimeId);
 	}
 	

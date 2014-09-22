@@ -34,7 +34,6 @@ import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
-import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Class that retrieves policies of api and its resources.
@@ -151,7 +150,7 @@ public class PolicyDecisionPoint {
 					batch.add(qa);
 				}
 				else if(pToApply.get(i) instanceof SpikeArrest){
-					batch.add(new SpikeArrestApply());
+					batch.add(new SpikeArrestApply(apiId,resourceId,appId,(SpikeArrest)pToApply.get(i)));
 				}
 			}
 			batch.apply();
@@ -161,7 +160,7 @@ public class PolicyDecisionPoint {
 	}
 	
 	/**
-	 * Initialize table of Quota Apply with a new country.
+	 * Initialize table of Quota Apply with a new count.
 	 * Count element is set to zero.
 	 * 
 	 * @param apiId : String
@@ -185,4 +184,28 @@ public class PolicyDecisionPoint {
 			proxyManager.addPolicyQuota(pq);
 		}
 	}
+	
+	/**
+	 * Initialize table of Spike Arrest Apply.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param appId : String
+	 */
+	/*private void initSpikeArrestApplyElement(String apiId, String resourceId, String appId){
+		LastTime sp = null;
+		if(appId!=null){
+			sp = proxyManager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId);
+		}else{
+			sp = proxyManager.retrievePolicySpikeArrestByApiAndResouceId(apiId, resourceId);
+		}
+		if(sp==null){
+			sp = new LastTime();
+			sp.setApiId(apiId);
+			sp.setAppId(appId);
+			sp.setResourceId(resourceId);
+			sp.setTime(new Date());
+			proxyManager.addPolicySpikeArrest(sp);
+		}
+	}*/
 }
