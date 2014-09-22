@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.proxy.LastTime;
@@ -33,7 +32,6 @@ import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy
  * @author Giulia Canobbio.
  *
  */
-@Component
 public class SpikeArrestApply implements PolicyDatastoreApply{
 	/**
 	 * Instance of {@link Logger}
@@ -83,7 +81,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 * Function that decide if an access to resource or api can be granted or not 
 	 * by applying spike arrest policy.
 	 */
-	public void decision() {
+	private void decision() {
 		// Retrieve rate from policy spike arrest
 		String rate = sp.getRate();
 
@@ -95,11 +93,12 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 			throw new IllegalArgumentException(
 					"Api or Resource id cannot be null.");
 		} else {
+			
 			// retrieve spike arrest apply data
 			LastTime ltime = pmanager
 					.retrievePolicySpikeArrestByApiAndResouceId(apiId,
 							resourceId);
-
+			
 			if (ltime != null) {
 				logger.info("Last time {}", ltime);
 				if (appId == null) {
@@ -111,6 +110,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 							resourceId, currentTime);
 				}
 			} else {
+				updateSpikeArrestApply(null, apiId, resourceId, appId, currentTime);
 				decision = true;
 			}
 		}
@@ -134,13 +134,16 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 * @param currentTime : Date
 	 * @return if access is granted then true else false
 	 */
-	public  boolean SpikeArrestDecision(String rate, String apiId, String resourceId, Date currentTime) {	
+	private  boolean SpikeArrestDecision(String rate, String apiId, String resourceId, Date currentTime) {	
 		List<LastTime> list = new ArrayList<LastTime>();
 		
 		LastTime lastTimeApp= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, null); 
 		LastTime ltime = pmanager.retrievePolicySpikeArrestByApiAndResouceId(apiId, resourceId);
 		list.add(lastTimeApp);
 		list.add(ltime);
+		
+		logger.info("Lt with appid null: {}",lastTimeApp);
+		logger.info("Lt without app id: {}", ltime);
 		
 		Date maxLastTime= getMax(list);
 		int t=intervalTimeValue(rate);
@@ -167,13 +170,13 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 * @param currentTime : Date
 	 * @return if access is granted then true else false
 	 */
-	public boolean SpikeArrestDecision(String rate, String apiId, String appId, String resourceId, 
+	private boolean SpikeArrestDecision(String rate, String apiId, String appId, String resourceId, 
 			Date currentTime) {	
 		  
 		int t= intervalTimeValue(rate);
 		
 		LastTime lastTime= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId); 	
-
+		logger.info("Lt wiht app id: {}",lastTime);
 	
 		if(lastTime==null || DatesDiff(lastTime.getTime(),currentTime)>t){
 			updateSpikeArrestApply(lastTime, apiId, resourceId, appId, currentTime);
@@ -189,7 +192,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 * @param lastTimes : list of {@link LastTime} instances
 	 * @return maximum value
 	 */
-	public Date getMax(List<LastTime> lastTimes) {
+	private Date getMax(List<LastTime> lastTimes) {
 		Date max = new Date(Long.MIN_VALUE);
 		for (int i = 0; i < lastTimes.size(); i++) {
 			Date lastTime = lastTimes.get(i).getTime();
@@ -207,7 +210,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 * @param d2 : Date
 	 * @return long value
 	 */
-	public long DatesDiff(Date d1, Date d2) {
+	private long DatesDiff(Date d1, Date d2) {
 		long millisDiff = d2.getTime() - d1.getTime();
 		System.out.print("Differenza " + millisDiff + "\n");
 		return millisDiff;
@@ -219,7 +222,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 * @param rate : String
 	 * @return rate in milliseconds
 	 */
-	public int intervalTimeValue(String rate) {
+	private int intervalTimeValue(String rate) {
 		int t;
 		int rateLength = rate.length();
 		char timeUnit = rate.charAt(rateLength - 1);
@@ -244,7 +247,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 * @param appId : String
 	 * @param currentTime : Date
 	 */
-	void updateSpikeArrestApply(LastTime lastTime, String apiId,
+	private void updateSpikeArrestApply(LastTime lastTime, String apiId,
 			String resourceId, String appId, Date currentTime) {
 		if (lastTime==null) {
 			lastTime = new LastTime();

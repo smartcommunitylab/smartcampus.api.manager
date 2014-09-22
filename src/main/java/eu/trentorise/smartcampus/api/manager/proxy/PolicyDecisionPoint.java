@@ -150,7 +150,10 @@ public class PolicyDecisionPoint {
 					batch.add(qa);
 				}
 				else if(pToApply.get(i) instanceof SpikeArrest){
-					batch.add(new SpikeArrestApply(apiId,resourceId,appId,(SpikeArrest)pToApply.get(i)));
+					SpikeArrestApply saa = new SpikeArrestApply(apiId,resourceId,appId,
+							(SpikeArrest)pToApply.get(i));
+					saa.setPManager(proxyManager);
+					batch.add(saa);
 				}
 			}
 			batch.apply();
