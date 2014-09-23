@@ -1,4 +1,4 @@
-<div ng-controller="appApiDataCtrl">
+<div>
 
 	<h4>
 		<b>Api list</b>
@@ -8,30 +8,34 @@
 
 	<form name="main" novalidate role="form" ng-submit="submit()">
 
-		<div class="form-group" ng-repeat="api in apisList">
+		<div class="form-group" ng-repeat="p in permissions">
 
 			<div class="table-responsive">
 				<table class="table table-striped table-condensed table-bordered">
 					<tbody>
+					<tr>
+					<td><label>{{p.apiId}}</label></td>
+					</tr>
 						<tr>
 							<td><select id="apiStatus" class="form-control"
-								ng-model="a.apiStatus">
+								ng-model="a.status">
 									<option>DEFAULT</option>
-									<option ng-repeat="s in api.status">{{s.name}}</option>
+									<option ng-repeat="s in p.apiStatus">{{s.name}}</option>
 							</select></td>
 
-							<td><input id="apiName" type="checkbox" value="api.id"
-								ng-model="apiId" 
-								ng-click="addApiData(api.id,a.apiStatus)" 
-								> {{api.name}} <!-- ng-checked="isApiDataChecked(api.id)" -->
+							<td><input id="apiName" type="checkbox" value="p.apiId"
+								ng-model="a.id" 
+								ng-click="addApiData(p.apiId,a.status)" 
+								> {{p.apiName}} <!-- ng-checked="isApiDataChecked(a.id)" -->
 								<br /></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
+		
 
-		<button type="submit" ng-disabled="main.$invalid" class="btn btn-info">
+		<button type="button" ng-click="updatePermission()" ng-disabled="main.$invalid" class="btn btn-info">
 			<div>Update</div>
 		</button>
 

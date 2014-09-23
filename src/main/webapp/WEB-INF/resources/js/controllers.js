@@ -50,85 +50,6 @@ app.controller('appsCtrl', ['$scope', '$location', '$route', 'App',
      }
 ]);
 
-app.controller('appApiDataCtrl', ['$scope', '$location', '$route', 'App', 'Api',
-    function($scope, $location, $route, App, Api){
-		//TODO
-		var list=[];
-	
-		Api.list({
-			ownerId : '1'
-		}, function(data){
-			$scope.apisList = data.data;
-		});
-	
-		/*$scope.isApiDataChecked = function(apiId){
-			console.log('isApiDataChecked');
-			console.log('list');
-			console.log(list);
-			var index = -1;
-			for(var i in $scope.app.apis){
-				if($scope.app.apis[i].apiId === apiId){
-					index = i;
-				}
-			}
-			
-			if(index === -1){
-				return false;
-			}else{
-				$scope.addApiData($scope.app.apis[i].apiId,$scope.app.apis[i].apiStatus );
-				return true;
-			}
-		};*/
-		
-		$scope.addApiData = function(apiId, apiStatus){
-			console.log('addApiData');
-			console.log('param status: '+apiStatus);
-			console.log('param api id: '+apiId);
-			var obj = {apiId: apiId , apiStatus: apiStatus};
-		
-			var index = -1;
-			for(var i=0;i<list.length;i++){
-				if(list[i].apiId === apiId){
-					index = i;
-				}
-			}
-		
-			console.log('index: '+index);
-			if(index > -1){
-				//if status is different then push
-				if(list[index].apiStatus !== apiStatus){
-					list.push(obj);
-				}
-				list.splice(index,1);
-			}
-			else{
-				if(!!apiStatus){
-					list.push(obj);
-				}else{
-					console.log('Chose a status!');
-					//$scope.errorMsg = "Error chose a status";
-				}
-			
-			}
-		};
-
-		$scope.submit = function () {
-			$scope.app.apis = list;
-			App.updateApiData({
-				
-				},$scope.app,
-					function (data) {
-						if(data.status == 200){
-							$location.path('apps');
-						}else{
-							$scope.errorMsg = data.message;
-						}
-				});
-		};
-		
-	}
-]);
-
 app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 'Api', 'Resource', 
                                'Policy',
     function($scope, $route, $routeParams, $location, Api, Resource, Policy){
@@ -263,7 +184,81 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 			});
 		};
 			
-		//for change permission, see appApiDataCtrl
+		//Change permission
+  		var list = [];
+  		console.log('Change permission');
+  	
+  		Api.list({
+  		}, function(data){
+  			//$scope.apisList = data.data;
+  			
+  			console.log('Api list');
+  			
+  			if(!$scope.permissions){
+  				$scope.permissions=[];
+  			}
+  			
+  			for(var i=0;i<data.data.length;i++){
+  				
+  				var obj = {apiId: data.data[i].id, 
+  						apiName: data.data[i].name , 
+  						apiStatus: data.data[i].status};
+  				
+  				$scope.permissions.push(obj);
+  			}
+  			
+  			console.log($scope.permissions);
+  			
+  		});
+  		
+  		$scope.addApiData = function(apiId, apiStatus){
+  			console.log('addApiData');
+  			console.log('param status: '+apiStatus);
+  			console.log('param api id: '+apiId);
+  			var obj = {apiId: apiId , apiStatus: apiStatus};
+  			
+  			if(!list){
+  				list = [];
+  			}
+  		
+  			var index = -1;
+  			for(var i=0;i<list.length;i++){
+  				if(list[i].apiId === apiId){
+  					index = i;
+  				}
+  			}
+  		
+  			console.log('index: '+index);
+  			if(index > -1){
+  				//if status is different then push
+  				if(list[index].apiStatus !== apiStatus){
+  					list.push(obj);
+  				}
+  				list.splice(index,1);
+  			}
+  			else{
+  				if(!!apiStatus){
+  					list.push(obj);
+  				}else{
+  					console.log('Chose a status!');
+  				}
+  			
+  			}
+  		};
+
+  		$scope.updatePermission = function () {
+  			$scope.app.apis = list;
+  			App.updateApiData({
+  				
+  				},$scope.app,
+  					function (data) {
+  						if(data.status == 200){
+  							$location.path('apps');
+  						}else{
+  							$scope.errorMsg = data.message;
+  						}
+  				});
+  		};
 	}
 ]);
 
