@@ -22,12 +22,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.ApiData;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.QuotaStatus;
-import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
@@ -97,10 +95,10 @@ public class QuotaApply implements PolicyDatastoreApply{
 	public void apply() {
 		
 		logger.info("Applying quota policy..");
-		logger.info("Api id: {}, ",apiId);
-		logger.info("Resource id: {}, ",resourceId);
-		logger.info("App id: {}, ",appId);
-		logger.info("Policy: {}. ",p.getName());
+		logger.info("Q - Api id: {}, ",apiId);
+		logger.info("Q - Resource id: {}, ",resourceId);
+		logger.info("Q - App id: {}, ",appId);
+		logger.info("Q - Policy: {}. ",p.getName());
 		
 		this.interval = p.getInterval();
 		this.timeUnit = p.getTimeUnit();
@@ -116,12 +114,6 @@ public class QuotaApply implements PolicyDatastoreApply{
 	 */
 	private int getQuotaValue(){
 		int quota = 0;
-
-		// get Status list
-
-		Api api = manager.getApiById(apiId);
-
-		List<Status> status = api.getStatus();
 
 		// get app apiData
 		App app = manager.getAppById(appId);
@@ -143,15 +135,6 @@ public class QuotaApply implements PolicyDatastoreApply{
 				}
 			}
 		}
-
-		// from api status list retrieves quota
-		/*
-		 * if (status != null && status.size() > 0 &&
-		 * !appApiStatus.equalsIgnoreCase("DEFAULT")) { // retrieves quota for
-		 * (int i = 0; i < status.size(); i++) { if
-		 * (status.get(i).getName().equalsIgnoreCase(appApiStatus)) { quota =
-		 * status.get(i).getQuota(); } } }
-		 */
 
 		// from policy status retrieves quota
 		List<QuotaStatus> qslist = p.getQstatus();
@@ -185,41 +168,31 @@ public class QuotaApply implements PolicyDatastoreApply{
 			throw new IllegalArgumentException(
 					"Api or Resource id cannot be null.");
 		} else {
-			PolicyQuota q = pmanager.retrievePolicyQuotaByParamIds(apiId,
-					resourceId, appId);
 
-			if (q != null) {
-				logger.info("Found policy quota {} for decision", q.getId());
-				
-				// interval and timeUnit is used for calculating timeLimit
-				int t = 0;
-				// time unit
-				if (timeUnit.equalsIgnoreCase("second")) {
-					t = 1;
-				} else if (timeUnit.equalsIgnoreCase("minute")) {
-					t = 60;
-				} else if (timeUnit.equalsIgnoreCase("hour")) {
-					t = 3600;
-				} else if (timeUnit.equalsIgnoreCase("day")) {
-					t = 86400;
-				} else if (timeUnit.equalsIgnoreCase("month")) {
-					t = 2592000;
-				}
+			// interval and timeUnit is used for calculating timeLimit
+			int t = 0;
+			// time unit
+			if (timeUnit.equalsIgnoreCase("second")) {
+				t = 1;
+			} else if (timeUnit.equalsIgnoreCase("minute")) {
+				t = 60;
+			} else if (timeUnit.equalsIgnoreCase("hour")) {
+				t = 3600;
+			} else if (timeUnit.equalsIgnoreCase("day")) {
+				t = 86400;
+			} else if (timeUnit.equalsIgnoreCase("month")) {
+				t = 2592000;
+			}
 
-				int timeLimit = interval * t * 1000; // in milliseconds
-				int resourceQuota = getQuotaValue();
+			int timeLimit = interval * t * 1000; // in milliseconds
+			int resourceQuota = getQuotaValue();
 
-				if (appId == null) {
-					decision = QuotaDecision(timeLimit, resourceQuota, apiId,
-							resourceId, currentTime);
-				} else {
-					decision = QuotaDecision(timeLimit, resourceQuota, apiId,
-							appId, resourceId, currentTime);
-				}
-
+			if (appId == null) {
+				decision = QuotaDecision(timeLimit, resourceQuota, apiId,
+						resourceId, currentTime);
 			} else {
-				decision = true;
-				updatePolicyQuota(null, apiId, resourceId, appId, currentTime, 0);
+				decision = QuotaDecision(timeLimit, resourceQuota, apiId,
+						appId, resourceId, currentTime);
 			}
 		}
 
@@ -291,8 +264,6 @@ public class QuotaApply implements PolicyDatastoreApply{
 		if (DatesDiff(pq.getTime(), currentTime) < timeLimit) {
 			counter = +pq.getCount();
 		}
-		
-		logger.info("Quota Decision without appId, count: {}",counter);
 		
 		updatePolicyQuota(pq, apiId, resourceId, null, currentTime,
 				timeLimit);

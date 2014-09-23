@@ -74,6 +74,10 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	@Override
 	public void apply() {
 		logger.info("Applying spike arrest policy..");
+		logger.info("SP - Api id: {}, ",apiId);
+		logger.info("SP - Resource id: {}, ",resourceId);
+		logger.info("SP - App id: {}, ",appId);
+		logger.info("SP - Policy: {}. ",sp.getName());
 		decision();
 	}
 	

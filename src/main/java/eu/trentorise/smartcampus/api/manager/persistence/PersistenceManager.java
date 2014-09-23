@@ -346,7 +346,7 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Update an existing App.
+	 * Update an key of existing App.
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return updated instace of {@link App}
@@ -363,14 +363,8 @@ public class PersistenceManager {
 		//Retrieve old api
 		App oldApp = getAppById(app.getId());
 		
-		//set new name
-		if(!oldApp.getName().equalsIgnoreCase(name)){
-			oldApp.setName(name);
-		}
-		//set new api list
-		if(!oldApp.getApis().equals(app.getApis())){
-			oldApp.setApis(app.getApis());
-		}
+		//set app key
+		oldApp.setKey(UUID.randomUUID().toString());
 		
 		return apprepository.save(oldApp);
 	}

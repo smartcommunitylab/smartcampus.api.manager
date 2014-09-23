@@ -183,86 +183,89 @@ public class RequestHandler{
 	 */
 	public RequestHandlerObject handleRequest(HttpServletRequest request){
 
-		if(request!=null){
-		
-		String apiId = null, resourceId = null, appId=null;
-		RequestHandlerObject result = new RequestHandlerObject();
-
-		String requestUri = request.getRequestURI();
-		String[] slist = requestUri.split("/", 3);
-		
-		String path;
-		if(slist[2].indexOf("/")==0){
-			path = slist[2];
-		}else{
-			path = "/"+ slist[2];
-		}
-		logger.info("(a)Api Basepath: {}", path);
-		
-		//retrieve api id and resource from static resource
-		if(all!=null && all.size()>0){
-			if(all.containsKey(path)){
-				ObjectInMemory obj = all.get(path);
-				apiId = obj.getApiId();
-				resourceId = obj.getResourceId();
-			}else{
-				retrieveUrlFromMemory(path);
-				ObjectInMemory obj = all.get(path);
-				apiId = obj.getApiId();
-				resourceId = obj.getResourceId();
-			}
-		}
-		if(apiId==null && resourceId==null){
-			throw new IllegalArgumentException("There is no api and resource for this path {}.");
-		}
-		
-		// retrieves headers
-		Map<String, String> map = new HashMap<String, String>();
 		if (request != null) {
-			Enumeration<String> headerNames = request.getHeaderNames();
 
-			while (headerNames.hasMoreElements()) {
+			String apiId = null, resourceId = null, appId = null;
+			RequestHandlerObject result = new RequestHandlerObject();
 
-				String headerName = headerNames.nextElement();
+			String requestUri = request.getRequestURI();
+			String[] slist = requestUri.split("/", 3);
 
-				Enumeration<String> headers = request.getHeaders(headerName);
-				while (headers.hasMoreElements()) {
-					String headerValue = headers.nextElement();
-					//do not save in headers appId
-					if(!headerName.equalsIgnoreCase("appId")){
-						map.put(headerName, headerValue);
-					}else{
-						//retrieve appId from headers
-						appId = headerValue;
+			String path;
+			if (slist[2].indexOf("/") == 0) {
+				path = slist[2];
+			} else {
+				path = "/" + slist[2];
+			}
+			logger.info("(a)Api Basepath: {}", path);
+
+			// retrieve api id and resource from static resource
+			if (all != null && all.size() > 0) {
+				if (all.containsKey(path)) {
+					ObjectInMemory obj = all.get(path);
+					apiId = obj.getApiId();
+					resourceId = obj.getResourceId();
+				} else {
+					retrieveUrlFromMemory(path);
+					ObjectInMemory obj = all.get(path);
+					apiId = obj.getApiId();
+					resourceId = obj.getResourceId();
+				}
+			}
+			if (apiId == null && resourceId == null) {
+				throw new IllegalArgumentException(
+						"There is no api and resource for this path {}.");
+			}
+
+			// retrieves headers
+			Map<String, String> map = new HashMap<String, String>();
+			if (request != null) {
+				Enumeration<String> headerNames = request.getHeaderNames();
+
+				while (headerNames.hasMoreElements()) {
+
+					String headerName = headerNames.nextElement();
+
+					Enumeration<String> headers = request
+							.getHeaders(headerName);
+					while (headers.hasMoreElements()) {
+						String headerValue = headers.nextElement();
+						// do not save in headers appId
+						if (!headerName.equalsIgnoreCase("appId")) {
+							map.put(headerName, headerValue);
+						} else {
+							// retrieve appId from headers
+							logger.info("App id found: {}",headerValue);
+							appId = headerValue;
+						}
 					}
+
+				}
+			}
+
+			// check that appId retrieved from request is correct
+			if (appId != null) {
+				App app = apiManager.getAppById(appId);
+
+				if (app == null) {
+					throw new IllegalArgumentException(
+							"App with this id does not exist.");
 				}
 
 			}
-		}
-		
-		//check that appId retrieved from request is correct
-		if(appId!=null){
-			App app = apiManager.getAppById(appId);
-			
-			if(app==null){
-				throw new IllegalArgumentException("App with this id does not exist.");
-			}
-			
-		}
-		
-		logger.info("api id: {} ",apiId);
-		logger.info("resource id: {} ", resourceId);
-		logger.info("app id: {} ",appId);
 
-		// set result
-		result.setApiId(apiId);
-		result.setResourceId(resourceId);
-		result.setAppId(appId);
-		result.setHeaders(map);
-		
-		return result;
-		}
-		else
+			logger.info("api id: {} ", apiId);
+			logger.info("resource id: {} ", resourceId);
+			logger.info("app id: {} ", appId);
+
+			// set result
+			result.setApiId(apiId);
+			result.setResourceId(resourceId);
+			result.setAppId(appId);
+			result.setHeaders(map);
+
+			return result;
+		} else
 			return null;
 
 	}
