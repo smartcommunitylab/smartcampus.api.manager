@@ -31,6 +31,7 @@ import eu.trentorise.smartcampus.api.manager.Constants.POLICY_CATEGORY;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.ApiData;
 import eu.trentorise.smartcampus.api.manager.model.App;
+import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
@@ -943,15 +944,22 @@ public class PersistenceManager {
 		if(p.getName()==null || p.getType()==null){
 			throw new IllegalArgumentException("Policy name and type are required.");
 		}
+		
 		isPolicyInstanceOf(p);
+		
 		if(p.getId()==null || p.getId().equalsIgnoreCase("")){
 			p.setId(generateId());
 		}
 		if(policyApiExists(apiId, p.getName())){
 			throw new IllegalArgumentException("Policy with this name already exists.");
 		}
+		
+		//category
 		if(p instanceof SpikeArrest || p instanceof Quota){
 			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
+		}
+		else{
+			p.setCategory(POLICY_CATEGORY.Security.toString());
 		}
 		// get api and add policy
 		Api api = getApiById(apiId);
@@ -990,14 +998,19 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Policy name and type are required.");
 		}
 		isPolicyInstanceOf(p);
-		//retrieve api searching by id
+		
 		//check category
 		if(p instanceof SpikeArrest || p instanceof Quota){
 			if(!p.getCategory().equalsIgnoreCase(POLICY_CATEGORY.QualityOfService.toString())){
 				p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
-				//throw new IllegalArgumentException("Policy category is wrong.");
+			}
+		}else{
+			if(!p.getCategory().equalsIgnoreCase(POLICY_CATEGORY.Security.toString())){
+				p.setCategory(POLICY_CATEGORY.Security.toString());
 			}
 		}
+		
+		//retrieve api searching by id
 		Api api = getApiById(apiId);
 		
 		//retrieve policy
@@ -1120,6 +1133,33 @@ public class PersistenceManager {
 				for (int i = 0; i < plist.size(); i++) {
 					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
 						p = (Quota) plist.get(i);
+					}
+				}
+			}
+			return p;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieves ip access control data from Api searching by policy id.
+	 * 
+	 * @param apiId : String
+	 * @param policyId : String
+	 * @return instance of {@link IPAccessControl}
+	 */
+	public Policy getIPAccessControlPolicyApiByPolicyId(String apiId, String policyId){
+		Api api = getApiById(apiId);
+		
+		try {
+			List<Policy> plist = api.getPolicy();
+			IPAccessControl p = null;
+
+			if (plist != null) {
+				for (int i = 0; i < plist.size(); i++) {
+					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+						p = (IPAccessControl) plist.get(i);
 					}
 				}
 			}
@@ -1419,8 +1459,11 @@ public class PersistenceManager {
 			throw new IllegalArgumentException(
 					"Policy with this name already exists.");
 		}
+		
 		if(p instanceof SpikeArrest || p instanceof Quota){
 			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
+		}else{
+			p.setCategory(POLICY_CATEGORY.Security.toString());
 		}
 		// get resource api and add policy
 		Resource r = getResourceApiByResourceId(apiId, resourceId);
@@ -1462,6 +1505,11 @@ public class PersistenceManager {
 				p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
 				// throw new
 				// IllegalArgumentException("Policy category is wrong.");
+			}
+		}else{
+			if (p.getCategory()==null || !p.getCategory().equalsIgnoreCase(
+					POLICY_CATEGORY.Security.toString())) {
+				p.setCategory(POLICY_CATEGORY.Security.toString());
 			}
 		}
 		// get resource api and add policy
@@ -1593,6 +1641,35 @@ public class PersistenceManager {
 				for (int i = 0; i < plist.size(); i++) {
 					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
 						p = (Quota) plist.get(i);
+					}
+				}
+			}
+			return p;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieve IP access control policy resource by policyId.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @return instance of {@link IPAccessControl} resource
+	 */
+	public Policy getIPAccessControlPolicyResourceApiByResourceId(String apiId, String resourceId, 
+			String policyId){
+		Resource resource = getResourceApiByResourceId(apiId, resourceId);
+
+		try {
+			List<Policy> plist = resource.getPolicy();
+			IPAccessControl p = null;
+
+			if (plist != null) {
+				for (int i = 0; i < plist.size(); i++) {
+					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+						p = (IPAccessControl) plist.get(i);
 					}
 				}
 			}
@@ -1808,6 +1885,25 @@ public class PersistenceManager {
 				throw new IllegalArgumentException("For policy quota, interval, timeunit and " +
 						"allow count are required.");
 			}
+		}
+		//check fields of IP Access Control
+		if(p instanceof IPAccessControl){
+			if( ((IPAccessControl)p).getRule()==null){
+				throw new IllegalArgumentException("For policy ip access control, rule " +
+						"is required.");
+			}
+			else{
+				if(!((IPAccessControl)p).getRule().equalsIgnoreCase(Constants.POLICY_IP_RULE.ALLOW.toString())
+						&&
+				!((IPAccessControl)p).getRule().equalsIgnoreCase(Constants.POLICY_IP_RULE.DENY.toString())
+				){
+					throw new IllegalArgumentException("For policy ip access control, rule " +
+							"value can be only ALLOW or DENY.");
+				}
+			}
+			
+			//check ip address
+			
 		}
 				
 	}

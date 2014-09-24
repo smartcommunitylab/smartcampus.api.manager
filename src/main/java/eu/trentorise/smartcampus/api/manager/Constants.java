@@ -35,5 +35,9 @@ public class Constants {
 	 * possible value of api status
 	 */
 	public enum API_STATUS {SILVER, GOLD, PLATINUM};
+	/**
+	 * possible value for rule of policy IP Access Control
+	 */
+	public enum POLICY_IP_RULE{ALLOW,DENY};
 
 }

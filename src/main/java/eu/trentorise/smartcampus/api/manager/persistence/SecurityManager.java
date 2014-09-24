@@ -17,13 +17,13 @@ package eu.trentorise.smartcampus.api.manager.persistence;
 
 import java.util.List;
 
-import org.omg.CORBA.PolicyError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
+import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
@@ -190,6 +190,28 @@ public class SecurityManager {
 	
 	/**
 	 * This function checks user permission before
+	 * adding a policy to api.
+	 * Policy must be an IP Access Control.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link IPAccessControl}
+	 * @return instance of {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
+	public Policy addPolicyApi(String apiId, IPAccessControl p) throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			return pmanager.addPolicyApi(apiId, p);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
+	/**
+	 * This function checks user permission before
 	 * updating api data.
 	 * It throws a security exception, if user has not the right
 	 * permissions.
@@ -268,6 +290,28 @@ public class SecurityManager {
 	 * @throws CustomAuthenticationException
 	 */
 	public Policy updatePolicyApi(String apiId, Quota p) throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			return pmanager.updatePolicyApi(apiId, p);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
+	/**
+	 * This function checks user permission before
+	 * updating a policy in an api.
+	 * Policy must be a IP Access Control.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link IPAccessControl}
+	 * @return instance of updated {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
+	public Policy updatePolicyApi(String apiId, IPAccessControl p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
 			return pmanager.updatePolicyApi(apiId, p);
@@ -566,6 +610,29 @@ public class SecurityManager {
 	
 	/**
 	 * This function checks user permission before
+	 * adding an IP Access Control policy to a resource in an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String 
+	 * @param resourceId : String
+	 * @param p : instance of {@link IPAccessControl}
+	 * @return instance of {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
+	public Resource addPolicyResourceApi(String apiId, String resourceId, IPAccessControl p) 
+			throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			return pmanager.addPolicyResourceApi(apiId, resourceId, p);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
+	/**
+	 * This function checks user permission before
 	 * updating a policy of a resource in an api.
 	 * Policy must be a Spike Arrest.
 	 * It throws a security exception, if user has not the right
@@ -602,6 +669,30 @@ public class SecurityManager {
 	 * @throws CustomAuthenticationException
 	 */
 	public Resource updatePolicyResourceApi(String apiId, String resourceId, Quota p) 
+			throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			return pmanager.updatePolicyResourceApi(apiId, resourceId, p);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
+	/**
+	 * This function checks user permission before
+	 * updating a policy of a resource in an api.
+	 * Policy must be an IP Access Control.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link IPAccessControl}
+	 * @return instance of updated {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
+	public Resource updatePolicyResourceApi(String apiId, String resourceId, IPAccessControl p) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){

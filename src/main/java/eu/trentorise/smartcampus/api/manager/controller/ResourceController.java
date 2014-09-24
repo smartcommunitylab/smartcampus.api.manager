@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
@@ -212,6 +213,41 @@ public class ResourceController {
 	}
 	
 	/**
+	 * Rest that add an ip access control policy to resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link IPAccessControl}
+	 * @return instance of {@link ResultData} with resource data having the new policy, 
+	 * 			status (OK, BAD REQUEST, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in saving policy to resource api."
+	 * 			or if exception is thrown, the error message.
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/add/policy/ip", 
+			method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+			@RequestBody IPAccessControl p){
+		logger.info("Add policy to resource.");
+		try {
+			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
+			if (r != null) {
+				return new ResultData(r, HttpServletResponse.SC_OK,
+						"Resource policy added successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"Problem in saving policy to resource api.");
+			}
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
+					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+	}
+	
+	/**
 	 * Rest that update a policy to resource api.
 	 * NOT NEEDED
 	 * 
@@ -289,6 +325,41 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody Quota p){
+		logger.info("Update policy to resource.");
+		try{
+			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
+			if (r != null) {
+				return new ResultData(r, HttpServletResponse.SC_OK,
+						"Resource policy updated successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"Problem in updating policy to resource api.");
+			}
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
+					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+	}
+	
+	/**
+	 * Rest that update an ip access control policy to resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link IPAccessControl}
+	 * @return instance of {@link ResultData} with resource data having the updated policy, 
+	 * 			status (OK, BAD REQUEST, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"Resource data found" if it is ok, otherwise "Problem in updating policy to resource api."
+	 * 			or if exception is thrown, the error message.
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/update/policy/ip", 
+			method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+			@RequestBody IPAccessControl p){
 		logger.info("Update policy to resource.");
 		try{
 			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
