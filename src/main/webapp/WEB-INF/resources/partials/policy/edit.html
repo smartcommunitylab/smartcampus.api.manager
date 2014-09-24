@@ -18,6 +18,7 @@
 				<select ng-disabled="policy.id != null" id="policytype" class="form-control" ng-model="policy.type" required>
 					<option>Spike Arrest</option>
 					<option>Quota</option>
+					<option>IP Access Control</option>
 				</select>
 			</div>
 			
@@ -89,6 +90,80 @@
             			<hr/>
             		</div>
 
+			</div>
+			
+			<!-- IP Access Control data -->
+			<div ng-show="policy.type === 'IP Access Control'">
+				<div class="form-group">
+					<label for="iprule">Rule</label> 
+					<select id="iprule" class="form-control" ng-model="policy.rule">
+						<option>ALLOW</option>
+						<option>DENY</option>
+					</select>
+				</div>
+				
+				<div class="form-group">
+						<label for="status">White List: Allow IP Address</label>
+            			<div class="row">
+                			<div class="col-lg-5">	
+                    			<input id="mask" class="form-control" ng-model="ipw.mask" 
+                    			placeholder="Mask, integer value" integer/>
+               				</div>
+                			<div class="col-lg-5">
+                    			<input type="text" class="form-control" id="ip" 
+                    				placeholder="IP Address, ex. 10.10.10.20" ng-model="ipw.ip">
+                			</div>
+               				 <div class="col-lg-2">
+                    			<button type="button" class="btn btn-info btn-block" 
+                    				ng-click="addWIp()">
+                    				Add
+                    			</button>
+                			</div>
+            			</div>
+           				<hr/>
+            			<div ng-repeat="n in policy.whiteList" class="row">
+               			 	<div class="col-lg-5">{{n.mask}}</div>
+                			<div class="col-lg-5">{{n.ip}}</div>
+                			<div class="col-lg-2">
+                    			<button type="button" class="pull-right btn btn-danger btn-xs" 
+                    				ng-click="deleteWIp(n.mask,n.ip)"><i class="fa fa-trash-o"></i>
+                    			</button>
+               				</div>
+            			</div>
+            			<hr/>
+            		</div>
+				
+				
+				<div class="form-group">
+						<label for="status">Black List: Not allowed IP Address</label>
+            			<div class="row">
+                			<div class="col-lg-5">	
+                    			<input id="mask" class="form-control" ng-model="ipb.mask" 
+                    			placeholder="Mask, integer value" integer/>
+               				</div>
+                			<div class="col-lg-5">
+                    			<input type="text" class="form-control" id="ip" 
+                    				placeholder="IP Address, ex. 10.10.10.20" ng-model="ipb.ip">
+                			</div>
+               				 <div class="col-lg-2">
+                    			<button type="button" class="btn btn-info btn-block" 
+                    				ng-click="addBIp()">
+                    				Add
+                    			</button>
+                			</div>
+            			</div>
+           				<hr/>
+            			<div ng-repeat="n in policy.blackList" class="row">
+               			 	<div class="col-lg-5">{{n.mask}}</div>
+                			<div class="col-lg-5">{{n.ip}}</div>
+                			<div class="col-lg-2">
+                    			<button type="button" class="pull-right btn btn-danger btn-xs" 
+                    				ng-click="deleteBIp(n.mask,n.ip)"><i class="fa fa-trash-o"></i>
+                    			</button>
+               				</div>
+            			</div>
+            			<hr/>
+            		</div>
 			</div>
 			
 			<!-- Quota and spike arrest -->

@@ -211,6 +211,15 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   			
   		});
   		
+  		$scope.retrieveStatusPermission = function(name){
+  			console.log('Retrieve status permission');
+  			for(var i=0;i<$scope.list.length;i++){
+  				if(name===$scope.list.apiName){
+  					return $scope.list.apiStatus;
+  				}
+  			}
+  		};
+  		
   		$scope.addApiData = function(apiId, apiStatus){
   			console.log('addApiData');
   			console.log('param status: '+apiStatus);
@@ -341,6 +350,99 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 			console.log($scope.policy.qstatus);
 		};
 		
+		$scope.addWIp = function(){
+			if(!$scope.policy.whiteList){
+				$scope.policy.whiteList = [];
+			}
+			var mask = $scope.ipw.mask;
+			var ip = $scope.ipw.ip;
+			var obj = {mask: mask , ip: ip};
+			
+			var index = -1;
+			for(var i=0;i<$scope.policy.whiteList.length;i++){
+				if($scope.policy.whiteList[i].mask === mask &&
+						$scope.policy.whiteList[i].ip === ip){
+					index = i;
+				}
+			}
+			
+			console.log('index: '+index);
+			if(index > -1){
+				console.log('Ip Already in');
+			}
+			else{
+				$scope.policy.whiteList.push(obj);
+			}
+			console.log($scope.policy.whiteList);
+		};
+		
+		$scope.deleteWIp = function(mask,ip){
+			
+			var index = -1;
+			for(var i=0;i<$scope.policy.whiteList.length;i++){
+				if($scope.policy.whiteList[i].mask === mask &&
+						$scope.policy.whiteList[i].ip === ip){
+					index = i;
+				}
+			}
+			
+			console.log('index: '+index);
+			if(index > -1){
+				$scope.policy.whiteList.splice(index,1);
+			}
+			else{
+				console.log('Ip Not found');
+			}
+			console.log($scope.policy.whiteList);
+		};
+		
+		$scope.addBIp = function(){
+			if(!$scope.policy.blackList){
+				$scope.policy.blackList = [];
+			}
+			var mask = $scope.ipb.mask;
+			var ip = $scope.ipb.ip;
+			var obj = {mask: mask , ip: ip};
+			
+			var index = -1;
+			for(var i=0;i<$scope.policy.blackList.length;i++){
+				if($scope.policy.blackList[i].mask === mask &&
+						$scope.policy.blackList[i].ip === ip){
+					index = i;
+				}
+			}
+			
+			console.log('index: '+index);
+			if(index > -1){
+				console.log('Ip Already in db');
+			}
+			else{
+				$scope.policy.blackList.push(obj);
+			}
+			console.log($scope.policy.blackList);
+		};
+		
+		$scope.deleteBIp = function(mask,ip){
+			
+			var index = -1;
+			for(var i=0;i<$scope.policy.blackList.length;i++){
+				if($scope.policy.blackList[i].mask === mask &&
+						$scope.policy.blackList[i].ip === ip){
+					index = i;
+				}
+			}
+			
+			console.log('index: '+index);
+			if(index > -1){
+				$scope.policy.blackList.splice(index,1);
+			}
+			else{
+				console.log('Ip Not found');
+			}
+			console.log($scope.policy.blackList);
+		};
+		
+		
 		$scope.submit = function () {
 			var type = $scope.policy.type;
 			if(type=='Spike Arrest'){
@@ -362,6 +464,22 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 				$scope.policy.qstatus = qstatus;*/
 				
 				Policy.createQuota({
+					apiId: apiid
+					},$scope.policy,
+					function (data) {
+						if(data.status == 200){
+							$location.path('api/'+apiid);
+						}else{
+							$scope.errorMsg = data.message;
+						}
+				});
+			}
+			else if(type=='IP Access Control'){
+				console.log('Add');
+				console.log($scope.policy.whiteList);
+				console.log($scope.policy.blackList);
+				
+				Policy.createIP({
 					apiId: apiid
 					},$scope.policy,
 					function (data) {
@@ -585,6 +703,98 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeo
 				console.log($scope.policy.qstatus);
 			};
 			
+			$scope.addWIp = function(){
+				if(!$scope.policy.whiteList){
+					$scope.policy.whiteList = [];
+				}
+				var mask = $scope.ipw.mask;
+				var ip = $scope.ipw.ip;
+				var obj = {mask: mask , ip: ip};
+				
+				var index = -1;
+				for(var i=0;i<$scope.policy.whiteList.length;i++){
+					if($scope.policy.whiteList[i].mask === mask &&
+							$scope.policy.whiteList[i].ip === ip){
+						index = i;
+					}
+				}
+				
+				console.log('index: '+index);
+				if(index > -1){
+					console.log('Ip Already in');
+				}
+				else{
+					$scope.policy.whiteList.push(obj);
+				}
+				console.log($scope.policy.whiteList);
+			};
+			
+			$scope.deleteWIp = function(mask,ip){
+				
+				var index = -1;
+				for(var i=0;i<$scope.policy.whiteList.length;i++){
+					if($scope.policy.whiteList[i].mask === mask &&
+							$scope.policy.whiteList[i].ip === ip){
+						index = i;
+					}
+				}
+				
+				console.log('index: '+index);
+				if(index > -1){
+					$scope.policy.whiteList.splice(index,1);
+				}
+				else{
+					console.log('Ip Not found');
+				}
+				console.log($scope.policy.whiteList);
+			};
+			
+			$scope.addBIp = function(){
+				if(!$scope.policy.blackList){
+					$scope.policy.blackList = [];
+				}
+				var mask = $scope.ipb.mask;
+				var ip = $scope.ipb.ip;
+				var obj = {mask: mask , ip: ip};
+				
+				var index = -1;
+				for(var i=0;i<$scope.policy.blackList.length;i++){
+					if($scope.policy.blackList[i].mask === mask &&
+							$scope.policy.blackList[i].ip === ip){
+						index = i;
+					}
+				}
+				
+				console.log('index: '+index);
+				if(index > -1){
+					console.log('Ip Already in db');
+				}
+				else{
+					$scope.policy.blackList.push(obj);
+				}
+				console.log($scope.policy.blackList);
+			};
+			
+			$scope.deleteBIp = function(mask,ip){
+				
+				var index = -1;
+				for(var i=0;i<$scope.policy.blackList.length;i++){
+					if($scope.policy.blackList[i].mask === mask &&
+							$scope.policy.blackList[i].ip === ip){
+						index = i;
+					}
+				}
+				
+				console.log('index: '+index);
+				if(index > -1){
+					$scope.policy.blackList.splice(index,1);
+				}
+				else{
+					console.log('Ip Not found');
+				}
+				console.log($scope.policy.blackList);
+			};
+			
 			$scope.submit = function () {
 				var type = $scope.policy.type;
 				if(type=='Spike Arrest'){
@@ -616,6 +826,22 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeo
 		            			$scope.errorMsg = data.message;
 		            			$scope.msg = null;
 		            		}
+					});
+				}
+				else if(type=='IP Access Control'){
+					console.log('Add');
+					console.log($scope.policy.whiteList);
+					console.log($scope.policy.blackList);
+					
+					Policy.updateIP({
+						apiId: apiid
+						},$scope.policy,
+						function (data) {
+							if(data.status == 200){
+								$location.path('api/'+apiid);
+							}else{
+								$scope.errorMsg = data.message;
+							}
 					});
 				}
 				
@@ -763,8 +989,8 @@ app.controller('showResourceCtrl', ['$scope', '$location', '$route', '$routePara
 ]);
 
 app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams', '$timeout', 
-                                          'Resource',
-            function($scope, $location, $routeParams, $timeout, Resource){
+                                          'Resource', 'Api',
+            function($scope, $location, $routeParams, $timeout, Resource, Api){
 				$scope.title = 'Edit Resource';			
 				var apiid = $routeParams.apiId;
 				var rid = $routeParams.resourceId;
@@ -777,6 +1003,132 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 				}, function(data){
 					$scope.policy = data.data;
 				});
+				
+				Api.getStatusList({
+					apiId : apiid
+				}, function(data){
+					$scope.apiStatus = data.data;
+				});
+				
+				$scope.addStatus = function(){
+					if(!$scope.policy.qstatus){
+						$scope.policy.qstatus = [];
+					}
+					var name = $scope.s.name;
+					var quota = $scope.s.value;
+					var obj = {name: name , quota: quota};
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.qstatus.length;i++){
+						if($scope.policy.qstatus[i].name === name){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						if($scope.policy.qstatus[index].quota!==quota){
+							$scope.policy.qstatus.splice(index,1);
+							$scope.policy.qstatus.push(obj);
+						}else console.log('Already in db');
+					}
+					else{
+						$scope.policy.qstatus.push(obj);
+					}
+					console.log($scope.policy.qstatus);
+				};
+				
+				$scope.addWIp = function(){
+					if(!$scope.policy.whiteList){
+						$scope.policy.whiteList = [];
+					}
+					var mask = $scope.ipw.mask;
+					var ip = $scope.ipw.ip;
+					var obj = {mask: mask , ip: ip};
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.whiteList.length;i++){
+						if($scope.policy.whiteList[i].mask === mask &&
+								$scope.policy.whiteList[i].ip === ip){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						console.log('Ip Already in');
+					}
+					else{
+						$scope.policy.whiteList.push(obj);
+					}
+					console.log($scope.policy.whiteList);
+				};
+				
+				$scope.deleteWIp = function(mask,ip){
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.whiteList.length;i++){
+						if($scope.policy.whiteList[i].mask === mask &&
+								$scope.policy.whiteList[i].ip === ip){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						$scope.policy.whiteList.splice(index,1);
+					}
+					else{
+						console.log('Ip Not found');
+					}
+					console.log($scope.policy.whiteList);
+				};
+				
+				$scope.addBIp = function(){
+					if(!$scope.policy.blackList){
+						$scope.policy.blackList = [];
+					}
+					var mask = $scope.ipb.mask;
+					var ip = $scope.ipb.ip;
+					var obj = {mask: mask , ip: ip};
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.blackList.length;i++){
+						if($scope.policy.blackList[i].mask === mask &&
+								$scope.policy.blackList[i].ip === ip){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						console.log('Ip Already in db');
+					}
+					else{
+						$scope.policy.blackList.push(obj);
+					}
+					console.log($scope.policy.blackList);
+				};
+				
+				$scope.deleteBIp = function(mask,ip){
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.blackList.length;i++){
+						if($scope.policy.blackList[i].mask === mask &&
+								$scope.policy.blackList[i].ip === ip){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						$scope.policy.blackList.splice(index,1);
+					}
+					else{
+						console.log('Ip Not found');
+					}
+					console.log($scope.policy.blackList);
+				};
 		        
 		        $scope.submit = function () {
 		        	var type = $scope.policy.type;
@@ -813,6 +1165,23 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 								}
 						});
 					}
+					else if(type=='IP Access Control'){
+						console.log('Add');
+						console.log($scope.policy.whiteList);
+						console.log($scope.policy.blackList);
+						
+						Resource.updateIPResource({
+							apiId: apiid,
+							resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+								}
+						});
+					}
 		        };
 		        
 		        $scope.remove = function () {
@@ -832,12 +1201,138 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 			}
 ]);
 
-app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 'Resource',
-            function($scope, $location, $routeParams, Resource){
+app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 'Resource', 'Api',
+            function($scope, $location, $routeParams, Resource, Api){
             	$scope.title = 'New Resource';
             	
             	var apiid = $routeParams.apiId;
             	var rid = $routeParams.resourceId;
+            	
+            	Api.getStatusList({
+    				apiId : apiid
+    			}, function(data){
+    				$scope.apiStatus = data.data;
+    			});
+            	
+            	$scope.addStatus = function(){
+					if(!$scope.policy.qstatus){
+						$scope.policy.qstatus = [];
+					}
+					var name = $scope.s.name;
+					var quota = $scope.s.value;
+					var obj = {name: name , quota: quota};
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.qstatus.length;i++){
+						if($scope.policy.qstatus[i].name === name){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						if($scope.policy.qstatus[index].quota!==quota){
+							$scope.policy.qstatus.splice(index,1);
+							$scope.policy.qstatus.push(obj);
+						}else console.log('Already in db');
+					}
+					else{
+						$scope.policy.qstatus.push(obj);
+					}
+					console.log($scope.policy.qstatus);
+				};
+				
+				$scope.addWIp = function(){
+					if(!$scope.policy.whiteList){
+						$scope.policy.whiteList = [];
+					}
+					var mask = $scope.ipw.mask;
+					var ip = $scope.ipw.ip;
+					var obj = {mask: mask , ip: ip};
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.whiteList.length;i++){
+						if($scope.policy.whiteList[i].mask === mask &&
+								$scope.policy.whiteList[i].ip === ip){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						console.log('Ip Already in');
+					}
+					else{
+						$scope.policy.whiteList.push(obj);
+					}
+					console.log($scope.policy.whiteList);
+				};
+				
+				$scope.deleteWIp = function(mask,ip){
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.whiteList.length;i++){
+						if($scope.policy.whiteList[i].mask === mask &&
+								$scope.policy.whiteList[i].ip === ip){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						$scope.policy.whiteList.splice(index,1);
+					}
+					else{
+						console.log('Ip Not found');
+					}
+					console.log($scope.policy.whiteList);
+				};
+				
+				$scope.addBIp = function(){
+					if(!$scope.policy.blackList){
+						$scope.policy.blackList = [];
+					}
+					var mask = $scope.ipb.mask;
+					var ip = $scope.ipb.ip;
+					var obj = {mask: mask , ip: ip};
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.blackList.length;i++){
+						if($scope.policy.blackList[i].mask === mask &&
+								$scope.policy.blackList[i].ip === ip){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						console.log('Ip Already in db');
+					}
+					else{
+						$scope.policy.blackList.push(obj);
+					}
+					console.log($scope.policy.blackList);
+				};
+				
+				$scope.deleteBIp = function(mask,ip){
+					
+					var index = -1;
+					for(var i=0;i<$scope.policy.blackList.length;i++){
+						if($scope.policy.blackList[i].mask === mask &&
+								$scope.policy.blackList[i].ip === ip){
+							index = i;
+						}
+					}
+					
+					console.log('index: '+index);
+					if(index > -1){
+						$scope.policy.blackList.splice(index,1);
+					}
+					else{
+						console.log('Ip Not found');
+					}
+					console.log($scope.policy.blackList);
+				};
         		
         		$scope.submit = function () {
         			var type = $scope.policy.type;
@@ -867,6 +1362,23 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
         						}
         				});
         			}
+        			else if(type=='IP Access Control'){
+						console.log('Add');
+						console.log($scope.policy.whiteList);
+						console.log($scope.policy.blackList);
+						
+						Resource.createIPResource({
+							apiId: apiid,
+							resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+								}
+						});
+					}
         		};
 			}
 ]);

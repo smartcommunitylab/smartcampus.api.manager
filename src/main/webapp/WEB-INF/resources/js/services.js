@@ -83,6 +83,10 @@ services.factory('Resource', ['$resource',
 				method: 'POST',
 				url: 'api/:apiId/resource/:resourceId/add/policy/quota'
             },
+            createIPResource:{
+				method: 'POST',
+				url: 'api/:apiId/resource/:resourceId/add/policy/ip'
+            },
             updateSpikeArrestResource:{
 				method: 'PUT',
 				url: 'api/:apiId/resource/:resourceId/update/policy/spikeArrest'
@@ -90,6 +94,10 @@ services.factory('Resource', ['$resource',
             updateQuotaResource:{
 				method: 'PUT',
 				url: 'api/:apiId/resource/:resourceId/update/policy/quota'
+            },
+            updateIPResource:{
+				method: 'PUT',
+				url: 'api/:apiId/resource/:resourceId/add/policy/ip'
             },
 			removePolicy:{
             	method: 'DELETE',
@@ -145,6 +153,10 @@ services.factory('Policy', ['$resource',
 				method: 'POST',
 				url: 'api/add/:apiId/policy/quota'
 			},
+			createIP:{
+				method: 'POST',
+				url: 'api/add/:apiId/policy/ip'
+			},
 			updateSpikeArrest:{
 				method: 'POST',
 				url: 'api/update/:apiId/policy/spikeArrest'
@@ -152,6 +164,10 @@ services.factory('Policy', ['$resource',
 			updateQuota:{
 				method: 'POST',
 				url: 'api/update/:apiId/policy/quota'
+			},
+			updateIP:{
+				method: 'POST',
+				url: 'api/update/:apiId/policy/ip'
 			},
 			remove:{
 				method: 'DELETE',
