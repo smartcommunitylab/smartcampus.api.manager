@@ -16,6 +16,8 @@
 package eu.trentorise.smartcampus.api.scenario;
 
 import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -30,9 +32,11 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
+import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SourceAddress;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
@@ -237,9 +241,35 @@ public class ScenarioApi {
 		//spike arrest parameter
 		p3.setRate("10pm");
 		
+		log.info("Add policy 4.. IP Access Control");
+		IPAccessControl p4 = new IPAccessControl();
+		p4.setId("p4-ip-access");
+		p4.setName("IP p4");
+		p4.setNotes("Notes about policy 4");
+		p4.setType("IP Access Control");
+		p4.setRule("ALLOW");
+		
+		List<SourceAddress> whiteList = new ArrayList<SourceAddress>();
+		SourceAddress w1 = new SourceAddress();
+		w1.setMask(32);
+		w1.setIp("10.10.10.20");
+		whiteList.add(w1);
+		p4.setWhiteList(whiteList);
+		
+		List<SourceAddress> blackList = new ArrayList<SourceAddress>();
+		SourceAddress b1 = new SourceAddress();
+		b1.setMask(32);
+		b1.setIp("10.10.10.10");
+		blackList.add(b1);
+		p4.setBlackList(blackList);
+		
 		log.info("Policy 1: {}", apiManager.addPolicyApi("api1", p1));
+		
 		Policy policy = apiManager.addPolicyApi("api1", p3);
 		assertNotNull("Error in finding by api",policy);
+		
+		Policy ip = apiManager.addPolicyApi("api1", p4);
+		assertNotNull("Error in finding by api",ip);
 		
 		log.info("Add policy api test terminated.");
 	}
