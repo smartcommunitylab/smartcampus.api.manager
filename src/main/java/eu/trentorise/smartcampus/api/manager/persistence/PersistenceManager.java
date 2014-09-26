@@ -1951,6 +1951,38 @@ public class PersistenceManager {
 			}
 			
 			//TODO check ip address
+			//check same ip with different mask
+			
+			//retrieve element of whitelist
+			for(int i=0;i<wlist.size();i++){
+				String ip = wlist.get(i).getIp();
+				int mask = wlist.get(i).getMask();
+				
+				for(int j=0;j<blist.size();j++){
+					String bip = blist.get(j).getIp();
+					if(ip.equalsIgnoreCase(bip)){
+						int bmask = blist.get(j).getMask();
+						//same ip check mask
+						if(bmask<mask){
+							throw new IllegalArgumentException("IP Conflict, for ip "+ip+
+									" with mask "+mask+" in whitelist and  ip "+bip+
+									" with mask "+bmask+" in blacklist. You allow ip access for one that" +
+									" is alredy denied.");
+						}
+						
+						//take into account rule
+						/*if(((IPAccessControl) p).getRule().
+								equalsIgnoreCase(Constants.POLICY_IP_RULE.ALLOW.toString())){
+							//mask with lesser number must stay in ALLOW, ow error
+							
+						}else{//DENY
+							//mask with lesser number must stay in ALLOW, ow error
+						}*/
+						
+						//Blacklist a subset of whitelist
+					}
+				}
+			}
 			
 		}
 				
