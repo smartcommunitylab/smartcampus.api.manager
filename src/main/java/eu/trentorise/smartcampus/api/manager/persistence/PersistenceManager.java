@@ -34,13 +34,16 @@ import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
+import eu.trentorise.smartcampus.api.manager.model.QuotaStatus;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SourceAddress;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
 import eu.trentorise.smartcampus.api.manager.repository.ResourceRepository;
+import eu.trentorise.smartcampus.api.manager.util.IPAddressValidator;
 import eu.trentorise.smartcampus.api.manager.util.UriValidation;
 import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
@@ -704,10 +707,6 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
 		}
 		
-		/*UrlValidator urlValidator = new UrlValidator();
-		if(!urlValidator.isValid(r.getUri())){
-			throw new IllegalArgumentException("Uri is not valid.");
-		}*/
 		UriValidation uriValidator = new UriValidation();
 		if(!uriValidator.validate(r.getUri())){
 			throw new IllegalArgumentException("Uri is not valid.");
@@ -964,6 +963,14 @@ public class PersistenceManager {
 		// get api and add policy
 		Api api = getApiById(apiId);
 		
+		//check quota status
+		if(p instanceof Quota){
+			if(!checkPolicyQuotaStatusData(api.getStatus(), ((Quota) p).getQstatus())){
+				throw new IllegalArgumentException("Policy Quota status is not valid. Inserted status " +
+						"is not one of api status");
+			}
+		}
+		
 		List<Policy> plist = (List<Policy>) api.getPolicy();
 		if (plist != null) {
 			plist.add(p);
@@ -1012,6 +1019,14 @@ public class PersistenceManager {
 		
 		//retrieve api searching by id
 		Api api = getApiById(apiId);
+		
+		//check quota status
+		if(p instanceof Quota){
+			if(!checkPolicyQuotaStatusData(api.getStatus(), ((Quota) p).getQstatus())){
+				throw new IllegalArgumentException("Policy Quota status is not valid. Updated status " +
+						"is not one of api status");
+			}
+		}
 		
 		//retrieve policy
 		List<Policy> plist = (List<Policy>) api.getPolicy();
@@ -1902,7 +1917,40 @@ public class PersistenceManager {
 				}
 			}
 			
-			//check ip address
+			//validator of ip address
+			IPAddressValidator ipValidator = new IPAddressValidator();
+			//whitelist ip
+			List<SourceAddress> wlist = ((IPAccessControl)p).getWhiteList();
+			for(int i=0;i<wlist.size();i++){
+				String ip = wlist.get(i).getIp();
+				int mask = wlist.get(i).getMask();
+				//check mask
+				if(mask!=32 && mask!=24 && mask!=16 && mask!=8 && mask!=0){
+					throw new IllegalArgumentException("In whitelist, mask possible value are: " +
+							"0, 8, 16, 24, 32.");
+				}
+				if(!ipValidator.validate(ip)){
+					throw new IllegalArgumentException("In whitelist, Ip "+ip+" with mask "+
+							wlist.get(i).getMask()+" is not valid.");
+				}
+			}
+			//blacklist ip
+			List<SourceAddress> blist = ((IPAccessControl)p).getBlackList();
+			for(int i=0;i<blist.size();i++){
+				String ip = blist.get(i).getIp();
+				int mask = blist.get(i).getMask();
+				//check mask
+				if(mask!=32 && mask!=24 && mask!=16 && mask!=8 && mask!=0){
+					throw new IllegalArgumentException("In blacklist, mask possible value are: " +
+							"0, 8, 16, 24, 32.");
+				}
+				if(!ipValidator.validate(ip)){
+					throw new IllegalArgumentException("In blacklist, Ip "+ip+" with mask "+
+							blist.get(i).getMask()+" is not valid.");
+				}
+			}
+			
+			//TODO check ip address
 			
 		}
 				
@@ -2012,6 +2060,24 @@ public class PersistenceManager {
 				}
 			}
 		}
+		return false;
+	}
+	
+	/**
+	 * Check that status added to policy quota is one of the api status.
+	 * 
+	 * @param lapistatus : list of {@link Status}
+	 * @param lqstatus : list of {@link QuotaStatus}
+	 * @return true if status is one of api status, otherwise false.
+	 */
+	public boolean checkPolicyQuotaStatusData(List<Status> lapistatus, List<QuotaStatus> lqstatus){
+		for(int i=0;i<lqstatus.size();i++){
+			String qstatusName = lqstatus.get(i).getName();
+			
+			if(lapistatus.contains(qstatusName))
+				return true;
+		}
+		
 		return false;
 	}
 
