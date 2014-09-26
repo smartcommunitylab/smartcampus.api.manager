@@ -72,7 +72,8 @@
                 			</div>
                				 <div class="col-lg-2">
                     			<button type="button" class="btn btn-info btn-block" 
-                    				ng-click="addStatus()">
+                    				ng-click="addStatus()" ng-disabled="s.name===undefined 
+                    					|| s.value===undefined">
                     				Add
                     			</button>
                 			</div>
@@ -105,17 +106,30 @@
 				<div class="form-group">
 						<label for="status">White List: Allow IP Address</label>
             			<div class="row">
-                			<div class="col-lg-5">	
-                    			<input id="mask" class="form-control" ng-model="ipw.mask" 
-                    			placeholder="Mask, integer value" integer/>
+                			<div class="col-lg-5">
+                				<div class="col-lg-3">
+                					Mask: 
+                				</div>
+                				<div class="col-lg-8">
+                    				<select id="mask" class="form-control" ng-model="ipw.mask" integer>
+                    					<option>0</option>
+										<option>8</option>
+										<option>16</option>
+										<option>24</option>
+										<option>32</option>
+									</select>
+								</div>
                				</div>
                 			<div class="col-lg-5">
+                			 
                     			<input type="text" class="form-control" id="ip" 
                     				placeholder="IP Address, ex. 10.10.10.20" ng-model="ipw.ip">
                 			</div>
                				 <div class="col-lg-2">
+               				  
                     			<button type="button" class="btn btn-info btn-block" 
-                    				ng-click="addWIp()">
+                    				ng-click="addWIp()" ng-disabled="ipw.mask===undefined 
+                    					|| ipw.ip===undefined">
                     				Add
                     			</button>
                 			</div>
@@ -138,8 +152,18 @@
 						<label for="status">Black List: Not allowed IP Address</label>
             			<div class="row">
                 			<div class="col-lg-5">	
-                    			<input id="mask" class="form-control" ng-model="ipb.mask" 
-                    			placeholder="Mask, integer value" integer/>
+                    			<div class="col-lg-3">
+                					Mask: 
+                				</div>
+                				<div class="col-lg-8">
+                    				<select id="mask" class="form-control" ng-model="ipb.mask" integer>
+                    					<option>0</option>
+										<option>8</option>
+										<option>16</option>
+										<option>24</option>
+										<option>32</option>
+									</select>
+								</div>
                				</div>
                 			<div class="col-lg-5">
                     			<input type="text" class="form-control" id="ip" 
@@ -147,7 +171,8 @@
                 			</div>
                				 <div class="col-lg-2">
                     			<button type="button" class="btn btn-info btn-block" 
-                    				ng-click="addBIp()">
+                    				ng-click="addBIp()" ng-disabled="ipb.mask===undefined 
+                    					|| ipb.ip===undefined">
                     				Add
                     			</button>
                 			</div>
