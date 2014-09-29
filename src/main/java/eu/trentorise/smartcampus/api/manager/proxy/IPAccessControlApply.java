@@ -19,11 +19,16 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.NodeList;
 
 import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.SourceAddress;
 
+/**
+ * Class that apply policy IP Access Control.
+ * 
+ * @author Giulia Canobbio
+ *
+ */
 public class IPAccessControlApply implements PolicyDatastoreApply{
 	/**
 	 * Instance of {@link Logger)
