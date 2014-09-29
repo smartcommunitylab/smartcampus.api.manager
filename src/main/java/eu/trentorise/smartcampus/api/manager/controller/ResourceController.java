@@ -34,7 +34,7 @@ import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
-import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
+import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
 /**
  * Controller that retrieves Resource data.

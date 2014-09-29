@@ -29,7 +29,7 @@ import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.proxy.PolicyDecisionPoint;
 import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
-import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
+import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
 /**
  * Handles requests for the application home page.

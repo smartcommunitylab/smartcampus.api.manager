@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package eu.trentorise.smartcampus.api.security;
+package eu.trentorise.smartcampus.api.manager.security;
 
 import javax.security.sasl.AuthenticationException;
 

@@ -29,7 +29,7 @@ import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
-import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
+import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
 /**
  * Class that checks current user and owner of Api or App

@@ -43,9 +43,9 @@ import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
 import eu.trentorise.smartcampus.api.manager.repository.ResourceRepository;
+import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 import eu.trentorise.smartcampus.api.manager.util.IPAddressValidator;
 import eu.trentorise.smartcampus.api.manager.util.UriValidation;
-import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Persistence manager for all entity.
