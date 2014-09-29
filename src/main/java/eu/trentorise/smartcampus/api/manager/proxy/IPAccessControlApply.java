@@ -124,7 +124,7 @@ public class IPAccessControlApply implements PolicyDatastoreApply{
 	 * @param appIp : String
 	 * @return string value of ip
 	 */
-	String[] appIpMask(String appIp){
+	private String[] appIpMask(String appIp){
 	
 		String contrary=new StringBuilder(appIp).reverse().toString();
 		int endIndex = appIp.length()-contrary.indexOf('.')-1;	
@@ -137,24 +137,6 @@ public class IPAccessControlApply implements PolicyDatastoreApply{
 		return ip;
 	}
 
-	void blackWhiteLists(NodeList nodeList, List<String> List){
-		 for (int i = 0; i < nodeList.getLength(); i++) {
-         	
-         	String appIp =nodeList.item(i).getFirstChild().getNodeValue();	
-         	String appIp_24=appIpMask(appIp)[0]; 
-     		String appIp_16=appIpMask(appIp)[1]; 
-     		
-         	if(nodeList.item(i).getAttributes().getNamedItem("mask").getNodeValue().equals("32"))
-         	    List.add(nodeList.item(i).getFirstChild().getNodeValue()); 
-         	else if(nodeList.item(i).getAttributes().getNamedItem("mask").getNodeValue().equals("24")){
-         		List.add(appIp_24); 
-         	}else 
-         		List.add(appIp_16); 
-         }
-		
-	}
-	
-	//TODO
 	
 
 }

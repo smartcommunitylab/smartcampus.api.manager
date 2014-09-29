@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +36,6 @@ import eu.trentorise.smartcampus.api.manager.model.ObjectInMemory;
 import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
-import eu.trentorise.smartcampus.api.security.CustomAuthenticationException;
 
 /**
  * Handle request on api.
@@ -241,6 +239,12 @@ public class RequestHandler{
 					}
 
 				}
+			}
+			// check if ipaddress exists in headers
+			String ipAddress = request.getHeader("X-FORWARDED-FOR");
+			if (ipAddress == null) {
+				ipAddress = request.getRemoteAddr();
+				map.put("X-FORWARDED-FOR", ipAddress);
 			}
 
 			// check that appId retrieved from request is correct

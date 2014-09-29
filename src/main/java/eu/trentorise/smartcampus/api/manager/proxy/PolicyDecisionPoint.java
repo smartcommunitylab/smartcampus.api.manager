@@ -18,6 +18,7 @@ package eu.trentorise.smartcampus.api.manager.proxy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
+import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
@@ -130,8 +132,7 @@ public class PolicyDecisionPoint {
 		String apiId = obj.getApiId();
 		String resourceId = obj.getResourceId();
 		String appId = obj.getAppId();
-		//TODO check headers map
-		//headers = obj.getHeaders();
+		Map<String, String> headers = obj.getHeaders();
 
 		List<Policy> pToApply = policiesList(apiId, resourceId);
 		
@@ -154,6 +155,12 @@ public class PolicyDecisionPoint {
 							(SpikeArrest)pToApply.get(i));
 					saa.setPManager(proxyManager);
 					batch.add(saa);
+				}
+				else if(pToApply.get(i) instanceof IPAccessControl){
+					String appIp = headers.get("X-FORWARDED-FOR");
+					IPAccessControlApply ipa = new IPAccessControlApply(apiId, resourceId, 
+							(IPAccessControl)pToApply.get(i), appIp);
+					batch.add(ipa);
 				}
 			}
 			batch.apply();
