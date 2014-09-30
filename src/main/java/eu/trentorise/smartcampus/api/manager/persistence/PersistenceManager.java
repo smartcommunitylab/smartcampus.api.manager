@@ -969,15 +969,6 @@ public class PersistenceManager {
 		// get api and add policy
 		Api api = getApiById(apiId);
 		
-		//check quota status
-		if(p instanceof Quota && (((Quota) p).getQstatus()!=null && 
-				((Quota) p).getQstatus().size()>0)){
-			if(!checkPolicyQuotaStatusData(api.getStatus(), ((Quota) p).getQstatus())){
-				throw new IllegalArgumentException("Policy Quota status is not valid. " +
-						"Inserted status is not one of api status");
-			}
-		}
-		
 		List<Policy> plist = (List<Policy>) api.getPolicy();
 		if (plist != null) {
 			plist.add(p);
@@ -1026,14 +1017,6 @@ public class PersistenceManager {
 		
 		//retrieve api searching by id
 		Api api = getApiById(apiId);
-		
-		//check quota status
-		if(p instanceof Quota){
-			if(!checkPolicyQuotaStatusData(api.getStatus(), ((Quota) p).getQstatus())){
-				throw new IllegalArgumentException("Policy Quota status is not valid. Updated status " +
-						"is not one of api status");
-			}
-		}
 		
 		//retrieve policy
 		List<Policy> plist = (List<Policy>) api.getPolicy();
@@ -2109,7 +2092,7 @@ public class PersistenceManager {
 	 * @param lqstatus : list of {@link QuotaStatus}
 	 * @return true if status is one of api status, otherwise false.
 	 */
-	public boolean checkPolicyQuotaStatusData(List<Status> lapistatus, List<QuotaStatus> lqstatus){
+	/*public boolean checkPolicyQuotaStatusData(List<Status> lapistatus, List<QuotaStatus> lqstatus){
 		for(int i=0;i<lqstatus.size();i++){
 			String qstatusName = lqstatus.get(i).getName();
 			
@@ -2118,6 +2101,6 @@ public class PersistenceManager {
 		}
 		
 		return false;
-	}
+	}*/
 
 }
