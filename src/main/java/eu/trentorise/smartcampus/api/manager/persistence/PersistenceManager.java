@@ -161,6 +161,10 @@ public class PersistenceManager {
 	 * @return new instance of {@link Api}
 	 */
 	public Api addApi(Api api){
+		//owner id
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		api.setOwnerId(user);
+		
 		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
 			throw new IllegalArgumentException("Api name, base path and owner id are required.");
 		}
@@ -190,10 +194,6 @@ public class PersistenceManager {
 		//date
 		Date today = new Date();
 		api.setCreationTime(today.toString());
-		
-		//owner id
-		String user = SecurityContextHolder.getContext().getAuthentication().getName();
-		api.setOwnerId(user);
 		
 		return apirepository.save(api);
 	}
@@ -964,7 +964,7 @@ public class PersistenceManager {
 		Api api = getApiById(apiId);
 		
 		//check quota status
-		if(p instanceof Quota){
+		if(p instanceof Quota && (((Quota) p).getQstatus()!=null && ((Quota) p).getQstatus().size()>0)){
 			if(!checkPolicyQuotaStatusData(api.getStatus(), ((Quota) p).getQstatus())){
 				throw new IllegalArgumentException("Policy Quota status is not valid. Inserted status " +
 						"is not one of api status");
