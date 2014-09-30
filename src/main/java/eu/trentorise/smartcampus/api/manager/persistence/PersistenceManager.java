@@ -171,6 +171,12 @@ public class PersistenceManager {
 		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
 			api.setId(generateId());
 		}
+		//basepath pattern
+		UriValidation uriValidator = new UriValidation();
+		if(!uriValidator.validate(api.getBasePath())){
+			throw new IllegalArgumentException("Basepath is not valid. Ex: /sample/v1");
+		}
+		
 		//check name
 		Api savedApiName = getApiByName(api.getName());
 		
