@@ -8,7 +8,7 @@
                 <div class="panel-body">
 					<ul class="list-unstyled">
 						<li><b>Name:</b> <span>{{app.name}}</span></li>
-						<li><b>Key:</b> <span>{{app.key}}</span></li>
+						<!-- <li><b>Key:</b> <span>{{app.key}}</span></li>  -->
                     </ul>
                     
                      <tabset >
@@ -20,16 +20,20 @@
                     		<div ng-include="'partials/app/_permission.html'"></div>
                     	</tab>
                     	
+                    	<tab heading="Key">
+                    		<div ng-include="'partials/app/_key.html'"></div>
+                    	</tab>
+                    	
                     </tabset>
                     
                 </div>
             </div>
         </div>
-        
+        <!-- 
         <a href="edit/app/{{app.id}}">
     		<button class="btn btn-default">Edit</button>
     	</a>
-        
+         -->
         <button class="btn btn-danger" ng-confirm-click="remove()"
         	ng-confirm-message="Are you sure that you want to delete this app?"
     		ng-confirm-condition="true">

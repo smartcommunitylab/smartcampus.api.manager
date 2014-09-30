@@ -268,7 +268,27 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   						}
   				});
   		};
+  		
+  		//key tab
+  		$scope.keygen = function(){
+  			
+  			App.update({
+  			}, $scope.app, 
+  			
+  			function(data) {
+				if (data.status == 200) {
+					$scope.app=data.data;
+					$scope.msg = data.message;
+					$scope.errorMsg = null;
+				} else {
+					$scope.errorMsg = data.message;
+					$scope.msg = null;
+				}
+  			});
+  		};
+  		
 	}
+	
 ]);
 
 app.controller('addApiCtrl', ['$scope', '$location', 'Api',
@@ -882,7 +902,7 @@ app.controller('editAppCtrl', ['$scope', '$location', '$routeParams', '$timeout'
 			
 			$scope.submit = function () {
 				App.update({
-	            	apiId: apiid
+	            	//apiId: apiid
 	            }, $scope.app,
  	                function(data) {
 						if (data.status == 200) {
