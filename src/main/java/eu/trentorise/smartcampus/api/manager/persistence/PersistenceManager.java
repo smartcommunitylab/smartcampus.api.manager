@@ -964,10 +964,11 @@ public class PersistenceManager {
 		Api api = getApiById(apiId);
 		
 		//check quota status
-		if(p instanceof Quota && (((Quota) p).getQstatus()!=null && ((Quota) p).getQstatus().size()>0)){
+		if(p instanceof Quota && (((Quota) p).getQstatus()!=null && 
+				((Quota) p).getQstatus().size()>0)){
 			if(!checkPolicyQuotaStatusData(api.getStatus(), ((Quota) p).getQstatus())){
-				throw new IllegalArgumentException("Policy Quota status is not valid. Inserted status " +
-						"is not one of api status");
+				throw new IllegalArgumentException("Policy Quota status is not valid. " +
+						"Inserted status is not one of api status");
 			}
 		}
 		

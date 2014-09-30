@@ -146,6 +146,19 @@ public class SecurityManager {
 	public Policy addPolicyApi(String apiId, SpikeArrest p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
+			
+			//check if a policy spike arrest is already in
+			List<Policy> listp = api.getPolicy();
+			if(listp!=null && listp.size()>0){
+				for(int i=0;i<listp.size();i++){
+					if(listp.get(i) instanceof SpikeArrest){
+						throw new IllegalArgumentException(
+								"A policy spike arrest already exists, " +
+								"you cannot add a new one before deleting it.");
+					}
+				}
+			}
+			
 			return pmanager.addPolicyApi(apiId, p);
 		}
 		else {
@@ -176,7 +189,8 @@ public class SecurityManager {
 				for(int i=0;i<listp.size();i++){
 					if(listp.get(i) instanceof Quota){
 						throw new IllegalArgumentException(
-								"A policy quota already exists, you cannot add a new one before deleting it.");
+								"A policy quota already exists, " +
+								"you cannot add a new one before deleting it.");
 					}
 				}
 			}
@@ -203,6 +217,19 @@ public class SecurityManager {
 	public Policy addPolicyApi(String apiId, IPAccessControl p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
+			
+			//check if a policy ip access control is already in
+			List<Policy> listp = api.getPolicy();
+			if(listp!=null && listp.size()>0){
+				for(int i=0;i<listp.size();i++){
+					if(listp.get(i) instanceof IPAccessControl){
+						throw new IllegalArgumentException(
+								"A policy ip access control already exists, " +
+								"you cannot add a new one before deleting it.");
+					}
+				}
+			}
+			
 			return pmanager.addPolicyApi(apiId, p);
 		}
 		else {
@@ -566,6 +593,18 @@ public class SecurityManager {
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
+			
+			//check if a policy spike arrest is already in
+			List<Policy> listp = api.getPolicy();
+			if(listp!=null && listp.size()>0){
+				for(int i=0;i<listp.size();i++){
+					if(listp.get(i) instanceof SpikeArrest){
+						throw new IllegalArgumentException(
+								"A policy spike arrest already exists, " +
+								"you cannot add a new one before deleting it.");
+					}
+				}
+			}
 			return pmanager.addPolicyResourceApi(apiId, resourceId, p);
 		}
 		else {
@@ -597,7 +636,8 @@ public class SecurityManager {
 				for(int i=0;i<listp.size();i++){
 					if(listp.get(i) instanceof Quota){
 						throw new IllegalArgumentException(
-								"A policy quota already exists, you cannot add a new one before deleting it.");
+								"A policy quota already exists, you cannot add a new one " +
+								"before deleting it.");
 					}
 				}
 			}
@@ -624,6 +664,19 @@ public class SecurityManager {
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
+			
+			//check if a policy ip access control is already in
+			List<Policy> listp = api.getPolicy();
+			if(listp!=null && listp.size()>0){
+				for(int i=0;i<listp.size();i++){
+					if(listp.get(i) instanceof IPAccessControl){
+						throw new IllegalArgumentException(
+								"A policy ip access control already exists, " +
+								"you cannot add a new one before deleting it.");
+					}
+				}
+			}
+			
 			return pmanager.addPolicyResourceApi(apiId, resourceId, p);
 		}
 		else {
