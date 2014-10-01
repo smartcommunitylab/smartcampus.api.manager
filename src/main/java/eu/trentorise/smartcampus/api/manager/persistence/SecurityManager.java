@@ -15,6 +15,8 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.persistence;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +110,17 @@ public class SecurityManager {
 	 */
 	public List<Api> getApiByOwnerId() throws CustomAuthenticationException{
 		String ownerId = security.getUsername();
-		return pmanager.getApiByOwnerId(ownerId);
+		List<Api> apilist = pmanager.getApiByOwnerId(ownerId);
+		//order
+		Collections.sort(apilist, new Comparator<Api>() {
+
+			@Override
+			public int compare(Api o1, Api o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		
+		return apilist;
 	}
 	
 	/**

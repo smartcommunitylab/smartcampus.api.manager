@@ -16,6 +16,8 @@
 package eu.trentorise.smartcampus.api.manager.persistence;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -293,7 +295,16 @@ public class PersistenceManager {
 	 * @return list of {@link App} instances
 	 */
 	public List<App> listApp(String user){
-		return apprepository.findByOwnerId(user);//findAll();
+		List<App> applist = apprepository.findByOwnerId(user);
+		// order
+		Collections.sort(applist, new Comparator<App>() {
+
+			@Override
+			public int compare(App o1, App o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		return applist;
 	}
 	
 	/**
