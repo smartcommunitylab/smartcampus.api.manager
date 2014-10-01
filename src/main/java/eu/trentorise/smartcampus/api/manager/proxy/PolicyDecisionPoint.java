@@ -33,6 +33,7 @@ import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
+import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
@@ -161,6 +162,12 @@ public class PolicyDecisionPoint {
 					IPAccessControlApply ipa = new IPAccessControlApply(apiId, resourceId, 
 							(IPAccessControl)pToApply.get(i), appIp);
 					batch.add(ipa);
+				}
+				else if(pToApply.get(i) instanceof VerifyAppKey){
+					VerifyAppKeyApply vapp = new VerifyAppKeyApply(apiId, resourceId,appId,
+							(VerifyAppKey)pToApply.get(i));
+					vapp.setManager(manager);
+					batch.add(vapp);
 				}
 			}
 			batch.apply();

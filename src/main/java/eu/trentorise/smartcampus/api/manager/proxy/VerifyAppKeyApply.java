@@ -15,6 +15,16 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.proxy;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.trentorise.smartcampus.api.manager.model.ApiData;
+import eu.trentorise.smartcampus.api.manager.model.App;
+import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
+import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+
 /**
  * Class that apply policy Verify App Key.
  * 
@@ -22,11 +32,118 @@ package eu.trentorise.smartcampus.api.manager.proxy;
  *
  */
 public class VerifyAppKeyApply implements PolicyDatastoreApply{
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VerifyAppKeyApply.class);
+	/**
+	 * Instance of {@link PersistenceManager}.
+	 */
+	private PersistenceManager manager;
+	
+	//global variables
+	private String apiId;
+	private String resourceId;
+	private String appId;
+	private VerifyAppKey p;
+	
+	/**
+	 * Constructor with parameters.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param appId : String
+	 * @param p : instance of {@link VerifyAppKey}
+	 */
+	public VerifyAppKeyApply(String apiId, String resourceId, String appId, VerifyAppKey p){
+		this.apiId = apiId;
+		this.resourceId = resourceId;
+		this.appId = appId;
+		this.p = p;
+	}
+	
+	/**
+	 * 
+	 * @param pmanager : instance of {@link PersistenceManager}
+	 */
+	public void setManager(PersistenceManager manager) {
+		this.manager = manager;
+	}
 
 	@Override
 	public void apply() {
 		// TODO Auto-generated method stub
 		
+		decision();
+		
+	}
+	
+	/**
+	 * Function that decide if an access to resource or api with can be granted or not 
+	 * by applying verify app key policy.
+	 */
+	private void decision(){
+		
+		boolean decision;
+		
+		// check that resource id cannot be null
+		if (apiId == null && resourceId == null) {
+			throw new IllegalArgumentException("Api or Resource id cannot be null.");
+		}
+		else{
+			decision=verifyAppKeyDecision(apiId, resourceId, appId, p);
+		}
+		
+		if(decision)
+			logger.info("Verify App Key policy --> GRANT ");
+		else
+			logger.info("Verify App Key policy --> DENY ");
+	}
+	
+	/**
+	 * Applies policy verify app key.
+	 * First it checks if parameter anonymous is true or false.
+	 * If true then anonymous access is granted and return true, otherwise
+	 * it checks that api id and/or resource id are in list of Api in App data.
+	 * If they are found then return true, else false.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param appId : String
+	 * @param p : instance of {@link VerifyAppKey}
+	 * @return boolean value, true if access is granted otherwise false
+	 */
+	private boolean verifyAppKeyDecision(String apiId, String resourceId, String appId, VerifyAppKey p){
+		// check if anonymous is true or false
+		boolean anonymous = p.isAnonymous();
+		// if true => grant
+		if(anonymous){
+			return true;
+		}
+		else{
+			// retrieve App data
+			App app = manager.getAppById(appId);
+			// check that apiId or resource id is in App api list
+			List<ApiData> lapi = app.getApis();
+			if (lapi != null && lapi.size() > 0) {
+				for (int i = 0; i < lapi.size(); i++) {
+					// if App api list contains api id => grant && resourceId is not checked
+					if (lapi.get(i).getApiId().equalsIgnoreCase(apiId)) {
+						return true;
+					}
+					
+					//TODO:  if App api list contains resource id => grant
+					/*if(lapi.get(i).getApiId().equalsIgnoreCase(apiId) &&
+							lapi.get(i).getResourceId().equalsIgnoreCase(resourceId)){
+						return true;
+					}
+					*/
+					
+				}
+			}
+		}
+
+		return false;
 	}
 
 }
