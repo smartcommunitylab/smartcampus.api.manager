@@ -595,7 +595,8 @@ public class SecurityManager {
 		if(security.canUserDoThisOperation(api.getOwnerId())){
 			
 			//check if a policy spike arrest is already in
-			List<Policy> listp = api.getPolicy();
+			Resource r = pmanager.getResourceApiByResourceId(apiId, resourceId);
+			List<Policy> listp = r.getPolicy();
 			if(listp!=null && listp.size()>0){
 				for(int i=0;i<listp.size();i++){
 					if(listp.get(i) instanceof SpikeArrest){
@@ -631,7 +632,8 @@ public class SecurityManager {
 		if(security.canUserDoThisOperation(api.getOwnerId())){
 			
 			//check if a policy quota is already in
-			List<Policy> listp = api.getPolicy();
+			Resource r = pmanager.getResourceApiByResourceId(apiId, resourceId);
+			List<Policy> listp = r.getPolicy();
 			if(listp!=null && listp.size()>0){
 				for(int i=0;i<listp.size();i++){
 					if(listp.get(i) instanceof Quota){
@@ -666,7 +668,8 @@ public class SecurityManager {
 		if(security.canUserDoThisOperation(api.getOwnerId())){
 			
 			//check if a policy ip access control is already in
-			List<Policy> listp = api.getPolicy();
+			Resource r = pmanager.getResourceApiByResourceId(apiId, resourceId);
+			List<Policy> listp = r.getPolicy();
 			if(listp!=null && listp.size()>0){
 				for(int i=0;i<listp.size();i++){
 					if(listp.get(i) instanceof IPAccessControl){
