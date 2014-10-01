@@ -510,6 +510,18 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 						}
 				});
 			}
+			else if(type=='Verify App Key'){
+				Policy.createVAppKey({
+					apiId: apiid
+					},$scope.policy,
+					function (data) {
+						if(data.status == 200){
+							$location.path('api/'+apiid);
+						}else{
+							$scope.errorMsg = data.message;
+						}
+				});
+			}
 		};
      }
 ]);
@@ -864,6 +876,18 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeo
 							}
 					});
 				}
+				else if(type=='Verify App Key'){
+					Policy.updateVAppKey({
+						apiId: apiid
+						},$scope.policy,
+						function (data) {
+							if(data.status == 200){
+								$location.path('api/'+apiid);
+							}else{
+								$scope.errorMsg = data.message;
+							}
+					});
+				}
 				
 	        };
 			
@@ -1202,6 +1226,19 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 								}
 						});
 					}
+					else if(type=='Verify App Key'){
+						Resource.updateVAppKeyResource({
+							apiId: apiid,
+							resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+								}
+						});
+					}
 		        };
 		        
 		        $scope.remove = function () {
@@ -1388,6 +1425,19 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 						console.log($scope.policy.blackList);
 						
 						Resource.createIPResource({
+							apiId: apiid,
+							resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+								}
+						});
+					}
+        			else if(type=='Verify App Key'){
+						Resource.createVAppKeyResource({
 							apiId: apiid,
 							resourceId: rid
 							},$scope.policy,

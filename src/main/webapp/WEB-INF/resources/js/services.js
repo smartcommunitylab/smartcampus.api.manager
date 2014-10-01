@@ -9,7 +9,7 @@ services.factory('Api', ['$resource',
                 url: 'api/add'
 			},
 			update:{
-				method: 'POST',
+				method: 'PUT',
                 url: 'api/update'
 			},
 			remove:{
@@ -60,7 +60,7 @@ services.factory('Resource', ['$resource',
 				url: 'api/add/:apiId/resource'
 			},
 			update:{
-				method: 'POST',
+				method: 'PUT',
 				url: 'api/update/:apiId/resource'
             },
             remove:{
@@ -87,6 +87,10 @@ services.factory('Resource', ['$resource',
 				method: 'POST',
 				url: 'api/:apiId/resource/:resourceId/add/policy/ip'
             },
+            createVAppKeyResource:{
+				method: 'POST',
+				url: 'api/:apiId/resource/:resourceId/add/policy/appkey'
+            },
             updateSpikeArrestResource:{
 				method: 'PUT',
 				url: 'api/:apiId/resource/:resourceId/update/policy/spikeArrest'
@@ -97,7 +101,11 @@ services.factory('Resource', ['$resource',
             },
             updateIPResource:{
 				method: 'PUT',
-				url: 'api/:apiId/resource/:resourceId/add/policy/ip'
+				url: 'api/:apiId/resource/:resourceId/update/policy/ip'
+            },
+            updateVAppKeyResource:{
+				method: 'PUT',
+				url: 'api/:apiId/resource/:resourceId/update/policy/appkey'
             },
 			removePolicy:{
             	method: 'DELETE',
@@ -157,17 +165,25 @@ services.factory('Policy', ['$resource',
 				method: 'POST',
 				url: 'api/add/:apiId/policy/ip'
 			},
-			updateSpikeArrest:{
+			createVAppKey:{
 				method: 'POST',
+				url: 'api/add/:apiId/policy/appkey'
+			},
+			updateSpikeArrest:{
+				method: 'PUT',
 				url: 'api/update/:apiId/policy/spikeArrest'
 			},
 			updateQuota:{
-				method: 'POST',
+				method: 'PUT',
 				url: 'api/update/:apiId/policy/quota'
 			},
 			updateIP:{
-				method: 'POST',
+				method: 'PUT',
 				url: 'api/update/:apiId/policy/ip'
+			},
+			updateVAppKey:{
+				method: 'PUT',
+				url: 'api/update/:apiId/policy/appkey'
 			},
 			remove:{
 				method: 'DELETE',
