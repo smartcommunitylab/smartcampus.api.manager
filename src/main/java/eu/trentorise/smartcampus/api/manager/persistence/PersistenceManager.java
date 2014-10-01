@@ -34,11 +34,11 @@ import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
-import eu.trentorise.smartcampus.api.manager.model.QuotaStatus;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SourceAddress;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
+import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
@@ -1675,6 +1675,35 @@ public class PersistenceManager {
 				for (int i = 0; i < plist.size(); i++) {
 					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
 						p = (IPAccessControl) plist.get(i);
+					}
+				}
+			}
+			return p;
+		} catch (java.lang.NullPointerException n) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieve Verify app key policy resource by policyId.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param policyId : String
+	 * @return instance of {@link VerifyAppKey} resource
+	 */
+	public Policy getVerifyAppKeyPolicyResourceApiByResourceId(String apiId, String resourceId, 
+			String policyId){
+		Resource resource = getResourceApiByResourceId(apiId, resourceId);
+
+		try {
+			List<Policy> plist = resource.getPolicy();
+			VerifyAppKey p = null;
+
+			if (plist != null) {
+				for (int i = 0; i < plist.size(); i++) {
+					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
+						p = (VerifyAppKey) plist.get(i);
 					}
 				}
 			}

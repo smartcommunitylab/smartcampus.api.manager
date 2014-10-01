@@ -29,7 +29,6 @@ import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.proxy.PolicyDecisionPoint;
 import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
-import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
 /**
  * Handles requests for the application home page.
@@ -64,6 +63,7 @@ public class HomeController {
 	/**
 	 * Try Request Handler class, with a string api url.
 	 * POST method.
+	 * NOT NEEDED
 	 * 
 	 * @param url : String 
 	 * @param request : instance of {@link HttpServletRequest}
@@ -127,26 +127,5 @@ public class HomeController {
 		
 
 	}
-	
-	/**
-	 * 
-	 * @param appId
-	 * @param request
-	 * @return
-	 */
-	/*@RequestMapping(method = RequestMethod.POST)
-	@ResponseBody
-	public ResultData requestHandl(@RequestBody String appId, HttpServletRequest request){
-		logger.info("proxy request handler");
-
-		RequestHandlerObject r = requestHandler.handleRequestWithAppId(appId, request);
-		pdp.applyPoliciesBatch(r);
-		
-		if(r.getApiId()==null && r.getResourceId()==null){
-			return new ResultData(r, HttpServletResponse.SC_NOT_FOUND, "not found");
-		}else 
-			return new ResultData(r, HttpServletResponse.SC_OK, "ok");
-
-	}*/
 	
 }

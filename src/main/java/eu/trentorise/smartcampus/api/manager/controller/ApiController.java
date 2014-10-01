@@ -37,6 +37,7 @@ import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
+import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
@@ -68,7 +69,7 @@ public class ApiController {
 	private SecurityManager pmanager;
 	
 	/**
-	 * Rest service that retrieving api data by id.
+	 * Rest service that retrieves api data by id.
 	 * 
 	 * @param apiId : String
 	 * @return instance of {@link ResultData} with api data having the given id, 
@@ -97,7 +98,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that retrieving api name.
+	 * Rest service that retrieves api name.
 	 * 
 	 * @param apiId : String
 	 * @return instance of {@link ResultData} with api name having the given id, 
@@ -126,7 +127,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that retrieving api data having a specific owner id.
+	 * Rest service that retrieves api data having a specific owner id.
 	 * 
 	 * @param ownerId : String, path variable
 	 * @return instance of {@link ResultData} with api data having the given owner id, 
@@ -155,7 +156,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that adding an Api to database.
+	 * Rest service that adds an Api to database.
 	 * 
 	 * @param api : instance of {@link Api}
 	 * @return instance of {@link ResultData} with api data, status (OK, INTERNAL SERVER ERROR or
@@ -181,7 +182,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating a resource api.
+	 * Rest service that adds a resource api.
 	 * 
 	 * @param apiId : String
 	 * @param resource : instance of {@link Resource}
@@ -210,7 +211,8 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating an app api.
+	 * Rest service that adds an app api.
+	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
 	 * @param app : instance of {@link App}
@@ -237,7 +239,7 @@ public class ApiController {
 	}*/
 	
 	/**
-	 * Rest service that updating a policy api.
+	 * Rest service that adds a policy api.
 	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
@@ -266,7 +268,7 @@ public class ApiController {
 	}
 	*/
 	/**
-	 * Rest service that updating a policy api.
+	 * Rest service that adds a policy api.
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link SpikeArrest}
@@ -296,7 +298,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating a policy api.
+	 * Rest service that adds a policy api.
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Quota}
@@ -326,7 +328,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating a policy api.
+	 * Rest service that adds a policy api.
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link IPAccessControl}
@@ -356,7 +358,38 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating an Api in database.
+	 * Rest service that adds a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link VerifyAppKey}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/appkey", method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody VerifyAppKey p) {
+		logger.info("Update api policy.");
+		try{
+			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updates an Api in database.
 	 * PROBLEM TODO: when trying to update Api data, and list policy is populated, it
 	 * returns a bad request error.
 	 * 
@@ -366,7 +399,7 @@ public class ApiController {
 	 * 			"Updated Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/update", method = RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value = "/update", method = RequestMethod.PUT, consumes="application/json")
 	@ResponseBody
 	public ResultData update(@RequestBody Api api) {
 		logger.info("Update api to db.");
@@ -386,7 +419,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating a resource api.
+	 * Rest service that updates a resource api.
 	 * Policy parameter must be set to null, because this method
 	 * does not update policy, only uri and verb parameters, otherwise
 	 * it returns BAD REQUEST. 
@@ -398,7 +431,7 @@ public class ApiController {
 	 * 			"Updated resource Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */ 
-	@RequestMapping(value = "/update/{apiId}/resource", method = RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value = "/update/{apiId}/resource", method = RequestMethod.PUT, consumes="application/json")
 	@ResponseBody
 	public ResultData updateResource(@PathVariable String apiId, @RequestBody Resource resource) {
 		logger.info("Update api resource.");
@@ -418,7 +451,8 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating an app api.
+	 * Rest service that updates an app api.
+	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
 	 * @param app : instance of {@link App}
@@ -445,7 +479,7 @@ public class ApiController {
 	}*/
 	
 	/**
-	 * Rest service that updating a policy api.
+	 * Rest service that updates a policy api.
 	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
@@ -474,7 +508,7 @@ public class ApiController {
 	}
 	*/
 	/**
-	 * Rest service that updating a policy api.
+	 * Rest service that updates a policy api.
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link SpikeArrest}
@@ -483,7 +517,7 @@ public class ApiController {
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/update/{apiId}/policy/spikeArrest", method = RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value = "/update/{apiId}/policy/spikeArrest", method = RequestMethod.PUT, consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
 		logger.info("Update api policy spike arrest.");
@@ -504,7 +538,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating a policy api.
+	 * Rest service that updates a policy api.
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link Quota}
@@ -513,7 +547,7 @@ public class ApiController {
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/update/{apiId}/policy/quota", method = RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value = "/update/{apiId}/policy/quota", method = RequestMethod.PUT, consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Quota p) {
 		logger.info("Update api policy quota.");
@@ -534,7 +568,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that updating a policy api.
+	 * Rest service that updates a policy api.
 	 * 
 	 * @param apiId : String
 	 * @param p : instance of {@link IPAccessControl}
@@ -543,7 +577,7 @@ public class ApiController {
 	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
 	 * 			If exception is threw then it is the exception message.
 	 */
-	@RequestMapping(value = "/update/{apiId}/policy/ip", method = RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value = "/update/{apiId}/policy/ip", method = RequestMethod.PUT, consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody IPAccessControl p) {
 		logger.info("Update api policy quota.");
@@ -564,7 +598,38 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that deleting an Api from database by passing its id.
+	 * Rest service that updates a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link VerifyAppKey}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/appkey", method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody VerifyAppKey p) {
+		logger.info("Update api policy quota.");
+		try{
+			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that deletes an Api from database by passing its id.
 	 * 
 	 * @param apiId : String
 	 * @return instance of {@link ResultData} with status (OK or FORBIDDEN) and a string message : 
@@ -584,7 +649,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that deleting a Resource Api from database by passing its id.
+	 * Rest service that deletes a Resource Api from database by passing its id.
 	 * 
 	 * @param apiId : String
 	 * @param resourceId : String
@@ -604,7 +669,8 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that deleting an App Api from database by passing its id.
+	 * Rest service that deletes an App Api from database by passing its id.
+	 * NOT NEEDED
 	 * 
 	 * @param apiId : String
 	 * @param appId : String
@@ -621,7 +687,7 @@ public class ApiController {
 	}*/
 	
 	/**
-	 * Rest service that deleting an Policy Api from database by passing its id.
+	 * Rest service that deletes an Policy Api from database by passing its id.
 	 * 
 	 * @param apiId : String
 	 * @param policyId : String
@@ -642,7 +708,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that retrieving an api status searching by status name.
+	 * Rest service that retrieves an api status searching by status name.
 	 * 
 	 * @param apiId : String
 	 * @param statusName : String
@@ -674,7 +740,7 @@ public class ApiController {
 	}
 	
 	/**
-	 * Rest service that retrieving list of api status..
+	 * Rest service that retrieves list of api status.
 	 * 
 	 * @param apiId : String
 	 * @return instance of {@link ResultData} with data, status (OK, NOT FOUND or FORBIDDEN) and 
