@@ -17,8 +17,20 @@ package eu.trentorise.smartcampus.api.manager.security;
 
 import javax.security.sasl.AuthenticationException;
 
+/**
+ * Exception that system throw when a user access
+ * protected data.
+ * 
+ * @author smartcampus
+ *
+ */
 public class CustomAuthenticationException extends AuthenticationException{
 	
+	/**
+	 * Default serial version
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public CustomAuthenticationException(final String message){
 		super(message);
 	}
