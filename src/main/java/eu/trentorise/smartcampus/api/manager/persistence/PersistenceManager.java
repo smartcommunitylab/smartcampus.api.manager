@@ -1951,32 +1951,42 @@ public class PersistenceManager {
 			IPAddressValidator ipValidator = new IPAddressValidator();
 			//whitelist ip
 			List<SourceAddress> wlist = ((IPAccessControl)p).getWhiteList();
-			for(int i=0;i<wlist.size();i++){
-				String ip = wlist.get(i).getIp();
-				int mask = wlist.get(i).getMask();
-				//check mask
-				if(mask!=32 && mask!=24 && mask!=16 && mask!=8 && mask!=0){
-					throw new IllegalArgumentException("In whitelist, mask possible value are: " +
-							"0, 8, 16, 24, 32.");
-				}
-				if(!ipValidator.validate(ip)){
-					throw new IllegalArgumentException("In whitelist, Ip "+ip+" with mask "+
-							wlist.get(i).getMask()+" is not valid.");
+			if(wlist!=null && wlist.size()>0){
+				for (int i = 0; i < wlist.size(); i++) {
+					String ip = wlist.get(i).getIp();
+					int mask = wlist.get(i).getMask();
+					// check mask
+					if (mask != 32 && mask != 24 && mask != 16 && mask != 8
+							&& mask != 0) {
+						throw new IllegalArgumentException(
+								"In whitelist, mask possible value are: "
+										+ "0, 8, 16, 24, 32.");
+					}
+					if (!ipValidator.validate(ip)) {
+						throw new IllegalArgumentException("In whitelist, Ip "
+								+ ip + " with mask " + wlist.get(i).getMask()
+								+ " is not valid.");
+					}
 				}
 			}
 			//blacklist ip
 			List<SourceAddress> blist = ((IPAccessControl)p).getBlackList();
-			for(int i=0;i<blist.size();i++){
-				String ip = blist.get(i).getIp();
-				int mask = blist.get(i).getMask();
-				//check mask
-				if(mask!=32 && mask!=24 && mask!=16 && mask!=8 && mask!=0){
-					throw new IllegalArgumentException("In blacklist, mask possible value are: " +
-							"0, 8, 16, 24, 32.");
-				}
-				if(!ipValidator.validate(ip)){
-					throw new IllegalArgumentException("In blacklist, Ip "+ip+" with mask "+
-							blist.get(i).getMask()+" is not valid.");
+			if(blist!=null && blist.size()>0){
+				for (int i = 0; i < blist.size(); i++) {
+					String ip = blist.get(i).getIp();
+					int mask = blist.get(i).getMask();
+					// check mask
+					if (mask != 32 && mask != 24 && mask != 16 && mask != 8
+							&& mask != 0) {
+						throw new IllegalArgumentException(
+								"In blacklist, mask possible value are: "
+										+ "0, 8, 16, 24, 32.");
+					}
+					if (!ipValidator.validate(ip)) {
+						throw new IllegalArgumentException("In blacklist, Ip "
+								+ ip + " with mask " + blist.get(i).getMask()
+								+ " is not valid.");
+					}
 				}
 			}
 			
@@ -1984,32 +1994,44 @@ public class PersistenceManager {
 			//check same ip with different mask
 			
 			//retrieve element of whitelist
-			for(int i=0;i<wlist.size();i++){
-				String ip = wlist.get(i).getIp();
-				int mask = wlist.get(i).getMask();
-				
-				for(int j=0;j<blist.size();j++){
-					String bip = blist.get(j).getIp();
-					if(ip.equalsIgnoreCase(bip)){
-						int bmask = blist.get(j).getMask();
-						//same ip check mask
-						if(bmask<mask){
-							throw new IllegalArgumentException("IP Conflict, for ip "+ip+
-									" with mask "+mask+" in whitelist and  ip "+bip+
-									" with mask "+bmask+" in blacklist. You allow ip access for one that" +
-									" is alredy denied.");
+			if(wlist!=null && blist!=null){
+				for (int i = 0; i < wlist.size(); i++) {
+					String ip = wlist.get(i).getIp();
+					int mask = wlist.get(i).getMask();
+
+					for (int j = 0; j < blist.size(); j++) {
+						String bip = blist.get(j).getIp();
+						if (ip.equalsIgnoreCase(bip)) {
+							int bmask = blist.get(j).getMask();
+							// same ip check mask
+							if (bmask < mask) {
+								throw new IllegalArgumentException(
+										"IP Conflict, for ip "
+												+ ip
+												+ " with mask "
+												+ mask
+												+ " in whitelist and  ip "
+												+ bip
+												+ " with mask "
+												+ bmask
+												+ " in blacklist. You allow ip access for one that"
+												+ " is alredy denied.");
+							}
+
+							// take into account rule
+							/*
+							 * if(((IPAccessControl) p).getRule().
+							 * equalsIgnoreCase
+							 * (Constants.POLICY_IP_RULE.ALLOW.toString())){
+							 * //mask with lesser number must stay in ALLOW, ow
+							 * error
+							 * 
+							 * }else{//DENY //mask with lesser number must stay
+							 * in ALLOW, ow error }
+							 */
+
+							// Blacklist a subset of whitelist
 						}
-						
-						//take into account rule
-						/*if(((IPAccessControl) p).getRule().
-								equalsIgnoreCase(Constants.POLICY_IP_RULE.ALLOW.toString())){
-							//mask with lesser number must stay in ALLOW, ow error
-							
-						}else{//DENY
-							//mask with lesser number must stay in ALLOW, ow error
-						}*/
-						
-						//Blacklist a subset of whitelist
 					}
 				}
 			}
