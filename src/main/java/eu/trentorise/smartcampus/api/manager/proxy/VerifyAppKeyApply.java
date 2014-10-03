@@ -45,6 +45,7 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 	private String apiId;
 	private String resourceId;
 	private String appId;
+	private String appSecret;
 	private VerifyAppKey p;
 	
 	/**
@@ -55,11 +56,13 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 	 * @param appId : String
 	 * @param p : instance of {@link VerifyAppKey}
 	 */
-	public VerifyAppKeyApply(String apiId, String resourceId, String appId, VerifyAppKey p){
+	public VerifyAppKeyApply(String apiId, String resourceId, String appId, VerifyAppKey p, 
+			String appSecret){
 		this.apiId = apiId;
 		this.resourceId = resourceId;
 		this.appId = appId;
 		this.p = p;
+		this.appSecret = appSecret;
 	}
 	
 	/**
@@ -81,6 +84,7 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 	/**
 	 * Function that decide if an access to resource or api with can be granted or not 
 	 * by applying verify app key policy.
+	 * It throws a security exception if access is denied.
 	 */
 	private void decision(){
 		
@@ -91,13 +95,16 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 			throw new IllegalArgumentException("Api or Resource id cannot be null.");
 		}
 		else{
-			decision=verifyAppKeyDecision(apiId, resourceId, appId, p);
+			decision=verifyAppKeyDecision(apiId, resourceId, appId, p, appSecret);
 		}
 		
 		if(decision)
 			logger.info("Verify App Key policy --> GRANT ");
-		else
+		else{
 			logger.info("Verify App Key policy --> DENY ");
+			throw new SecurityException("DENY - " +
+					" Verify App Key policy DENIES access.");
+		}
 	}
 	
 	/**
@@ -113,7 +120,8 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 	 * @param p : instance of {@link VerifyAppKey}
 	 * @return boolean value, true if access is granted otherwise false
 	 */
-	private boolean verifyAppKeyDecision(String apiId, String resourceId, String appId, VerifyAppKey p){
+	private boolean verifyAppKeyDecision(String apiId, String resourceId, String appId, 
+			VerifyAppKey p, String appKey){
 		// check if anonymous is true or false
 		boolean anonymous = p.isAnonymous();
 		// if true => grant
@@ -128,7 +136,8 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 			if (lapi != null && lapi.size() > 0) {
 				for (int i = 0; i < lapi.size(); i++) {
 					// if App api list contains api id => grant && resourceId is not checked
-					if (lapi.get(i).getApiId().equalsIgnoreCase(apiId)) {
+					if (lapi.get(i).getApiId().equalsIgnoreCase(apiId) && 
+							app.getKey().equalsIgnoreCase(appKey)) {
 						return true;
 					}
 					
