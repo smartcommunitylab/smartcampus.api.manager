@@ -84,6 +84,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	/**
 	 * Function that decide if an access to resource or api can be granted or not 
 	 * by applying spike arrest policy.
+	 * It throws a security exception if access is denied.
 	 */
 	private void decision() {
 		// Retrieve rate from policy spike arrest
@@ -111,8 +112,11 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 
 		if (decision)
 			logger.info("Spike Arrest policy --> GRANT ");
-		else
+		else{
 			logger.info("Spike Arrest policy --> DENY ");
+			throw new SecurityException("DENY - " +
+				" Spike Arrest policy DENIES access.");
+		}
 	}
 	
 	/**
@@ -253,8 +257,16 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 			lastTime.setResourceId(resourceId);
 			lastTime.setAppId(appId);
 			lastTime.setTime(currentTime);
+			//TODO
+			//init - time, for callback
+			/*lastTime.setState("init");
+			lastTime.setPrevTime(currentTime);*/
 			pmanager.addPolicySpikeArrest(lastTime);
 		} else {
+			//init - time, for callback
+			/*lastTime.setState("pending");
+			lastTime.setPrevTime(lastTime.getTime());*/
+			//current time
 			lastTime.setTime(currentTime);
 			pmanager.findAndModify(lastTime);
 		}
