@@ -68,8 +68,8 @@ public class HomeController {
 	 * @param url : String 
 	 * @param request : instance of {@link HttpServletRequest}
 	 * @return instance of {@link ResultData} with data, 
-	 * 			status (OK and BAD REQUEST) and a string message : 
-	 * 			"ok", otherwise "Error".
+	 * 			status (OK, NOT FOUND or BAD REQUEST) and a string message : 
+	 * 			"ok", "not found" otherwise "Error".
 	 */
 	/*@RequestMapping(value="/proxy", method = RequestMethod.POST)
 	@ResponseBody
@@ -98,9 +98,9 @@ public class HomeController {
 	 * 
 	 * @param request : instance of {@link HttpServletRequest}
 	 * @return instance of {@link ResultData} with data, 
-	 * 			status (OK, BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"ok", otherwise "Error".
-	 * 			If security error message is threw then exception error is returned.
+	 * 			If exception is threw then its error is returned.
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
@@ -122,6 +122,10 @@ public class HomeController {
 			logger.info("Exception: {}", i.getMessage());
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
 					i.getMessage());
+		}catch(SecurityException s){
+			logger.info("Security Exception: {}", s.getMessage());
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN,
+					s.getMessage());
 		}
 
 		
