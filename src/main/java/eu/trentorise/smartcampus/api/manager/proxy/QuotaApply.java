@@ -152,6 +152,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 	
 	/**
 	 * Checks if access to an api resource can be granted or not.
+	 * It throws a security exception if access is denied.
 	 * 
 	 * @param appId : String
 	 * @param resourceId : String
@@ -198,8 +199,11 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 		if (decision)
 			logger.info("Quota policy --> GRANT ");
-		else
+		else{
 			logger.info("Quota policy --> DENY ");
+			throw new SecurityException("DENY - " +
+				" Quota policy DENIES access.");
+		}
 	}
 	
 	/**
@@ -308,15 +312,28 @@ public class QuotaApply implements PolicyDatastoreApply{
 			q.setAppId(appId);
 			q.setTime(currentTime);
 			q.setCount(1);
+			//TODO
+			//for callback
+			/*q.setState("init");
+			q.setPrevTime(currentTime);*/
 			pmanager.addPolicyQuota(q);
 		} else {
 			if (DatesDiff(q.getTime(), currentTime) < timeLimit) {
 				int quotaCount = q.getCount() + 1;
 				q.setCount(quotaCount);
+				//for callback
+				/*q.setState("pending");
+				//same time
+				q.setPrevTime(q.getTime());*/
 				pmanager.findAndModify(q, true);
 			} else {
+				//previous time for callback
+				//q.setPrevTime(q.getTime());
+				//current time
 				q.setTime(currentTime);
 				q.setCount(1);
+				//for callback
+				//q.setState("pending");
 				pmanager.findAndModify(q,false);
 			}
 		}

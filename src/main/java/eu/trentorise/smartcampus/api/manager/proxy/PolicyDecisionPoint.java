@@ -68,56 +68,96 @@ public class PolicyDecisionPoint {
 	 * 
 	 * @return list of instance {@link Policy}
 	 */
-	private List<Policy> policiesList(String apiId, String resourceId){
-		//logger.info("policiesList() - ApiId: {}", apiId);
-		
-		List<Policy> pToApply = new ArrayList<Policy>();
-		//api policies
-		try{
-		Api api =  manager.getApiById(apiId);
-		
-		//resource policies
-		if (resourceId != null) {
-			
-			Resource r = manager.getResourceApiByResourceId(apiId,resourceId);
-			//retrieve policy resource
-			List<Policy> rplist = r.getPolicy();
-			if (rplist != null && rplist.size() > 0) {
-				pToApply.addAll(rplist);
-			}
+	private List<Policy> policiesList(String apiId, String resourceId) {
+		// logger.info("policiesList() - ApiId: {}", apiId);
 
-		}
+		List<Policy> pToApply = new ArrayList<Policy>();
+		boolean qfound = false, spfound = false, ipfound = false, vappfound = false;
+		
 		// api policies
+		try {
+			Api api = manager.getApiById(apiId);
+
+			// resource policies
+			if (resourceId != null) {
+
+				Resource r = manager.getResourceApiByResourceId(apiId,
+						resourceId);
+				// retrieve policy resource
+				List<Policy> rplist = r.getPolicy();
+				if (rplist != null && rplist.size() > 0) {
+					pToApply.addAll(rplist);
+				}
+				
+				//check which type of policy are added to list for resource
+				if (listContainsClass(pToApply,"Quota")) {
+					qfound=true;
+				}
+				if (listContainsClass(pToApply,"Spike Arrest")) {
+					spfound=true;
+				}
+				if (listContainsClass(pToApply,"IP Access Control")) {
+					ipfound=true;
+				}
+				if (listContainsClass(pToApply,"Verify App Key")) {
+					vappfound=true;
+				}
+
+			}
+			// api policies
 
 			List<Policy> policies = api.getPolicy();
 			if (policies != null && policies.size() > 0) {
-				//only one quota policy
-				if(listContainsQuota(pToApply)){
-					for(int i=0;i<policies.size();i++){
-						if(policies.get(i) instanceof Quota){
-							logger.info("Quota found. Not add to list of policies");
-						}else{
-							pToApply.add(policies.get(i));
-						}
+				for (int i = 0; i < policies.size(); i++) {
+					if (policies.get(i) instanceof Quota && !qfound) {
+						pToApply.add(policies.get(i));
+					} 
+					if (policies.get(i) instanceof SpikeArrest && !spfound) {
+						pToApply.add(policies.get(i));
 					}
-				}else{
-					logger.info("Quota not found. Add all policies to the list.");
-					pToApply.addAll(policies);
+					if (policies.get(i) instanceof IPAccessControl && !ipfound) {
+						pToApply.add(policies.get(i));
+					}
+					if (policies.get(i) instanceof VerifyAppKey && !vappfound) {
+						pToApply.add(policies.get(i));
+					}
 				}
-				
-				
+
 			}
+	
 		} catch (NullPointerException n) {
 			logger.info("No policies for this api {}", apiId);
+			//throw new IllegalArgumentException("No policies for this api "+ apiId);
 		}
-		
+
 		return pToApply;
 	}
 	
-	public boolean listContainsQuota(List<Policy> list){
+	private boolean listContainsClass(List<Policy> list, String type){
 		for(int i=0;i<list.size();i++){
-			if(list.get(i) instanceof Quota){
-				return true;
+			//Quota
+			if(type.equalsIgnoreCase("Quota")){
+				if(list.get(i) instanceof Quota){
+					return true;
+				}
+			}
+			//Spike Arrest
+			if(type.equalsIgnoreCase("Spike Arrest")){
+				if(list.get(i) instanceof SpikeArrest){
+					return true;
+				}
+			}
+			//IP Access Control
+			if(type.equalsIgnoreCase("IP Access Control")){
+				if(list.get(i) instanceof IPAccessControl){
+					return true;
+				}
+			}
+			//Verify App Key
+			if(type.equalsIgnoreCase("Verify App Key")){
+				if(list.get(i) instanceof VerifyAppKey){
+					return true;
+				}
 			}
 		}
 		return false;
@@ -164,15 +204,38 @@ public class PolicyDecisionPoint {
 					batch.add(ipa);
 				}
 				else if(pToApply.get(i) instanceof VerifyAppKey){
+					String appSecret = headers.get("appSecret");
 					VerifyAppKeyApply vapp = new VerifyAppKeyApply(apiId, resourceId,appId,
-							(VerifyAppKey)pToApply.get(i));
+							(VerifyAppKey)pToApply.get(i), appSecret);
 					vapp.setManager(manager);
 					batch.add(vapp);
 				}
 			}
-			batch.apply();
+			//apply policies
+			try{
+				batch.apply();
+			}catch(SecurityException s){
+				String msg = s.getMessage();
+				logger.info("Cause of security exception: {}",msg);
+				//roolback TODO
+				if(msg.contains("Quota")){
+					logger.info("Quota deny");
+				}
+				if(msg.contains("Spike Arrest")){
+					logger.info("Spike Arrest deny");
+				}
+				//exception
+				if(resourceId==null)
+					throw new SecurityException("You are not allowed to access this api. "
+							+s.getMessage());
+				else
+					throw new SecurityException("You are not allowed to access this resource. "
+							+s.getMessage());
+			}
+			
 		} else {
-			throw new IllegalArgumentException("There is no policies to apply");
+			logger.info("Access -> GRANT");
+			//throw new IllegalArgumentException("There is no policies to apply");
 		}
 	}
 	
@@ -198,6 +261,8 @@ public class PolicyDecisionPoint {
 			pq.setResourceId(resourceId);
 			pq.setCount(0);
 			pq.setTime(new Date());
+			//for callback
+			//pq.setState("initial");
 			proxyManager.addPolicyQuota(pq);
 		}
 	}
