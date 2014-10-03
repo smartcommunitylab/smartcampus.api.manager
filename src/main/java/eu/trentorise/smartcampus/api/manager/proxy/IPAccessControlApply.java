@@ -68,6 +68,7 @@ public class IPAccessControlApply implements PolicyDatastoreApply{
 	/**
 	 * Function that decide if an access to resource or api with a specific ip can be granted or not 
 	 * by applying ip access control policy.
+	 * It throws a security exception if access is denied.
 	 */
 	private void decision(){
 		boolean decision;
@@ -82,8 +83,11 @@ public class IPAccessControlApply implements PolicyDatastoreApply{
 		
 		if(decision)
 			logger.info("Ip Access Control policy --> GRANT ");
-		else
+		else{
 			logger.info("Ip Access Control  policy --> DENY ");
+			throw new SecurityException("DENY - " +
+				" Ip Access Control policy DENIES access.");
+		}
 	}
 	
 	/**
