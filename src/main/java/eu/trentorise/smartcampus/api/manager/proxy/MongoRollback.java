@@ -15,6 +15,13 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.proxy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.trentorise.smartcampus.api.manager.model.proxy.LastTime;
+import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
+import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
+
 /**
  * Class that implements a transaction rollback for MongoDb
  * 
@@ -22,30 +29,83 @@ package eu.trentorise.smartcampus.api.manager.proxy;
  *
  */
 public class MongoRollback {
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(MongoRollback.class);
+	/**
+	 * Instance of {@link PersistenceManagerProxy}.
+	 */
+	private PersistenceManagerProxy pmanager;
+	
+	/**
+	 * 
+	 * @param pmanager : instance of {@link PersistenceManagerProxy}
+	 */
+	public void setPmanager(PersistenceManagerProxy pmanager) {
+		this.pmanager = pmanager;
+	}
+	
 	//TODO
 	public void failurePolicy(String apiId, String resourceId, String appId, String policyType){
+		logger.info("Failure..");
 		if(policyType.equalsIgnoreCase("Spike Arrest")){
+			logger.info("F. Spike Arrest ..");
 			//find a LastTime entry with this parameter and state pending
-			//retrieve date
-			//re-insert state initial (done)
+			LastTime lt = pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId);
+			if(lt!=null){
+				//retrieve date
+				if(lt.getState().equalsIgnoreCase("pending")){
+					lt.setTime(lt.getPrevTime());
+					//re-insert state initial (done)
+					lt.setState("done");
+					pmanager.findAndModify(lt);
+				}
+			}
+			
 		}
 		if(policyType.equalsIgnoreCase("Quota")){
+			logger.info("F. Quota ..");
 			//find a PolicyQuota entry with this parameter and state pending
-			//count--
-			//retrieve date to initial 
-			//re-insert state initial (done)
+			PolicyQuota pq = pmanager.retrievePolicyQuotaByParamIds(apiId, resourceId, appId);
+			if(pq!=null){
+				if (pq.getState().equalsIgnoreCase("pending")) {
+					// count--
+					int count = pq.getCount();
+					if (pq.getCount() > 1) {
+						pq.setCount(count--);
+					}
+					// retrieve date to initial
+					pq.setTime(pq.getPrevTime());
+					// re-insert state initial (done)
+					pq.setState("done");
+					pmanager.findAndModify(pq);
+				}
+			}
 		}
 	}
 	
-	public void successfulPolicy(String apiId, String resource, String appId, String policyType){
-		if(policyType.equalsIgnoreCase("Spike Arrest")){
-			//find a LastTime entry with this parameter and state pending
-			//set state to done
+	public void successfulPolicySP(String apiId, String resourceId, String appId) {
+		LastTime lt = pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(
+				apiId, resourceId, appId);
+		if (lt != null) {
+			// re-insert state initial (done)
+			lt.setState("done");
+			pmanager.findAndModify(lt);
 		}
-		if(policyType.equalsIgnoreCase("Quota")){
-			//find a PolicyQuota entry with this parameter and state pending
-			//set state to done
+
+	}
+	
+	public void successfulPolicyQ(String apiId, String resourceId, String appId) {
+
+		PolicyQuota pq = pmanager.retrievePolicyQuotaByParamIds(apiId,
+				resourceId, appId);
+		if (pq != null) {
+			// re-insert state initial (done)
+			pq.setState("done");
+			pmanager.findAndModify(pq);
 		}
+
 	}
 
 }

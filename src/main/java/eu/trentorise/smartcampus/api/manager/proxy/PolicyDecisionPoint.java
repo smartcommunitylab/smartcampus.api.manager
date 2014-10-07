@@ -214,20 +214,29 @@ public class PolicyDecisionPoint {
 				}
 			}
 			//apply policies
+			MongoRollback rollback = new MongoRollback();
+			rollback.setPmanager(proxyManager);
 			try{
 				batch.apply();
-				
+				rollback.successfulPolicySP(apiId, resourceId, appId);
+				rollback.successfulPolicyQ(apiId, resourceId, appId);
 				
 			}catch(SecurityException s){
 				String msg = s.getMessage();
 				logger.info("Cause of security exception: {}",msg);
+				
+				rollback.failurePolicy(apiId, resourceId, appId, "Quota");
+				rollback.failurePolicy(apiId, resourceId, appId, "Spike Arrest");
+				
 				//roolback TODO
-				if(msg.contains("Quota")){
+				/*if(msg.contains("Quota")){
 					logger.info("Quota deny");
+					rollback.failurePolicy(apiId, resourceId, appId, "Quota");
 				}
 				if(msg.contains("Spike Arrest")){
 					logger.info("Spike Arrest deny");
-				}
+					rollback.failurePolicy(apiId, resourceId, appId, "Spike Arrest");
+				}*/
 				//exception
 				if(resourceId==null)
 					throw new SecurityException("You are not allowed to access this api. "
