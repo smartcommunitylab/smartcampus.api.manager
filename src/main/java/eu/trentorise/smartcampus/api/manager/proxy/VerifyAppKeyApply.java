@@ -142,15 +142,6 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 								&& app.getKey().equalsIgnoreCase(appKey)) {
 							return true;
 						}
-
-						// TODO: if App api list contains resource id => grant
-						/*
-						 * if(lapi.get(i).getApiId().equalsIgnoreCase(apiId) &&
-						 * lapi
-						 * .get(i).getResourceId().equalsIgnoreCase(resourceId
-						 * )){ return true; }
-						 */
-
 					}
 				}
 			} catch (java.lang.NullPointerException n) {
