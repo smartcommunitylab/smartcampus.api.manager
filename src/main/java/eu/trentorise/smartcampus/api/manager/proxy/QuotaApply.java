@@ -265,7 +265,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 		
 		int counter = 1;
 
-		if (DatesDiff(pq.getTime(), currentTime) < timeLimit) {
+		if (pq!=null && DatesDiff(pq.getTime(), currentTime) < timeLimit) {
 			counter = +pq.getCount();
 		}
 		
@@ -316,7 +316,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 			//for callback
 			/*q.setState("init");
 			q.setPrevTime(currentTime);*/
-			pmanager.addPolicyQuota(q);
+			pmanager.findAndModify(q, true);
 		} else {
 			if (DatesDiff(q.getTime(), currentTime) < timeLimit) {
 				int quotaCount = q.getCount() + 1;

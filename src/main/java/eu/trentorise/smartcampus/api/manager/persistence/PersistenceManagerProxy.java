@@ -61,13 +61,13 @@ public class PersistenceManagerProxy {
 	 * @param id : String, mongo id
 	 * @return instance of {@link PolicyQuota}
 	 */
-	public PolicyQuota retrievePolicyQuotaById(String id){
+	/*public PolicyQuota retrievePolicyQuotaById(String id){
 		List<PolicyQuota> pqlist = pqrep.findById(id);
 		if(pqlist!=null && pqlist.size()>0){
 			return pqlist.get(0);
 		}
 		return null;
-	}
+	}*/
 	
 	/**
 	 * Retrieves Policy Quota data searching by api and resource id.
@@ -107,6 +107,7 @@ public class PersistenceManagerProxy {
 	
 	/**
 	 * Find And Modify function.
+	 * If collection is not found, then it is created.
 	 * 
 	 * @param apiId : String
 	 * @param inTime : boolean
@@ -122,6 +123,9 @@ public class PersistenceManagerProxy {
 		query.addCriteria(criteria);
 		
 		Update update = new Update();
+		update.set("apiId", p.getApiId());
+		update.set("resourceId", p.getResourceId());
+		update.set("appId", p.getAppId());
 		update.set("time", new Date());
 		if(inTime){
 			update.inc("count",1);
@@ -131,7 +135,7 @@ public class PersistenceManagerProxy {
 		
 		//FindAndModifyOptions().returnNew(true) = newly updated document
 		PolicyQuota pq = mongoOperations.findAndModify(query, update, 
-				new FindAndModifyOptions().returnNew(true), PolicyQuota.class);
+				new FindAndModifyOptions().upsert(true).returnNew(true), PolicyQuota.class);
 		return pq;
 	}
 	
@@ -141,9 +145,9 @@ public class PersistenceManagerProxy {
 	 * @param pq : instance of {@link PolicyQuota}
 	 * @return saved instance of {@link PolicyQuota}
 	 */
-	public PolicyQuota addPolicyQuota(PolicyQuota pq){
+	/*public PolicyQuota addPolicyQuota(PolicyQuota pq){
 		return pqrep.save(pq);
-	}
+	}*/
 	
 	/**
 	 * Update a Policy Quota element saved in db.
@@ -151,18 +155,18 @@ public class PersistenceManagerProxy {
 	 * @param pq : instance of {@link PolicyQuota}
 	 * @return updated instance of {@link PolicyQuota}
 	 */
-	public PolicyQuota updatePolicyQuota(PolicyQuota pq){
+	/*public PolicyQuota updatePolicyQuota(PolicyQuota pq){
 		return addPolicyQuota(pq);
-	}
+	}*/
 	
 	/**
 	 * Delete a Policy Quota element from db.
 	 * 
 	 * @param id : String
 	 */
-	public void deletePolicyQuota(String id){
+	/*public void deletePolicyQuota(String id){
 		pqrep.delete(id);
-	}
+	}*/
 	
 	/*
 	 * POLICY SPIKE ARREST 
@@ -213,12 +217,13 @@ public class PersistenceManagerProxy {
 	 * @param lt : instance of {@link LastTime}
 	 * @return new instance of {@link LastTime}
 	 */
-	public LastTime addPolicySpikeArrest(LastTime lt){
+	/*public LastTime addPolicySpikeArrest(LastTime lt){
 		return spikeArRep.save(lt);
-	}
+	}*/
 	
 	/**
 	 * Find And Modify function.
+	 * If collection is not found, then it is created.
 	 * 
 	 * @param l : instance of {@link LastTime}
 	 * @return new updated instance of {@link LastTime}
@@ -233,11 +238,14 @@ public class PersistenceManagerProxy {
 		query.addCriteria(criteria);
 		
 		Update update = new Update();
+		update.set("apiId", l.getApiId());
+		update.set("resourceId", l.getResourceId());
+		update.set("appId", l.getAppId());
 		update.set("time", new Date());
 		
 		//FindAndModifyOptions().returnNew(true) = newly updated document
 		LastTime lt = mongoOperations.findAndModify(query, update, 
-				new FindAndModifyOptions().returnNew(true), LastTime.class);
+				new FindAndModifyOptions().upsert(true).returnNew(true), LastTime.class);
 		return lt;
 	}
 	
@@ -246,8 +254,8 @@ public class PersistenceManagerProxy {
 	 * 
 	 * @param lastTimeId : String
 	 */
-	public void deletePolicySpikeArrest(String lastTimeId){
+	/*public void deletePolicySpikeArrest(String lastTimeId){
 		spikeArRep.delete(lastTimeId);
-	}
+	}*/
 	
 }

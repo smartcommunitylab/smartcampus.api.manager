@@ -261,7 +261,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 			//init - time, for callback
 			/*lastTime.setState("init");
 			lastTime.setPrevTime(currentTime);*/
-			pmanager.addPolicySpikeArrest(lastTime);
+			pmanager.findAndModify(lastTime);
 		} else {
 			//init - time, for callback
 			/*lastTime.setState("pending");
@@ -270,6 +270,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 			lastTime.setTime(currentTime);
 			pmanager.findAndModify(lastTime);
 		}
+		
 
 	}
 

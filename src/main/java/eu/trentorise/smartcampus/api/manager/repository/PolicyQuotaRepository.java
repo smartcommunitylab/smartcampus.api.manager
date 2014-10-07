@@ -35,7 +35,7 @@ public interface PolicyQuotaRepository extends MongoRepository<PolicyQuota,Strin
 	 * @param id : String
 	 * @return list of {@link PolicyQuota} instances
 	 */
-	List<PolicyQuota> findById(String id);
+	//List<PolicyQuota> findById(String id);
 	
 	/**
 	 * Retrieves data searching by api and resource id.
@@ -55,5 +55,18 @@ public interface PolicyQuotaRepository extends MongoRepository<PolicyQuota,Strin
 	 * @return list of {@link PolicyQuota} instances
 	 */
 	List<PolicyQuota> findByApiIdAndResourceIdAndAppId(String apiid, String resourceid, String appid);
+	
+	/**
+	 * Retrieves data searching by api, resource and app id 
+	 * and state.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param appId : String
+	 * @param state : String
+	 * @return list of {@link PolicyQuota} instances
+	 */
+	List<PolicyQuota> findByApiIdAndResourceIdAndAppIdAndStateLike(String apiId, String resourceId, 
+			String appId, String state);//TODO
 	
 }

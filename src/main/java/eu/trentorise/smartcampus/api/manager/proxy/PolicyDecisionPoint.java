@@ -34,6 +34,7 @@ import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
+import eu.trentorise.smartcampus.api.manager.model.proxy.LastTime;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
@@ -183,8 +184,6 @@ public class PolicyDecisionPoint {
 			for (int i = 0; i < pToApply.size(); i++) {
 				
 				if(pToApply.get(i) instanceof Quota){
-					//init a count 0 to avoid concurrency problem
-					initQuotaApplyElement(apiId, resourceId, appId);
 					
 					QuotaApply qa = new QuotaApply(apiId, resourceId, appId,(Quota)pToApply.get(i));
 					qa.setPManager(proxyManager);
@@ -192,18 +191,21 @@ public class PolicyDecisionPoint {
 					batch.add(qa);
 				}
 				else if(pToApply.get(i) instanceof SpikeArrest){
+					
 					SpikeArrestApply saa = new SpikeArrestApply(apiId,resourceId,appId,
 							(SpikeArrest)pToApply.get(i));
 					saa.setPManager(proxyManager);
 					batch.add(saa);
 				}
 				else if(pToApply.get(i) instanceof IPAccessControl){
+					
 					String appIp = headers.get("X-FORWARDED-FOR");
 					IPAccessControlApply ipa = new IPAccessControlApply(apiId, resourceId, 
 							(IPAccessControl)pToApply.get(i), appIp);
 					batch.add(ipa);
 				}
 				else if(pToApply.get(i) instanceof VerifyAppKey){
+					
 					String appSecret = headers.get("appSecret");
 					VerifyAppKeyApply vapp = new VerifyAppKeyApply(apiId, resourceId,appId,
 							(VerifyAppKey)pToApply.get(i), appSecret);
@@ -214,6 +216,8 @@ public class PolicyDecisionPoint {
 			//apply policies
 			try{
 				batch.apply();
+				
+				
 			}catch(SecurityException s){
 				String msg = s.getMessage();
 				logger.info("Cause of security exception: {}",msg);
@@ -238,56 +242,4 @@ public class PolicyDecisionPoint {
 			//throw new IllegalArgumentException("There is no policies to apply");
 		}
 	}
-	
-	/**
-	 * Initialize table of Quota Apply with a new count.
-	 * Count element is set to zero.
-	 * 
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param appId : String
-	 */
-	private void initQuotaApplyElement(String apiId, String resourceId, String appId){
-		PolicyQuota p = null;
-		if(appId!=null){
-			p = proxyManager.retrievePolicyQuotaByParamIds(apiId, resourceId, appId);
-		}else{
-			p = proxyManager.retrievePolicyQuotaByParams(apiId, resourceId);
-		}
-		if(p==null){
-			PolicyQuota pq = new PolicyQuota();
-			pq.setApiId(apiId);
-			pq.setAppId(appId);
-			pq.setResourceId(resourceId);
-			pq.setCount(0);
-			pq.setTime(new Date());
-			//for callback
-			//pq.setState("initial");
-			proxyManager.addPolicyQuota(pq);
-		}
-	}
-	
-	/**
-	 * Initialize table of Spike Arrest Apply.
-	 * 
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param appId : String
-	 */
-	/*private void initSpikeArrestApplyElement(String apiId, String resourceId, String appId){
-		LastTime sp = null;
-		if(appId!=null){
-			sp = proxyManager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId);
-		}else{
-			sp = proxyManager.retrievePolicySpikeArrestByApiAndResouceId(apiId, resourceId);
-		}
-		if(sp==null){
-			sp = new LastTime();
-			sp.setApiId(apiId);
-			sp.setAppId(appId);
-			sp.setResourceId(resourceId);
-			sp.setTime(new Date());
-			proxyManager.addPolicySpikeArrest(sp);
-		}
-	}*/
 }

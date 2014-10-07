@@ -25,6 +25,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 /**
  * Policy Spike Arrest
  * id, app id, api id, resource id and time.
+ * State field can have the value of initial, pending, done and it
+ * is added for rollback operation.
+ * State time is date when state is updated.
  * 
  * @author Giulia Canobbio
  *
@@ -47,6 +50,11 @@ public class LastTime implements Serializable{
 	private String resourceId;
 	@Field
 	private Date time;
+	//TODO
+	@Field
+	private Date prevTime;
+	@Field
+	private String state;
 	
 	/**
 	 * 
@@ -118,6 +126,32 @@ public class LastTime implements Serializable{
 	public void setTime(Date time) {
 		this.time = time;
 	}
-
-	
+	/**
+	 * 
+	 * @return prevTime : {@link Date}
+	 */
+	public Date getPrevTime() {
+		return prevTime;
+	}
+	/**
+	 * 
+	 * @param prevTime : {@link Date}
+	 */
+	public void setPrevTime(Date prevTime) {
+		this.prevTime = prevTime;
+	}
+	/**
+	 * 
+	 * @return state : String
+	 */
+	public String getState() {
+		return state;
+	}
+	/**
+	 * 
+	 * @param state : String
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
 }
