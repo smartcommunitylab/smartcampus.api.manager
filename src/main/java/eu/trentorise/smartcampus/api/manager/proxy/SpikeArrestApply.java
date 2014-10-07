@@ -259,13 +259,13 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 			lastTime.setTime(currentTime);
 			//TODO
 			//init - time, for callback
-			/*lastTime.setState("init");
-			lastTime.setPrevTime(currentTime);*/
+			lastTime.setState("init");
+			lastTime.setPrevTime(currentTime);
 			pmanager.findAndModify(lastTime);
 		} else {
 			//init - time, for callback
-			/*lastTime.setState("pending");
-			lastTime.setPrevTime(lastTime.getTime());*/
+			lastTime.setState("pending");
+			lastTime.setPrevTime(lastTime.getTime());
 			//current time
 			lastTime.setTime(currentTime);
 			pmanager.findAndModify(lastTime);

@@ -49,16 +49,4 @@ public interface LastTimeRepository extends MongoRepository<LastTime,String>{
 	 */
 	public List<LastTime> findByApiIdAndResourceId(String apiId, String resourceId);
 	
-	/**
-	 * Retrieves spike arrest apply data searching by api, resource and app id 
-	 * and state.
-	 * 
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param appId : String
-	 * @param state : String
-	 * @return list of {@link LastTime}
-	 */
-	public List<LastTime> findByApiIdAndResourceIdAndAppIdAndStateLike(String apiId, String resourceId, 
-			String appId, String state);//TODO
 }
