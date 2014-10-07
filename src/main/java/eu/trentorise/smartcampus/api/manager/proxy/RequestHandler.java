@@ -244,8 +244,8 @@ public class RequestHandler{
 			String ipAddress = request.getHeader("X-FORWARDED-FOR");
 			if (ipAddress == null) {
 				ipAddress = request.getRemoteAddr();
-				map.put("X-FORWARDED-FOR", ipAddress);
 			}
+			map.put("X-FORWARDED-FOR", ipAddress);
 
 			// check that appId retrieved from request is correct
 			if (appId != null) {
@@ -261,6 +261,7 @@ public class RequestHandler{
 			logger.info("api id: {} ", apiId);
 			logger.info("resource id: {} ", resourceId);
 			logger.info("app id: {} ", appId);
+			logger.info("IP address: {} ", ipAddress);
 
 			// set result
 			result.setApiId(apiId);

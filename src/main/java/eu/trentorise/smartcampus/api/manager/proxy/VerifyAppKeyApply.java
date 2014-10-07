@@ -132,23 +132,29 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 			// retrieve App data
 			App app = manager.getAppById(appId);
 			// check that apiId or resource id is in App api list
-			List<ApiData> lapi = app.getApis();
-			if (lapi != null && lapi.size() > 0) {
-				for (int i = 0; i < lapi.size(); i++) {
-					// if App api list contains api id => grant && resourceId is not checked
-					if (lapi.get(i).getApiId().equalsIgnoreCase(apiId) && 
-							app.getKey().equalsIgnoreCase(appKey)) {
-						return true;
+			try {
+				List<ApiData> lapi = app.getApis();
+				if (lapi != null && lapi.size() > 0) {
+					for (int i = 0; i < lapi.size(); i++) {
+						// if App api list contains api id => grant &&
+						// resourceId is not checked
+						if (lapi.get(i).getApiId().equalsIgnoreCase(apiId)
+								&& app.getKey().equalsIgnoreCase(appKey)) {
+							return true;
+						}
+
+						// TODO: if App api list contains resource id => grant
+						/*
+						 * if(lapi.get(i).getApiId().equalsIgnoreCase(apiId) &&
+						 * lapi
+						 * .get(i).getResourceId().equalsIgnoreCase(resourceId
+						 * )){ return true; }
+						 */
+
 					}
-					
-					//TODO:  if App api list contains resource id => grant
-					/*if(lapi.get(i).getApiId().equalsIgnoreCase(apiId) &&
-							lapi.get(i).getResourceId().equalsIgnoreCase(resourceId)){
-						return true;
-					}
-					*/
-					
 				}
+			} catch (java.lang.NullPointerException n) {
+				return false;
 			}
 		}
 
