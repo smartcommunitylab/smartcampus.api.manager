@@ -356,11 +356,13 @@ public class ScenarioApi {
 		App app1 = new App();
 		app1.setId("junit-test-spring-1");
 		app1.setName("Openservice app junit-test");
+		app1.setOwnerId("1");
 		//app1.setKey("junit.test.openservice.1.app");
 		
 		log.info("Add app 2..");
 		App app2 = new App();
 		app2.setName("Smartcampus app junit-test");
+		app2.setOwnerId("1");
 		//app2.setKey("junit.test.smartcampus.2.app");
 		
 		apiManager.addApp(app1);
