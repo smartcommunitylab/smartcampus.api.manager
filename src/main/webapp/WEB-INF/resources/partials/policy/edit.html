@@ -210,10 +210,17 @@
 			
 			<!-- Quota and spike arrest -->
 			<div ng-show="policy.type === 'Spike Arrest' || policy.type === 'Quota'">
-				<div class="form-group">
-						<label for="policyqspid">Identifier</label> 
-						<input type="text" class="form-control" id="policyqspid" 
-							ng-model="policy.identifier">
+				<div class="form-group">	
+						<label for="global">Is global</label> 
+						<div class="row">
+							<div class="col-lg-8">
+								Do you want to sum anonymous and verified access?
+							</div>
+							<div class="col-lg-2">
+								<input type="checkbox" class="form-control" id="policyglobal" 
+									ng-model="policy.global" />
+							</div>
+						</div>
 				</div>
 			</div>
 			
