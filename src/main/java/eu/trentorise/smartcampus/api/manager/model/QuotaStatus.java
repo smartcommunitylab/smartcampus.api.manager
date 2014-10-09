@@ -18,8 +18,7 @@ package eu.trentorise.smartcampus.api.manager.model;
 import java.io.Serializable;
 
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.*;
 
 /**
  * Status model of Api.
@@ -27,7 +26,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * @author Giulia Canobbio
  *
  */
-@Document
+//@Document
 public class QuotaStatus implements Serializable{
 	
 	/**

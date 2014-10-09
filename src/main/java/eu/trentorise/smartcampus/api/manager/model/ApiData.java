@@ -17,8 +17,8 @@ package eu.trentorise.smartcampus.api.manager.model;
 
 import java.io.Serializable;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+//import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Model for api data in app model.
@@ -26,15 +26,15 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * @author Giulia Canobbio
  *
  */
-@Document
+//@Document
 public class ApiData implements Serializable{
 	/**
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Field
+	//@Field
 	private String apiId;
-	@Field
+	//@Field
 	private String apiStatus;
 	
 	/**

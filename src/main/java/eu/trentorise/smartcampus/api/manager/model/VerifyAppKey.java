@@ -15,8 +15,7 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+//import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Policy model of Verify App Key
@@ -32,7 +31,7 @@ public class VerifyAppKey extends Policy{
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Field
+	//@Field
 	private boolean anonymous;
 
 	/**

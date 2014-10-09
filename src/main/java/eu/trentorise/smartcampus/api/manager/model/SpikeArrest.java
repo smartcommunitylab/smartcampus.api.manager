@@ -15,8 +15,7 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+//import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Policy model of Spike Arrest
@@ -27,17 +26,17 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * @author Giulia Canobbio
  *
  */
-@Document
+//@Document
 public class SpikeArrest extends Policy{
 
 	/**
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Field("spike-arrest-Rate")
+	//@Field
 	public String rate;
-	@Field("spike-arrest-Identifier")
-	public String identifier;
+	//@Field
+	public boolean isGlobal;
 
 	/**
 	 * 
@@ -55,17 +54,17 @@ public class SpikeArrest extends Policy{
 	}
 	/**
 	 * 
-	 * @return identifier : String
+	 * @return isGlobal : boolean
 	 */
-	public String getIdentifier() {
-		return identifier;
+	public boolean isGlobal() {
+		return isGlobal;
 	}
 	/**
 	 * 
-	 * @param identifier : String
+	 * @param isGlobal : boolean
 	 */
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setGlobal(boolean isGlobal) {
+		this.isGlobal = isGlobal;
 	}
 	
 	

@@ -18,10 +18,9 @@ package eu.trentorise.smartcampus.api.manager.model;
 import java.io.Serializable;
 
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+//import org.springframework.data.annotation.Id;
+//import org.springframework.data.mongodb.core.index.Indexed;
+//import org.springframework.data.mongodb.core.mapping.*;
 
 /**
  * Policy model id : String, name : String, notes : String, category : String,
@@ -30,7 +29,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * @author Giulia Canobbio
  * 
  */
-@Document
+//@Document
 //@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class Policy implements Serializable {
 
@@ -38,16 +37,16 @@ public abstract class Policy implements Serializable {
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Id
-	@Indexed(unique = true)
+	//@Id
+	//@Indexed(unique = true)
 	private String id;
-	@Field
+	//@Field
 	private String name;
-	@Field
+	//@Field
 	private String notes;
-	@Field
+	//@Field
 	private String category;
-	@Field
+	//@Field
 	private String type;
 
 	/**

@@ -18,10 +18,9 @@ package eu.trentorise.smartcampus.api.manager.model;
 import java.io.Serializable;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+//import org.springframework.data.annotation.Id;
+//import org.springframework.data.mongodb.core.index.Indexed;
+//import org.springframework.data.mongodb.core.mapping.*;
 
 /**
  * Resource model
@@ -36,28 +35,28 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * @author Giulia Canobbio
  *
  */
-@Document
+//@Document
 public class Resource implements Serializable{
 	
 	/**
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Id
+	//@Id
 	private String id;
-	@Field
-	@Indexed(unique=true)
+	//@Field
+	//@Indexed(unique=true)
 	private String name;
-	@Field
-	@Indexed(unique=true)
+	//@Field
+	//@Indexed(unique=true)
 	private String uri;
-	@Field
+	//@Field
 	private String verb;
-	@Field
+	//@Field
 	private List<Policy> policy;
-	@Field
+	//@Field
 	private String creationTime;
-	@Field
+	//@Field
 	private String updateTime;
 	
 	/**

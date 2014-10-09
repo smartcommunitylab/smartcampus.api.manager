@@ -17,25 +17,21 @@ package eu.trentorise.smartcampus.api.manager.model;
 
 import java.io.Serializable;
 
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
 /**
  * Status model of Api.
  * 
  * @author Giulia Canobbio
  *
  */
-@Document
+//@Document
 public class Status implements Serializable{
 	
 	/**
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Field
-	@Indexed(unique=true)
+	//@Field
+	//@Indexed(unique=true)
 	private String name;
 	/*@Field
 	private int quota;*/

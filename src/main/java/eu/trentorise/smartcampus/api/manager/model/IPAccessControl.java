@@ -17,8 +17,7 @@ package eu.trentorise.smartcampus.api.manager.model;
 
 import java.util.List;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+//import org.springframework.data.mongodb.core.mapping.*;
 
 /**
  * Policy IP Access Control:
@@ -29,18 +28,18 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * @author Giulia Canobbio
  *
  */
-@Document
+//@Document
 public class IPAccessControl extends Policy{
 
 	/**
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	@Field
+	//@Field
 	private String rule;
-	@Field("wlist")
+	//@Field("wlist")
 	private List<SourceAddress> whiteList;
-	@Field("blist")
+	//@Field("blist")
 	private List<SourceAddress> blackList;
 	
 	/**

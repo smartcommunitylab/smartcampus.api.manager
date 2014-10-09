@@ -17,8 +17,7 @@ package eu.trentorise.smartcampus.api.manager.model;
 
 import java.util.List;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+//import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * Policy model of Quota
@@ -32,7 +31,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * @author Giulia Canobbio
  *
  */
-@Document
+//@Document
 public class Quota extends Policy{
 	
 	/**
@@ -40,15 +39,15 @@ public class Quota extends Policy{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Field("quota-interval")
+	//@Field
 	private Integer interval;
-	@Field("quota-TimeUnit")
+	//@Field
 	private String timeUnit;
-	@Field("quota-Allow count")
+	//@Field
 	private Integer allowCount;
-	@Field("quota-Identifier")
-	private String identifier;
-	@Field
+	//@Field
+	private boolean isGlobal;
+	//@Field
 	private List<QuotaStatus> qstatus;
 	
 	/**
@@ -95,18 +94,19 @@ public class Quota extends Policy{
 	}
 	/**
 	 * 
-	 * @return quota Identifier : String
+	 * @return is global : boolean
 	 */
-	public String getIdentifier() {
-		return identifier;
+	public boolean isGlobal() {
+		return isGlobal;
 	}
 	/**
 	 * 
-	 * @param identifier : String, quota Identifier
+	 * @param isGlobal : boolean
 	 */
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setGlobal(boolean isGlobal) {
+		this.isGlobal = isGlobal;
 	}
+	
 	/**
 	 * 
 	 * @return list of {@link QuotaStatus} instances
