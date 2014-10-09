@@ -38,7 +38,6 @@ import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
-import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
@@ -58,15 +57,10 @@ public class ApiController {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(ApiController.class);
 	/**
-	 * Instance of {@link PersistenceManager}.
-	 */
-	@Autowired
-	private PersistenceManager manager;
-	/**
 	 * Instance of {@link SecurityManager}
 	 */
 	@Autowired
-	private SecurityManager pmanager;
+	private SecurityManager smanager;
 	
 	/**
 	 * Rest service that retrieves api data by id.
@@ -83,7 +77,7 @@ public class ApiController {
 		logger.info("Api by id.");
 		Api api;
 		try {
-			api = pmanager.getApiById(apiId);
+			api = smanager.getApiById(apiId);
 			
 			if(api!=null){
 				return new ResultData(api, HttpServletResponse.SC_OK, "Api data found");
@@ -112,10 +106,9 @@ public class ApiController {
 		logger.info("Api name.");
 		
 		try {
-			String api = pmanager.getApiByName(apiId);
+			String api = smanager.getApiByName(apiId);
 			if(api!=null){
-				//logger.info("Name {}", api.getName());
-				return new ResultData(api/*.getName()*/, HttpServletResponse.SC_OK, "Api name found");
+				return new ResultData(api, HttpServletResponse.SC_OK, "Api name found");
 			}else{
 				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
 						"There is no api with this id.");
@@ -137,11 +130,11 @@ public class ApiController {
 	 */
 	@RequestMapping(value = "/ownerId", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
-	public ResultData getApiByOwnerId(/*@PathVariable String ownerId*/) {
+	public ResultData getApiByOwnerId() {
 		logger.info("List api by owner id.");
 	
 		try {
-			List<Api> apiList = pmanager.getApiByOwnerId();
+			List<Api> apiList = smanager.getApiByOwnerId();
 			
 			if(apiList!=null && apiList.size()>0){
 				return new ResultData(apiList, HttpServletResponse.SC_OK, "All data.");
@@ -169,7 +162,7 @@ public class ApiController {
 	public ResultData add(@RequestBody Api api) {
 		logger.info("Add api to db.");		
 		try {
-			Api savedApi = manager.addApi(api);
+			Api savedApi = smanager.addApi(api);
 			if (savedApi != null) {
 				return new ResultData(savedApi, HttpServletResponse.SC_OK, "Saved successfully.");
 			} else {
@@ -196,7 +189,7 @@ public class ApiController {
 	public ResultData addResource(@PathVariable String apiId, @RequestBody Resource resource) {
 		logger.info("Update api resource.");
 		try{
-			Resource updateApiR = pmanager.addResourceApi(apiId,resource);
+			Resource updateApiR = smanager.addResourceApi(apiId,resource);
 			if(updateApiR!=null){
 				return new ResultData(updateApiR, HttpServletResponse.SC_OK, "Add resource successfully.");
 			} else {
@@ -210,63 +203,6 @@ public class ApiController {
 		}
 	}
 	
-	/**
-	 * Rest service that adds an app api.
-	 * NOT NEEDED
-	 * 
-	 * @param apiId : String
-	 * @param app : instance of {@link App}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR or
-	 * 			BAD REQUEST) and a string message : 
-	 * 			"Updated app Successfully" if it is ok, otherwise "Problem in updating data".
-	 * 			If exception is threw then it is the exception message.
-	 */
-	/*@RequestMapping(value = "/add/{apiId}/app", method = RequestMethod.POST, consumes="application/json")
-	@ResponseBody
-	public ResultData addApp(@PathVariable String apiId, @RequestBody App app) {
-		logger.info("Update api app.");
-		try{
-			App updateApiA = pmanager.addAppApi(apiId, app);
-			if(updateApiA!=null){
-				return new ResultData(updateApiA, HttpServletResponse.SC_OK, "Add app successfully.");
-			} else {
-				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
-						"Problem in adding data.");
-			}
-		}catch (IllegalArgumentException i) {
-			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
-		}
-	}*/
-	
-	/**
-	 * Rest service that adds a policy api.
-	 * NOT NEEDED
-	 * 
-	 * @param apiId : String
-	 * @param p : instance of {@link Policy}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR or
-	 * 			BAD REQUEST) and a string message : 
-	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
-	 * 			If exception is threw then it is the exception message.
-	 */
-	/*@RequestMapping(value = "/add/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
-	@ResponseBody
-	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Policy p) {
-		logger.info("Update api policy.");
-		try{
-			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
-			if(updateApiP!=null){
-				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
-			} else {
-				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
-						"Problem in adding data.");
-			}
-		}catch (IllegalArgumentException i) {
-			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
-		}
-		
-	}
-	*/
 	/**
 	 * Rest service that adds a policy api.
 	 * 
@@ -282,7 +218,7 @@ public class ApiController {
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
 		logger.info("Update api policy.");
 		try{
-			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
 			} else {
@@ -312,7 +248,7 @@ public class ApiController {
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Quota p) {
 		logger.info("Update api policy.");
 		try{
-			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
 			} else {
@@ -342,7 +278,7 @@ public class ApiController {
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody IPAccessControl p) {
 		logger.info("Update api policy.");
 		try{
-			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
 			} else {
@@ -373,7 +309,7 @@ public class ApiController {
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody VerifyAppKey p) {
 		logger.info("Update api policy.");
 		try{
-			Policy updateApiP = pmanager.addPolicyApi(apiId, p);
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
 			} else {
@@ -404,7 +340,7 @@ public class ApiController {
 	public ResultData update(@RequestBody Api api) {
 		logger.info("Update api to db.");
 		try {
-			Api updatedApi = pmanager.updateApiParameter(api);
+			Api updatedApi = smanager.updateApiParameter(api);
 			if (updatedApi != null) {
 				return new ResultData(updatedApi, HttpServletResponse.SC_OK, "Update successfully.");
 			} else {
@@ -436,7 +372,7 @@ public class ApiController {
 	public ResultData updateResource(@PathVariable String apiId, @RequestBody Resource resource) {
 		logger.info("Update api resource.");
 		try{
-			Resource updateApiR = pmanager.updateResourceApi(apiId,resource);
+			Resource updateApiR = smanager.updateResourceApi(apiId,resource);
 			if(updateApiR!=null){
 				return new ResultData(updateApiR, HttpServletResponse.SC_OK, "Update resource successfully.");
 			} else {
@@ -450,63 +386,6 @@ public class ApiController {
 		}
 	}
 	
-	/**
-	 * Rest service that updates an app api.
-	 * NOT NEEDED
-	 * 
-	 * @param apiId : String
-	 * @param app : instance of {@link App}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR or
-	 * 			BAD REQUEST) and a string message : 
-	 * 			"Updated app Successfully" if it is ok, otherwise "Problem in updating data".
-	 * 			If exception is threw then it is the exception message.
-	 */
-	/*@RequestMapping(value = "/update/{apiId}/app", method = RequestMethod.POST, consumes="application/json")
-	@ResponseBody
-	public ResultData updateApp(@PathVariable String apiId, @RequestBody App app) {
-		logger.info("Update api app.");
-		try{
-			App updateApiA = pmanager.updateAppApi(apiId, app);
-			if(updateApiA!=null){
-				return new ResultData(updateApiA, HttpServletResponse.SC_OK, "Update app successfully.");
-			} else {
-				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
-						"Problem in updating data.");
-			}
-		}catch (IllegalArgumentException i) {
-			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
-		}
-	}*/
-	
-	/**
-	 * Rest service that updates a policy api.
-	 * NOT NEEDED
-	 * 
-	 * @param apiId : String
-	 * @param p : instance of {@link Policy}
-	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR or
-	 * 			BAD REQUEST) and a string message : 
-	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
-	 * 			If exception is threw then it is the exception message.
-	 */
-	/*@RequestMapping(value = "/update/{apiId}/policy", method = RequestMethod.POST, consumes="application/json")
-	@ResponseBody
-	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Policy p) {
-		logger.info("Update api policy.");
-		try{
-			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
-			if(updateApiP!=null){
-				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
-			} else {
-				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
-						"Problem in updating data.");
-			}
-		}catch (IllegalArgumentException i) {
-			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
-		}
-		
-	}
-	*/
 	/**
 	 * Rest service that updates a policy api.
 	 * 
@@ -522,7 +401,7 @@ public class ApiController {
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
 		logger.info("Update api policy spike arrest.");
 		try{
-			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
 			} else {
@@ -552,7 +431,7 @@ public class ApiController {
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Quota p) {
 		logger.info("Update api policy quota.");
 		try{
-			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
 			} else {
@@ -582,7 +461,7 @@ public class ApiController {
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody IPAccessControl p) {
 		logger.info("Update api policy quota.");
 		try{
-			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
 			} else {
@@ -613,7 +492,7 @@ public class ApiController {
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody VerifyAppKey p) {
 		logger.info("Update api policy quota.");
 		try{
-			Policy updateApiP = pmanager.updatePolicyApi(apiId, p);
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
 				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
 			} else {
@@ -640,7 +519,7 @@ public class ApiController {
 	public ResultData delete(@PathVariable String apiId) {
 		logger.info("Delete api to db.");
 		try{
-			pmanager.deleteApi(apiId);
+			smanager.deleteApi(apiId);
 		} catch (CustomAuthenticationException e) {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
@@ -661,30 +540,12 @@ public class ApiController {
 	public ResultData deleteResource(@PathVariable String apiId, @PathVariable String resourceId){
 		logger.info("Delete api resource.");
 		try {
-			pmanager.deleteResourceApi(apiId,resourceId);
+			smanager.deleteResourceApi(apiId,resourceId);
 		} catch (CustomAuthenticationException e) {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 	}
-	
-	/**
-	 * Rest service that deletes an App Api from database by passing its id.
-	 * NOT NEEDED
-	 * 
-	 * @param apiId : String
-	 * @param appId : String
-	 * @return instance of {@link ResultData} with status (OK) and a string message : 
-	 * 			"Delete done!".
-	 */
-	/*@RequestMapping(value = "/delete/{apiId}/app/{appId}", method = RequestMethod.DELETE)
-	@ResponseBody
-	public ResultData deleteApp(@PathVariable String apiId, @PathVariable String appId){
-		logger.info("Delete api resource.");
-		
-		pmanager.deleteAppApi(apiId,appId);
-		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
-	}*/
 	
 	/**
 	 * Rest service that deletes an Policy Api from database by passing its id.
@@ -700,7 +561,7 @@ public class ApiController {
 		logger.info("Delete api resource.");
 		
 		try {
-			pmanager.deletePolicyApi(apiId,policyId);
+			smanager.deletePolicyApi(apiId,policyId);
 		} catch (CustomAuthenticationException e) {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
@@ -724,7 +585,7 @@ public class ApiController {
 		logger.info("List api by owner id.");
 		
 		try {
-			Status s = pmanager.getApiStatusByStatusName(apiId, statusName);
+			Status s = smanager.getApiStatusByStatusName(apiId, statusName);
 			
 			if(s!=null){
 				return new ResultData(s, HttpServletResponse.SC_OK, "Status api found.");
@@ -754,7 +615,7 @@ public class ApiController {
 		logger.info("List api by owner id.");
 		List<Status> s;
 		try {
-			s = pmanager.getApiStatus(apiId);
+			s = smanager.getApiStatus(apiId);
 			
 			if(s!=null && s.size()>0){
 				return new ResultData(s, HttpServletResponse.SC_OK, "Status list found.");
@@ -784,7 +645,7 @@ public class ApiController {
 	public ResultData addApiStatus(@PathVariable String apiId, @RequestBody Status s){
 		logger.info("Add api status.");
 		try{
-			List<Status> slist = pmanager.addStatusApi(apiId, s);
+			List<Status> slist = smanager.addStatusApi(apiId, s);
 			return new ResultData(slist, HttpServletResponse.SC_OK, "Status saved successfully.");
 		}catch(IllegalArgumentException i){
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
@@ -810,7 +671,7 @@ public class ApiController {
 	public ResultData updateStatus(@PathVariable String apiId, @RequestBody Status s){
 		logger.info("Update api status.");
 		try{
-			List<Status> slist = pmanager.updateStatusApi(apiId, s);
+			List<Status> slist = smanager.updateStatusApi(apiId, s);
 			return new ResultData(slist, HttpServletResponse.SC_OK, "Status updated successfully.");
 		}catch(IllegalArgumentException i){
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
@@ -835,7 +696,7 @@ public class ApiController {
 	public ResultData deleteStatus(@PathVariable String apiId, @PathVariable String statusName){
 		logger.info("Delete api status.");
 		try{
-			pmanager.deleteStatusApi(apiId, statusName);
+			smanager.deleteStatusApi(apiId, statusName);
 			return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
 		}catch(IllegalArgumentException i){
 			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
@@ -843,6 +704,5 @@ public class ApiController {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
-	
 	
 }

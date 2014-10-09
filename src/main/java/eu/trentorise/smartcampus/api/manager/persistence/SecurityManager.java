@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +55,22 @@ public class SecurityManager {
 	 */
 	@Autowired
 	private PermissionManager security;
+	
+	/**
+	 * This function set owner of api retrieving it from security context
+	 * and then it add new api.
+	 * 
+	 * @param api : instance {@link Api}
+	 * @return new instance of {@link Api}
+	 */
+	public Api addApi(Api api) {
+		//owner id
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		api.setOwnerId(user);
+		
+		Api savedApi = pmanager.addApi(api);
+		return savedApi;
+	}
 
 	/**
 	 * This function checks user permission before
@@ -912,6 +929,21 @@ public class SecurityManager {
 		}
 	}
 	
+	/**
+	 * This function retrieves owner of app from security context and then
+	 * add a new app to db.
+	 * 
+	 * @param app : instance of {@link App}
+	 * @return saved instance of {@link App}
+	 */
+	public App addApp(App app) {
+		//owner id
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		app.setOwnerId(user);
+		
+		App nApp = pmanager.addApp(app);
+		return nApp;
+	}
 	
 	/**
 	 * This function checks user permission before
@@ -931,6 +963,17 @@ public class SecurityManager {
 		else {
 			throw new CustomAuthenticationException("You are not allowed");
 		}
+	}
+	
+	/**
+	 * This functions retrieves app by owner id.
+	 * 
+	 * @return list of {@link App} instances
+	 */
+	public List<App> listAppByOwner() {
+		String user = SecurityContextHolder.getContext().getAuthentication().getName();
+		List<App> alist = pmanager.listApp(user);
+		return alist;
 	}
 	
 	/**

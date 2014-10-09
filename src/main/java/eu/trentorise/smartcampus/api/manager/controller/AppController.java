@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
-import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
@@ -51,11 +49,6 @@ public class AppController {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(AppController.class);
 	/**
-	 * Instance of {@link PersistenceManager}.
-	 */
-	@Autowired
-	private PersistenceManager pmanager;
-	/**
 	 * Instance of {@link SecurityManager}.
 	 */
 	@Autowired
@@ -72,8 +65,7 @@ public class AppController {
 	@ResponseBody
 	public ResultData getAppList(){
 		logger.info("App list.");
-		String user = SecurityContextHolder.getContext().getAuthentication().getName();
-		List<App> alist = pmanager.listApp(user);
+		List<App> alist = smanager.listAppByOwner();
 		if(alist!=null){
 			return new ResultData(alist, HttpServletResponse.SC_OK, "App data found");
 		}else{
@@ -124,9 +116,9 @@ public class AppController {
 	public ResultData addApp(@RequestBody App app) {
 		logger.info("Add app.");
 		try{
-			App updateApiA = pmanager.addApp(app);
-			if(updateApiA!=null){
-				return new ResultData(updateApiA, HttpServletResponse.SC_OK, "Add app successfully.");
+			App nApp = smanager.addApp(app);
+			if(nApp!=null){
+				return new ResultData(nApp, HttpServletResponse.SC_OK, "Add app successfully.");
 			} else {
 				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
 						"Problem in adding data.");

@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -163,15 +162,16 @@ public class PersistenceManager {
 	 * @return new instance of {@link Api}
 	 */
 	public Api addApi(Api api){
-		//owner id
-		String user = SecurityContextHolder.getContext().getAuthentication().getName();
-		api.setOwnerId(user);
 		
-		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
-			throw new IllegalArgumentException("Api name, base path and owner id are required.");
+		if(api.getName()==null || api.getBasePath()==null){
+			throw new IllegalArgumentException("Api name and base path are required.");
 		}
 		if(api.getId()==null || api.getId().equalsIgnoreCase("")){
 			api.setId(generateId());
+		}
+		if(api.getOwnerId()==null){
+			throw new IllegalArgumentException("Cannot save new api. Problem in retrieving" +
+					" owner id from context.");
 		}
 		//basepath pattern
 		UriValidation uriValidator = new UriValidation();
@@ -358,9 +358,6 @@ public class PersistenceManager {
 		if(app.getId()==null || app.getId().equalsIgnoreCase("")){
 			app.setId(generateId());
 		}
-		//owner id
-		String user = SecurityContextHolder.getContext().getAuthentication().getName();
-		app.setOwnerId(user);
 		//set app key
 		app.setKey(UUID.randomUUID().toString());
 		return apprepository.save(app);
@@ -432,248 +429,6 @@ public class PersistenceManager {
 		
 		updateApp(app);
 	}
-	
-	/* 
-	 * Policy 
-	 */
-	
-	/**
-	 * Retrieves all policy data saved in db.
-	 * NOT IN USE
-	 * 
-	 * @return list of {@link Policy} instances
-	 */
-	/*public List<Policy> listPolicy(){
-		return policyrepository.findAll();
-	}
-	*/
-	/**
-	 * Retrieves policy data searching by id.
-	 * NOT IN USE
-	 * 
-	 * @param id : String
-	 * @return instance of {@link Policy}
-	 */
-	/*public Policy getPolicyById(String id){
-		List<Policy> ps = policyrepository.findById(id);
-		if(ps!=null && ps.size()>0){
-			return ps.get(0);
-		}
-		return null;
-	}
-	*/
-	/**
-	 * Retrieves policy data searching by name.
-	 * NOT IN USE
-	 * 
-	 * @param name : String
-	 * @return list of {@link Policy} instances
-	 */
-	/*public List<Policy> getPolicyByName(String name){
-		return (List<Policy>) policyrepository.findByName(name);
-	}
-	*/
-	/**
-	 * Retrieves policy data searching by category.
-	 * NOT IN USE
-	 * 
-	 * @param category : String
-	 * @return list of {@link Policy} instances
-	 */
-	/*public List<Policy> getPolicyByCategory(String category){
-		return (List<Policy>) policyrepository.findByCategory(category);
-	}
-	*/
-	/**
-	 * Retrieves policy data searching by type.
-	 * NOT IN USE
-	 * 
-	 * @param type : String
-	 * @return list of {@link Policy} instances
-	 */
-	/*public List<Policy> getPolicyByType(String type){
-		return (List<Policy>) policyrepository.findByType(type);
-	}
-	*/
-	/**
-	 * Create a new Policy in db.
-	 * If name or type field are undefined then it throws 
-	 * IllegalArgumentException, because they are required.
-	 * NOT IN USE
-	 * 
-	 * @param p : instance of {@link Policy}
-	 * @return saved instance of {@link Policy}
-	 */
-	/*public Policy addPolicy(Policy p){
-		if(p.getName()==null || p.getType()==null){
-			throw new IllegalArgumentException("Policy name and type are required.");
-		}
-		isPolicyInstanceOf(p);
-		if(p.getId()==null || p.getId().equalsIgnoreCase("")){
-			p.setId(generateId());
-		}
-		if(p instanceof SpikeArrest || p instanceof Quota){
-			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
-		}
-		return policyrepository.save(p);
-	}
-	*/
-	/**
-	 * Update a policy saved in db.
-	 * NOT IN USE
-	 * 
-	 * @param p : instance of {@link Policy}
-	 * @return updated instance of {@link Policy}
-	 */
-	/*public Policy updatePolicy(Policy p){
-	 	if(p instanceof SpikeArrest || p instanceof Quota){
-			p.setCategory(POLICY_CATEGORY.QualityOfService.toString());
-		}
-		return addPolicy(p);
-	}
-	*/
-	/**
-	 * Delete a policy from db.
-	 * NOT IN USE
-	 * 
-	 * @param p : instance of {@link Policy}
-	 */
-	/*public void deletePolicy(Policy p){
-		policyrepository.delete(p);
-	}
-	*/
-	/*
-	 * Resource
-	 */
-	
-	/**
-	 * Retrieves all resources saved in db.
-	 * NOT IN USE
-	 * 
-	 * @return list of {@link Resource} instances
-	 */
-	/*public List<Resource> listResource(){
-		return resourcerepository.findAll();
-	}
-	*/
-	/**
-	 * Retrieves resource data searching by id.
-	 * NOT IN USE
-	 * 
-	 * @param id : String
-	 * @return instance of {@link Resource}
-	 */
-	/*public Resource getResourceById(String id){
-		List<Resource> rs = resourcerepository.findById(id);
-		if(rs!=null && rs.size()>0){
-			return rs.get(0);
-		}
-		return null;
-	}
-	*/
-	/**
-	 * Retrieves resource data searching by name.
-	 * NOT IN USE
-	 * 
-	 * @param name : String
-	 * @return list of {@link Resource} instances
-	 */
-	/*public List<Resource> getResourceByName(String name){
-		return (List<Resource>) resourcerepository.findByName(name);
-	}
-	*/
-	/**
-	 * Create a new resource and saved it in db.
-	 * If name, uri or verb are undefined then it throws IllegalArgumentException,
-	 * because they are required.
-	 * NOT IN USE
-	 * 
-	 * @param r : instance of {@link Resource}
-	 * @return saved instance of {@link Resource}
-	 */
-	/*public Resource addResource(Resource r){
-		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
-			throw new IllegalArgumentException("Resource name, uri and verb are required.");
-		}
-		
-		if(r.getId()==null || r.getId().equalsIgnoreCase("")){
-			r.setId(generateId());
-		}
-		
-		if(r.getVerb().equalsIgnoreCase("GET")){
-			r.setVerb(Constants.VERB.GET.toString());
-		}
-		else if(r.getVerb().equalsIgnoreCase("POST")){
-			r.setVerb(Constants.VERB.POST.toString());
-		}
-		else if(r.getVerb().equalsIgnoreCase("PUT")){
-			r.setVerb(Constants.VERB.PUT.toString());
-		}
-		else if(r.getVerb().equalsIgnoreCase("DELETE")){
-			r.setVerb(Constants.VERB.DELETE.toString());
-		}
-		else{
-			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
-		}
-		
-		UrlValidator urlValidator = new UrlValidator();
-		if(!urlValidator.isValid(r.getUri())){
-			throw new IllegalArgumentException("Uri is not valid.");
-		}
-		
-		Date today = new Date();
-		r.setCreationTime(today.toString());
-		return resourcerepository.save(r);
-	}
-	*/
-	/**
-	 * Update a resource in db.
-	 * NOT IN USE
-	 * 
-	 * @param r : instance of {@link Resource}
-	 * @return updated instance of {@link Resource}
-	 */
-	/*public Resource updateResource(Resource r){
-		if(r.getName()==null || r.getUri()==null || r.getVerb()==null){
-			throw new IllegalArgumentException("Resource name, uri and verb are required.");
-		}
-		
-		if(r.getVerb().equalsIgnoreCase("GET")){
-			r.setVerb(Constants.VERB.GET.toString());
-		}
-		else if(r.getVerb().equalsIgnoreCase("POST")){
-			r.setVerb(Constants.VERB.POST.toString());
-		}
-		else if(r.getVerb().equalsIgnoreCase("PUT")){
-			r.setVerb(Constants.VERB.PUT.toString());
-		}
-		else if(r.getVerb().equalsIgnoreCase("DELETE")){
-			r.setVerb(Constants.VERB.DELETE.toString());
-		}
-		else{
-			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
-		}
-		
-		UrlValidator urlValidator = new UrlValidator();
-		if(!urlValidator.isValid(r.getUri())){
-			throw new IllegalArgumentException("Uri is not valid.");
-		}
-		
-		Date today = new Date();
-		r.setUpdateTime(today.toString());
-		return resourcerepository.save(r);
-	}
-	*/
-	/**
-	 * Delete an existing resource in db.
-	 * NOT IN USE
-	 * 
-	 * @param r : instance of {@link Resource}
-	 */
-	/*public void deleteResource(Resource r){
-		resourcerepository.delete(r);
-	}
-	*/
 	
 	/*
 	 * API retrieves Resource and Policy data
@@ -788,11 +543,6 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Resource verb values can be GET, POST, PUT or DELETE.");
 		}
 		
-		
-		/*UrlValidator urlValidator = new UrlValidator();
-		if(!urlValidator.isValid(r.getUri())){
-			throw new IllegalArgumentException("Uri is not valid.");
-		}*/
 		UriValidation uriValidator = new UriValidation();
 		if(!uriValidator.validate(r.getUri())){
 			throw new IllegalArgumentException("Uri is not valid.");
@@ -1265,188 +1015,7 @@ public class PersistenceManager {
 		}
 	}
 	
-	/**
-	 * Add app to an Api instance.
-	 * First this method checks if name is undefined, otherwise it 
-	 * throws IllegalArgumentException.
-	 * After that it retrieves api data searching by id and update it, adding
-	 * the new app.
-	 * 
-	 * @param apiId : String
-	 * @param app : instance of {@link App}
-	 * @return added instance of {@link App}
-	 */
-	/*public App addAppApi(String apiId, App app){
-		if(app.getName()==null){
-			throw new IllegalArgumentException("App name is required.");
-		}
-		if(appApiExists(apiId, app.getName())){
-			throw new IllegalArgumentException("App with this name already exists.");
-		}
-		if(app.getId()==null || app.getId().equalsIgnoreCase("")){
-			app.setId(generateId());
-		}
-		//set app key
-		app.setKey(UUID.randomUUID().toString());
-		// get api and add app
-		Api api = getApiById(apiId);
-		List<App> alist = api.getApp();
-		if (alist != null) {
-			alist.add(app);
-		} else {
-			List<App> as = new ArrayList<App>();
-			as.add(app);
-			api.setApp(as);
-		}
-
-		// update api
-		updateApi(api);
-		
-		return getAppApiByAppId(apiId, app.getId());
-	}
-	*/
-	/**
-	 * Updates an app in Api instance.
-	 * First this method checks if name is undefined, otherwise it 
-	 * throws IllegalArgumentException.
-	 * After that it retrieves api data searching by id and update it, adding
-	 * the new app.
-	 * Then it retrieves the wanted app by its id and sets fields.
-	 * It updates api.
-	 * 
-	 * @param apiId : String
-	 * @param app : instance of {@link App}
-	 * @return instance of {@link Ap} with updates
-	 */
-	/*public App updateAppApi(String apiId, App app){
-		if(app.getName()==null){
-			throw new IllegalArgumentException("App name is required.");
-		}
-		//retrieve api searching by id
-		Api api = getApiById(apiId);
-		//retrieve app
-		List<App> alist = api.getApp();
-		App oldapp = null;
-		for(int i=0;i<alist.size();i++){
-			if(alist.get(i).getId().equalsIgnoreCase(app.getId())){
-				oldapp = alist.get(i);
-			}
-		}
-		if(oldapp!=null){
-			if(!oldapp.getName().equalsIgnoreCase(app.getName())){
-				if(appApiExists(apiId, app.getName())){
-					throw new IllegalArgumentException("App with this name already exists.");
-				}
-			}
-			oldapp.setName(app.getName());
-			//set app key
-			oldapp.setKey(UUID.randomUUID().toString());
-		}
-		// update api
-		updateApi(api);
-		
-		return getAppApiByAppId(apiId, app.getId());
-	}*/
 	
-	/**
-	 * Deletes an app from Api.
-	 * 
-	 * @param apiId : String
-	 * @param appId : String
-	 */
-	/*public void deleteAppApi(String apiId, String appId){
-		// retrieves api
-		Api api = getApiById(apiId);
-		// retrieves app
-		List<App> alist = api.getApp();
-
-		for (int i = 0; i < alist.size(); i++) {
-			if (alist.get(i).getId().equalsIgnoreCase(appId)) {
-				// delete resource
-				alist.remove(i);
-			}
-		}
-		api.setApp(alist);
-		updateApi(api);
-	}*/
-	
-	/**
-	 * Retrieves app from Api searching by app id.
-	 * 
-	 * @param apiId : String
-	 * @param appId : String
-	 * @return instance of {@link App}
-	 */
-	/*public App getAppApiByAppId(String apiId, String appId){
-		Api api = getApiById(apiId);
-		try {
-			List<App> alist = api.getApp();
-			App app = null;
-
-			if (alist != null) {
-				for (int i = 0; i < alist.size(); i++) {
-					if (alist.get(i).getId().equalsIgnoreCase(appId)) {
-						app = alist.get(i);
-					}
-				}
-			}
-			return app;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}*/
-	
-	/**
-	 * Retrieves apps from Api searching by app name.
-	 * 
-	 * @param apiId : String
-	 * @param appName : String
-	 * @return list of {@link App} instances
-	 */
-	/*public List<App> getAppApiByAppName(String apiId, String appName){
-		Api api = getApiById(apiId);
-		try {
-			List<App> alist = api.getApp();
-			List<App> apps = new ArrayList<App>();
-
-			if (alist != null) {
-				for (int i = 0; i < alist.size(); i++) {
-					if (alist.get(i).getName().equalsIgnoreCase(appName)) {
-						apps.add(alist.get(i));
-					}
-				}
-			}
-			return apps;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}*/
-	
-	/**
-	 * Retrieves apps from Api searching by app key.
-	 * 
-	 * @param apiId
-	 * @param appKey
-	 * @return
-	 */
-	/*public List<App> getAppApiByAppKey(String apiId, String appKey){
-		Api api = getApiById(apiId);
-		try {
-			List<App> alist = api.getApp();
-			List<App> apps = new ArrayList<App>();
-
-			if (alist != null) {
-				for (int i = 0; i < alist.size(); i++) {
-					if (alist.get(i).getKey().equalsIgnoreCase(appKey)) {
-						apps.add(alist.get(i));
-					}
-				}
-			}
-			return apps;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}*/
 	
 	/*
 	 * Policy in Resource Api
@@ -1812,10 +1381,6 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Status name and quota are required.");
 		}
 
-		/*if(statusNameApiExists(apiId, s.getName())){
-			throw new IllegalArgumentException("Status with this name already exists.");
-		}*/
-
 		Api api = getApiById(apiId);
 		if (api != null) {
 			List<Status> slist = api.getStatus();
@@ -1848,9 +1413,9 @@ public class PersistenceManager {
 	 * @param apiId : String
 	 * @param s_name : String
 	 */
-	public void deleteStatusApi(String apiId, String s_name/*Status s*/) {
+	public void deleteStatusApi(String apiId, String s_name) {
 		// check status field: name and quota
-		if (s_name == null/*s.getName() == null || s.getQuota() == 0*/) {
+		if (s_name == null) {
 			throw new IllegalArgumentException("Status name is required.");
 		}
 
@@ -2079,21 +1644,6 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Checks if an app with a given name is already saved in db.
-	 * 
-	 * @param apiId : String
-	 * @param appName : String
-	 * @return true if an app with a given name exists, false otherwise
-	 */
-	/*public boolean appApiExists(String apiId, String appName){
-		List<App> applist = getAppApiByAppName(apiId, appName);
-		if(applist!=null && applist.size()>0){
-			return true;
-		}
-		return false;
-	}*/
-	
-	/**
 	 * Checks if a resource with a given name is already saved in db.
 	 * 
 	 * @param apiId : String
@@ -2146,23 +1696,5 @@ public class PersistenceManager {
 		}
 		return false;
 	}
-	
-	/**
-	 * Check that status added to policy quota is one of the api status.
-	 * 
-	 * @param lapistatus : list of {@link Status}
-	 * @param lqstatus : list of {@link QuotaStatus}
-	 * @return true if status is one of api status, otherwise false.
-	 */
-	/*public boolean checkPolicyQuotaStatusData(List<Status> lapistatus, List<QuotaStatus> lqstatus){
-		for(int i=0;i<lqstatus.size();i++){
-			String qstatusName = lqstatus.get(i).getName();
-			
-			if(lapistatus.contains(qstatusName))
-				return true;
-		}
-		
-		return false;
-	}*/
 
 }
