@@ -46,7 +46,7 @@ public class Quota extends Policy{
 	//@Field
 	private Integer allowCount;
 	//@Field
-	private boolean isGlobal;
+	private boolean global;
 	//@Field
 	private List<QuotaStatus> qstatus;
 	
@@ -94,19 +94,18 @@ public class Quota extends Policy{
 	}
 	/**
 	 * 
-	 * @return is global : boolean
+	 * @return global : boolean
 	 */
 	public boolean isGlobal() {
-		return isGlobal;
+		return global;
 	}
 	/**
 	 * 
-	 * @param isGlobal : boolean
+	 * @param global : boolean
 	 */
-	public void setGlobal(boolean isGlobal) {
-		this.isGlobal = isGlobal;
+	public void setGlobal(boolean global) {
+		this.global = global;
 	}
-	
 	/**
 	 * 
 	 * @return list of {@link QuotaStatus} instances

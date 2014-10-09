@@ -36,7 +36,7 @@ public class SpikeArrest extends Policy{
 	//@Field
 	public String rate;
 	//@Field
-	public boolean isGlobal;
+	public boolean global;
 
 	/**
 	 * 
@@ -54,17 +54,17 @@ public class SpikeArrest extends Policy{
 	}
 	/**
 	 * 
-	 * @return isGlobal : boolean
+	 * @return global : boolean
 	 */
 	public boolean isGlobal() {
-		return isGlobal;
+		return global;
 	}
 	/**
 	 * 
-	 * @param isGlobal : boolean
+	 * @param global : boolean
 	 */
-	public void setGlobal(boolean isGlobal) {
-		this.isGlobal = isGlobal;
+	public void setGlobal(boolean global) {
+		this.global = global;
 	}
 	
 	
