@@ -144,7 +144,7 @@ public class PolicyManagerTest {
 	/*@Test
 	public void getPolicyByCategory(){
 		log.info("Find Policy by category..");
-		List<Policy> plist = apiManager.getPolicyByCategory("quality");
+		List<Policy> plist = apiManager.getPolicyByCategory("QualityOfService");
 		assertNotNull("Policy not found", plist);
 		for(int i=0;i<plist.size();i++){
 			log.info("Policy category {}, ",plist.get(i).getCategory());
