@@ -295,10 +295,10 @@ public class ScenarioApi {
 
 		log.info("Find policies api by policies category..");
 		List<Policy> pclist = apiManager.getPolicyApiByPolicyCategory("api1",
-				"quality");
+				"QualityOfService");
 		assertNotNull("Error in finding by resource name", pclist);
 		assertTrue("Incorrect category", pclist.get(0).getCategory()
-				.equalsIgnoreCase("quality"));
+				.equalsIgnoreCase("QualityOfService"));
 
 		log.info("Find policies api by policies type..");
 		List<Policy> ptlist = apiManager.getPolicyApiByPolicyType("api1",
