@@ -61,38 +61,6 @@ public class HomeController {
 	}
 	
 	/**
-	 * Try Request Handler class, with a string api url.
-	 * POST method.
-	 * NOT NEEDED
-	 * 
-	 * @param url : String 
-	 * @param request : instance of {@link HttpServletRequest}
-	 * @return instance of {@link ResultData} with data, 
-	 * 			status (OK, NOT FOUND or BAD REQUEST) and a string message : 
-	 * 			"ok", "not found" otherwise "Error".
-	 */
-	/*@RequestMapping(value="/proxy", method = RequestMethod.POST)
-	@ResponseBody
-	public ResultData requestHandler(@RequestBody String url, HttpServletRequest request){
-		logger.info("proxy request handler");
-		try {
-			String decodedurl = URLDecoder.decode(url, "UTF-8");
-			logger.info("Decoded url: {}", decodedurl);
-			RequestHandlerObject r = requestHandler.handleUrl(decodedurl, request);
-			pdp.applyPoliciesBatch(r);
-			
-			if(r.getApiId()==null && r.getResourceId()==null){
-				return new ResultData(r, HttpServletResponse.SC_NOT_FOUND, "not found");
-			}else 
-				return new ResultData(r, HttpServletResponse.SC_OK, "ok");
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, "Error");
-		}
-	}*/
-	
-	/**
 	 * Try Request Handler class, with retrieving api url from request.
 	 * GET method.
 	 * 
@@ -126,9 +94,7 @@ public class HomeController {
 			logger.info("Security Exception: {}", s.getMessage());
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN,
 					s.getMessage());
-		}
-
-		
+		}	
 
 	}
 	

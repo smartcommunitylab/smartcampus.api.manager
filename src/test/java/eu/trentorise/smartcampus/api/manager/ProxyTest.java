@@ -69,7 +69,7 @@ public class ProxyTest {
 		String url = "http://proxy/vciao/hi/r1/2/";
 		//request handler
 		log.info("Request hanlder..");
-		RequestHandlerObject obj = requestHandler.handleUrl(url, null);
+		RequestHandlerObject obj = requestHandler.handleRequest(url, null, null, null);
 		
 		//policy decision
 		log.info("Policy Decision Port..");
@@ -89,7 +89,7 @@ public class ProxyTest {
 		String url = "http://proxy/vciao/hi";
 		//request handler
 		log.info("Request hanlder..");
-		RequestHandlerObject obj = requestHandler.handleUrl(url, null);
+		RequestHandlerObject obj = requestHandler.handleRequest(url, null, null, null);
 		
 		//policy decision
 		log.info("Policy Decision Port..");
@@ -109,7 +109,7 @@ public class ProxyTest {
 		String url = "http://proxy/web/api/v2/amazon";
 		//request handler
 		log.info("Request hanlder..");
-		RequestHandlerObject obj = requestHandler.handleUrl(url, null);
+		RequestHandlerObject obj = requestHandler.handleRequest(url, null, null, null);
 		
 		//policy decision
 		log.info("Policy Decision Port..");
@@ -128,8 +128,7 @@ public class ProxyTest {
 		String url = "http://proxy/v0/geocoding/resource1";//proxy/sample/sample/1
 		//request handler
 		log.info("Request hanlder..");
-		RequestHandlerObject obj = requestHandler.handleRequestWithAppId(
-				"53ea21f344ae5b2876ea7991", url);//53f1ed7e0364a8955e70fe5c
+		RequestHandlerObject obj = requestHandler.handleRequest(url, "53ea21f344ae5b2876ea7991", null, null);
 		
 		//policy decision
 		log.info("Policy Decision Port..");

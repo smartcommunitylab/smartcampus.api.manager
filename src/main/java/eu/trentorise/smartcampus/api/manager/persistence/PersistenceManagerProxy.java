@@ -272,9 +272,12 @@ public class PersistenceManagerProxy {
 		Date max = null;
 		List<LastTime> slist =  spikeArRep.findByApiIdAndResourceId(apiId, resourceId);
 		
-		for(int i=0;i<slist.size();i++){
-			if(max.before(slist.get(i).getTime())){
-				max = slist.get(i).getTime();
+		if(slist!=null && slist.size()>0){
+			max = slist.get(0).getTime();
+			for(int i=0;i<slist.size();i++){
+				if(slist.get(i).getTime().after(max)){//max.before(slist.get(i).getTime())
+					max = slist.get(i).getTime();
+				}
 			}
 		}
 		return max;

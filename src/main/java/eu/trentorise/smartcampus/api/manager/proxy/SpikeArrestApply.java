@@ -73,11 +73,11 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 
 	@Override
 	public void apply() {
-		logger.info("Applying spike arrest policy..");
+		/*logger.info("Applying spike arrest policy..");
 		logger.info("SP - Api id: {}, ",apiId);
 		logger.info("SP - Resource id: {}, ",resourceId);
 		logger.info("SP - App id: {}, ",appId);
-		logger.info("SP - Policy: {}. ",sp.getName());
+		logger.info("SP - Policy: {}. ",sp.getName());*/
 		decision();
 	}
 	
@@ -187,9 +187,13 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 		
 		LastTime lastTime= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId); 
 		
-		Date timeCheck = lastTime.getTime();
+		Date timeCheck = null;
 		if(sp.isGlobal()){
 			timeCheck = pmanager.dateGlobalSpikeArrest(apiId, resourceId);
+		}else{
+			if(lastTime!=null){
+				timeCheck = lastTime.getTime();
+			}
 		}
 	
 		if(lastTime==null || DatesDiff(timeCheck,currentTime)>t){

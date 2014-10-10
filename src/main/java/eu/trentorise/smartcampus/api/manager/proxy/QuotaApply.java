@@ -94,11 +94,11 @@ public class QuotaApply implements PolicyDatastoreApply{
 	@Override
 	public void apply() {
 		
-		logger.info("Applying quota policy..");
+		/*logger.info("Applying quota policy..");
 		logger.info("Q - Api id: {}, ",apiId);
 		logger.info("Q - Resource id: {}, ",resourceId);
 		logger.info("Q - App id: {}, ",appId);
-		logger.info("Q - Policy: {}. ",p.getName());
+		logger.info("Q - Policy: {}. ",p.getName());*/
 		
 		this.interval = p.getInterval();
 		this.timeUnit = p.getTimeUnit();

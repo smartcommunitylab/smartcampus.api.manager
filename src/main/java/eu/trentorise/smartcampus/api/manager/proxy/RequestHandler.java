@@ -102,78 +102,11 @@ public class RequestHandler{
 			}
 		}
 	}
-	
-	/**
-	 * Method that retrieves basepath of api and api resource.
-	 * Then it set two global variables.
-	 * It suppose that the request is for example:
-	 * http(s)://proxy/api_basepath/resource_path
-	 * 
-	 * @param url : String, url of api
-	 * @param request : instance of {@link HttpServletRequest}
-	 * @return instance of {@link RequestHandlerObject} with api id, resource id
-	 * 			and a map of request headers.
-	 */
-	public RequestHandlerObject handleUrl(String url, HttpServletRequest request){
-		
-		String apiId = null, resourceId = null;
-		RequestHandlerObject result = new RequestHandlerObject();
-		
-		String path = splitUrl(url);
-		
-		if (path != null && !path.equalsIgnoreCase("")) {
-			//retrieve api id and resource from static resource
-			if(all!=null && all.size()>0){
-				if(all.containsKey(path)){
-					ObjectInMemory obj = all.get(path);
-					apiId = obj.getApiId();
-					resourceId = obj.getResourceId();
-				}else{
-					throw new IllegalArgumentException("This path is not correct.");
-				}
-
-			}
-			if(apiId==null && resourceId==null){
-				throw new IllegalArgumentException("There is no api and resource for this path.");
-			}
-
-		} else {
-			throw new IllegalArgumentException("There is some problems with split method.");
-		}
-		
-		// retrieves headers
-		Map<String, String> map = new HashMap<String, String>();
-		if (request != null) {
-			Enumeration<String> headerNames = request.getHeaderNames();
-
-			while (headerNames.hasMoreElements()) {
-
-				String headerName = headerNames.nextElement();
-
-				Enumeration<String> headers = request.getHeaders(headerName);
-				while (headers.hasMoreElements()) {
-					String headerValue = headers.nextElement();
-					map.put(headerName, headerValue);
-				}
-
-			}
-		}
-		
-		logger.info("api id: {} ",apiId);
-		logger.info("resource id: {} ", resourceId);
-		
-		//set result
-		result.setApiId(apiId);
-		result.setResourceId(resourceId);
-		result.setHeaders(map);
-		
-		return result;
-	}
 
 	/**
 	 * Method that retrieves basepath of api and api resource.
 	 * It suppose that the request is for example:
-	 * http(s)://proxy/api_basepath/resource_path
+	 * http(s)://context-path/api_basepath/resource_path
 	 * 
 	 * @param request : instance of {@link HttpServletRequest}
 	 * @return instance of {@link RequestHandlerObject} with api id, resource id
@@ -276,117 +209,85 @@ public class RequestHandler{
 	}
 	
 	/**
-	 * Method that retrieves basepath of api, app id and api resource.
+	 * Method that retrieves basepath of api and api resource.
 	 * It suppose that the request is for example:
 	 * http(s)://proxy/api_basepath/resource_path
+	 * Used only for test.
 	 * 
+	 * @param request : String, ex. http(s)://proxy/api_basepath/resource_path
 	 * @param appId : String
-	 * @param request : instance of {@link HttpServletRequest}
-	 * @return instance of {@link RequestHandlerObject} with api id, resource id, app id
+	 * @param appSecret : String
+	 * @param ipAddress : String
+	 * @return instance of {@link RequestHandlerObject} with api id, resource id
 	 * 			and a map of request headers.
 	 */
-	public RequestHandlerObject handleRequestWithAppId(String appId, HttpServletRequest request) {
+	public RequestHandlerObject handleRequest(String request,String appId, String appSecret, String ipAddress){
 
-		String apiId = null, resourceId = null;
-		RequestHandlerObject result = new RequestHandlerObject();
-
-		String requestUri = request.getRequestURI();
-		String[] slist = requestUri.split("/", 3);
-
-		String path;
-		if(slist[2].indexOf("/")==0){
-			path = slist[2];
-		}else{
-			path = "/"+ slist[2];
-		}
-		logger.info("(a)Api Basepath: {}", path);
-		
-		//retrieve api id and resource from static resource
-		if(all!=null && all.size()>0){
-			if(all.containsKey(path)){
-				ObjectInMemory obj = all.get(path);
-				apiId = obj.getApiId();
-				resourceId = obj.getResourceId();
-			}else{
-				throw new IllegalArgumentException("There is no api and resource for this path in memory.");
-			}
-		}
-		if(apiId==null && resourceId==null){
-			throw new IllegalArgumentException("There is no api and resource for this path.");
-		}
-		
-		// retrieves headers
-		Map<String, String> map = new HashMap<String, String>();
 		if (request != null) {
-			Enumeration<String> headerNames = request.getHeaderNames();
 
-			while (headerNames.hasMoreElements()) {
+			String apiId = null, resourceId = null;
+			RequestHandlerObject result = new RequestHandlerObject();
 
-				String headerName = headerNames.nextElement();
+			String path =  splitUrl(request);
+			logger.info("(a)Api Basepath: {}", path);
 
-				Enumeration<String> headers = request.getHeaders(headerName);
-				while (headers.hasMoreElements()) {
-					String headerValue = headers.nextElement();
-					map.put(headerName, headerValue);
+			// retrieve api id and resource from static resource
+			if (all != null && all.size() > 0) {
+				if (all.containsKey(path)) {
+					ObjectInMemory obj = all.get(path);
+					apiId = obj.getApiId();
+					resourceId = obj.getResourceId();
+				} else {
+					retrieveUrlFromMemory(path);
+					ObjectInMemory obj = all.get(path);
+					apiId = obj.getApiId();
+					resourceId = obj.getResourceId();
+				}
+			}
+			if (apiId == null && resourceId == null) {
+				throw new IllegalArgumentException(
+						"There is no api and resource for this path {}.");
+			}
+
+			//map
+			Map<String, String> map = new HashMap<String, String>();
+			//map: appId
+			if (appId != null) {
+				map.put("appId", appId);		
+			}
+			//map: appSecret
+			if (appSecret != null) {
+				map.put("appSecret", appSecret);		
+			}
+			
+			//map:ipAddress
+			map.put("X-FORWARDED-FOR", ipAddress);
+
+			// check that appId retrieved from request is correct
+			if (appId != null) {
+				App app = apiManager.getAppById(appId);
+
+				if (app == null) {
+					throw new IllegalArgumentException(
+							"App with this id does not exist.");
 				}
 
 			}
-		}
-		
-		logger.info("api id: {} ",apiId);
-		logger.info("resource id: {} ", resourceId);
 
-		// set result
-		result.setApiId(apiId);
-		result.setResourceId(resourceId);
-		result.setAppId(appId);
-		result.setHeaders(map);
-		
-		return result;
+			logger.info("api id: {} ", apiId);
+			logger.info("resource id: {} ", resourceId);
+			logger.info("app id: {} ", appId);
+			logger.info("IP address: {} ", ipAddress);
 
-	}
-	
-	/**
-	 * Method that retrieves basepath of api, app id and api resource.
-	 * It suppose that the url is for example:
-	 * http(s)://proxy/api_basepath/resource_path
-	 * 
-	 * @param appId : String
-	 * @param url : String
-	 * @return instance of {@link RequestHandlerObject} with api id, resource id, app id
-	 * 			and a map of request headers.
-	 */
-	public RequestHandlerObject handleRequestWithAppId(String appId, String url) {
-		
-		String apiId = null, resourceId = null;
-		RequestHandlerObject result = new RequestHandlerObject();
+			// set result
+			result.setApiId(apiId);
+			result.setResourceId(resourceId);
+			result.setAppId(appId);
+			result.setHeaders(map);
 
-		String path = splitUrl(url);
-		logger.info("(a)Api Basepath: {}", path);
-		
-		//retrieve api id and resource from static resource
-		if(all!=null && all.size()>0){
-			if(all.containsKey(path)){
-				ObjectInMemory obj = all.get(path);
-				apiId = obj.getApiId();
-				resourceId = obj.getResourceId();
-			}else{
-				throw new IllegalArgumentException("There is no api and resource for this path in memory.");
-			}
-		}
-		if(apiId==null && resourceId==null){
-			throw new IllegalArgumentException("There is no api and resource for this path.");
-		}
-		
-		logger.info("api id: {} ",apiId);
-		logger.info("resource id: {} ", resourceId);
-
-		// set result
-		result.setApiId(apiId);
-		result.setResourceId(resourceId);
-		result.setAppId(appId);
-		
-		return result;
+			return result;
+		} else
+			return null;
 
 	}
 	
