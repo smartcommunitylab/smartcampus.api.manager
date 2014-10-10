@@ -111,7 +111,32 @@ public class PersistenceManager {
 	public Api getApiById(String id){
 		List<Api> api = apirepository.findById(id);
 		if(api!=null && api.size()>0){
-			return api.get(0);
+			Api fapi = api.get(0);
+			// order
+			List<Resource> rlist = fapi.getResource();
+			if (rlist != null && rlist.size() > 0) {
+				Collections.sort(rlist, new Comparator<Resource>() {
+
+					@Override
+					public int compare(Resource o1, Resource o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
+				});
+			}
+			
+			List<Policy> plist = fapi.getPolicy();
+			if (plist != null && plist.size() > 0) {
+				Collections.sort(plist, new Comparator<Policy>() {
+
+					@Override
+					public int compare(Policy o1, Policy o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
+				});
+			}
+			
+			
+			return fapi;
 			
 		}
 		return null;
@@ -634,7 +659,21 @@ public class PersistenceManager {
 						r = rlist.get(i);
 					}
 				}
+				
+				if (r != null) {
+					List<Policy> plist = r.getPolicy();
+					if (plist != null && plist.size() > 0) {
+						Collections.sort(plist, new Comparator<Policy>() {
+
+							@Override
+							public int compare(Policy o1, Policy o2) {
+								return o1.getName().compareTo(o2.getName());
+							}
+						});
+					}
+				}
 			}
+			
 			return r;
 		} catch (java.lang.NullPointerException n) {
 			return null;
