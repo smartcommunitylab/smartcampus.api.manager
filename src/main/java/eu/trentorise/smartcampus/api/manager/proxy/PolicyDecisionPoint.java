@@ -228,15 +228,6 @@ public class PolicyDecisionPoint {
 				rollback.failurePolicy(apiId, resourceId, appId, "Quota");
 				rollback.failurePolicy(apiId, resourceId, appId, "Spike Arrest");
 				
-				//roolback TODO
-				/*if(msg.contains("Quota")){
-					logger.info("Quota deny");
-					rollback.failurePolicy(apiId, resourceId, appId, "Quota");
-				}
-				if(msg.contains("Spike Arrest")){
-					logger.info("Spike Arrest deny");
-					rollback.failurePolicy(apiId, resourceId, appId, "Spike Arrest");
-				}*/
 				//exception
 				if(resourceId==null)
 					throw new SecurityException("You are not allowed to access this api. "

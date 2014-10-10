@@ -46,11 +46,10 @@ public class MongoRollback {
 		this.pmanager = pmanager;
 	}
 	
-	//TODO
 	public void failurePolicy(String apiId, String resourceId, String appId, String policyType){
-		logger.info("Failure..");
+		logger.info("Policy fails..");
 		if(policyType.equalsIgnoreCase("Spike Arrest")){
-			logger.info("F. Spike Arrest ..");
+			
 			//find a LastTime entry with this parameter and state pending
 			LastTime lt = pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId);
 			if(lt!=null){
@@ -65,7 +64,7 @@ public class MongoRollback {
 			
 		}
 		if(policyType.equalsIgnoreCase("Quota")){
-			logger.info("F. Quota ..");
+			
 			//find a PolicyQuota entry with this parameter and state pending
 			PolicyQuota pq = pmanager.retrievePolicyQuotaByParamIds(apiId, resourceId, appId);
 			if(pq!=null){
@@ -86,6 +85,7 @@ public class MongoRollback {
 	}
 	
 	public void successfulPolicySP(String apiId, String resourceId, String appId) {
+		logger.info("Policy success..");
 		LastTime lt = pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(
 				apiId, resourceId, appId);
 		if (lt != null) {
@@ -97,7 +97,7 @@ public class MongoRollback {
 	}
 	
 	public void successfulPolicyQ(String apiId, String resourceId, String appId) {
-
+		logger.info("Policy success..");
 		PolicyQuota pq = pmanager.retrievePolicyQuotaByParamIds(apiId,
 				resourceId, appId);
 		if (pq != null) {

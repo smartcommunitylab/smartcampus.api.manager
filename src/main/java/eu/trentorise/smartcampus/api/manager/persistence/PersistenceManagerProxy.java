@@ -19,14 +19,22 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.trentorise.smartcampus.api.manager.model.proxy.GlobalCounter;
 import eu.trentorise.smartcampus.api.manager.model.proxy.LastTime;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.repository.LastTimeRepository;
@@ -174,11 +182,23 @@ public class PersistenceManagerProxy {
 	 */
 	public int sumGlobalQuota(String apiId, String resourceId){
 		int total = 0;
-		List<PolicyQuota> pqlist =  pqrep.findByApiIdAndResourceId(apiId, resourceId);
 		
-		for(int i=0;i<pqlist.size();i++){
-			total = +pqlist.get(i).getCount();
+		Criteria criteria = new Criteria().andOperator(
+				Criteria.where("apiId").is(apiId),
+				Criteria.where("resourceId").is(resourceId)
+				);
+		Aggregation agg = newAggregation(
+				match(criteria),
+				group("apiId","resourceId").sum("count").as("total"));
+		
+		AggregationResults<GlobalCounter> p =  
+				mongoOperations.aggregate(agg, "policyQuota", GlobalCounter.class);
+		
+		List<GlobalCounter> r = p.getMappedResults();
+		if(r!=null && r.size()>0){
+			total = r.get(0).getTotal();
 		}
+		
 		return total;
 		
 	}
@@ -270,15 +290,25 @@ public class PersistenceManagerProxy {
 	 */
 	public Date dateGlobalSpikeArrest(String apiId, String resourceId){
 		Date max = null;
-		List<LastTime> slist =  spikeArRep.findByApiIdAndResourceId(apiId, resourceId);
+		//List<LastTime> slist =  spikeArRep.findByApiIdAndResourceId(apiId, resourceId);
+		
+		Query query = new Query();
+		Criteria criteria = new Criteria().andOperator(
+				Criteria.where("apiId").is(apiId),
+				Criteria.where("resourceId").is(resourceId)
+				);
+		query.addCriteria(criteria);
+		query.with(new Sort(Sort.Direction.DESC, "time"));
+		
+		List<LastTime> slist = mongoOperations.find(query, LastTime.class);
 		
 		if(slist!=null && slist.size()>0){
 			max = slist.get(0).getTime();
-			for(int i=0;i<slist.size();i++){
+			/*for(int i=0;i<slist.size();i++){
 				if(slist.get(i).getTime().after(max)){//max.before(slist.get(i).getTime())
 					max = slist.get(i).getTime();
 				}
-			}
+			}*/
 		}
 		return max;
 	}
