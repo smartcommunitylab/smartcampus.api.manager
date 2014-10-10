@@ -62,7 +62,7 @@ public class PersistenceManagerProxy {
 	 * @param resourceId : String
 	 * @return instance of {@link PolicyQuota}
 	 */
-	public PolicyQuota retrievePolicyQuotaByParams(String apiId, String resourceId){
+	/*public PolicyQuota retrievePolicyQuotaByParams(String apiId, String resourceId){
 		List<PolicyQuota> pqlist =  pqrep.findByApiIdAndResourceId(apiId, resourceId);
 		if(pqlist!=null && pqlist.size()>0){
 			//check that appId is null
@@ -73,7 +73,7 @@ public class PersistenceManagerProxy {
 			}
 		}
 		return null;
-	}
+	}*/
 	
 	/**
 	 * Retrieves Policy Quota data searching by api, resource and app id.
@@ -163,6 +163,26 @@ public class PersistenceManagerProxy {
 		return pq;
 	}
 	
+	/**
+	 * If global is set to true in policy quota, then count must be
+	 * sum of count of anonymous and verified access to that
+	 * resource or api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @return total sum of count : int
+	 */
+	public int sumGlobalQuota(String apiId, String resourceId){
+		int total = 0;
+		List<PolicyQuota> pqlist =  pqrep.findByApiIdAndResourceId(apiId, resourceId);
+		
+		for(int i=0;i<pqlist.size();i++){
+			total = +pqlist.get(i).getCount();
+		}
+		return total;
+		
+	}
+	
 	
 	/*
 	 * POLICY SPIKE ARREST 
@@ -237,6 +257,27 @@ public class PersistenceManagerProxy {
 		LastTime lt = mongoOperations.findAndModify(query, update, 
 				new FindAndModifyOptions().upsert(true).returnNew(true), LastTime.class);
 		return lt;
+	}
+	
+	/**
+	 * If global is set to true in policy spike arrest, then date must be
+	 * the max date of anonymous and verified access to that
+	 * resource or api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @return max : Date
+	 */
+	public Date dateGlobalSpikeArrest(String apiId, String resourceId){
+		Date max = null;
+		List<LastTime> slist =  spikeArRep.findByApiIdAndResourceId(apiId, resourceId);
+		
+		for(int i=0;i<slist.size();i++){
+			if(max.before(slist.get(i).getTime())){
+				max = slist.get(i).getTime();
+			}
+		}
+		return max;
 	}
 	
 }

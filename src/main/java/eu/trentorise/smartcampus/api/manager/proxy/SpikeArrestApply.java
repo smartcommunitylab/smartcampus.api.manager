@@ -146,7 +146,12 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 		}
 		
 		if(list.size()>0){
-			Date maxLastTime= getMax(list);
+			Date maxLastTime;
+			if(sp.isGlobal()){
+				maxLastTime = pmanager.dateGlobalSpikeArrest(apiId, resourceId);
+			}else{
+				maxLastTime= getMax(list);
+			}
 			int t=intervalTimeValue(rate);
 		
 		
@@ -180,9 +185,14 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 		  
 		int t= intervalTimeValue(rate);
 		
-		LastTime lastTime= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId); 	
+		LastTime lastTime= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId); 
+		
+		Date timeCheck = lastTime.getTime();
+		if(sp.isGlobal()){
+			timeCheck = pmanager.dateGlobalSpikeArrest(apiId, resourceId);
+		}
 	
-		if(lastTime==null || DatesDiff(lastTime.getTime(),currentTime)>t){
+		if(lastTime==null || DatesDiff(timeCheck,currentTime)>t){
 			updateSpikeArrestApply(lastTime, apiId, resourceId, appId, currentTime);
 			return true;
 		}

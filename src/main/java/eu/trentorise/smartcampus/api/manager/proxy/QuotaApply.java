@@ -234,11 +234,17 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 			boolean decision = false;
 			
-			if (resourceQuota!=0 && pq.getCount() <= resourceQuota) {
+			//global is true
+			int count = pq.getCount();
+			if(p.isGlobal()){
+				count = pmanager.sumGlobalQuota(apiId, resourceId);
+			}
+			
+			if (resourceQuota!=0 && count <= resourceQuota) {
 				decision = true;
 			}
 			
-			if (resourceQuota==0 && pq.getCount() <= p.getAllowCount()) {
+			if (resourceQuota==0 && count <= p.getAllowCount()) {
 				decision = true;
 			}
 
@@ -261,12 +267,17 @@ public class QuotaApply implements PolicyDatastoreApply{
 	private boolean QuotaDecision(int timeLimit, int resourceQuota, 
 			String apiId, String resourceId, Date currentTime) {
 
-		PolicyQuota pq = pmanager.retrievePolicyQuotaByParams(apiId, resourceId);
+		PolicyQuota pq = pmanager.retrievePolicyQuotaByParamIds(apiId, resourceId, null);
 		
 		int counter = 1;
 
 		if (pq!=null && DatesDiff(pq.getTime(), currentTime) < timeLimit) {
-			counter = +pq.getCount();
+			//global is true
+			if(p.isGlobal()){
+				counter = +pmanager.sumGlobalQuota(apiId, resourceId);
+			}else{
+				counter = +pq.getCount();
+			}
 		}
 		
 		updatePolicyQuota(pq, apiId, resourceId, null, currentTime,

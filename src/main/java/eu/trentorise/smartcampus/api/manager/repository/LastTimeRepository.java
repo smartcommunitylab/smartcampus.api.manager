@@ -49,4 +49,6 @@ public interface LastTimeRepository extends MongoRepository<LastTime,String>{
 	 */
 	public List<LastTime> findByApiIdAndResourceId(String apiId, String resourceId);
 	
+	
+	
 }
