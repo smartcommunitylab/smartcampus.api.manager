@@ -323,23 +323,27 @@ public class QuotaApply implements PolicyDatastoreApply{
 			q.setAppId(appId);
 			q.setTime(currentTime);
 			q.setCount(1);
-			//TODO
+			
 			//for callback
 			q.setState("init");
 			q.setPrevTime(currentTime);
+			
 			pmanager.findAndModify(q, true);
 		} else {
 			if (DatesDiff(q.getTime(), currentTime) < timeLimit) {
 				int quotaCount = q.getCount() + 1;
 				q.setCount(quotaCount);
+				
 				//for callback
 				q.setState("pending");
 				q.setPrevTime(q.getTime());
+				
 				pmanager.findAndModify(q, true);
 			} else {
 				//for callback
 				q.setPrevTime(q.getTime());
 				q.setState("pending");
+				
 				//current time
 				q.setTime(currentTime);
 				q.setCount(1);

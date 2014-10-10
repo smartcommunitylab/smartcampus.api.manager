@@ -75,7 +75,6 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 
 	@Override
 	public void apply() {
-		// TODO Auto-generated method stub
 		
 		decision();
 		

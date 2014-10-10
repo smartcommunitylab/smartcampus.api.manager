@@ -180,28 +180,36 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 	 * @param currentTime : Date
 	 * @return if access is granted then true else false
 	 */
-	private boolean SpikeArrestDecision(String rate, String apiId, String appId, String resourceId, 
-			Date currentTime) {	
-		  
-		int t= intervalTimeValue(rate);
-		
-		LastTime lastTime= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, appId); 
-		
-		Date timeCheck = null;
-		if(sp.isGlobal()){
-			timeCheck = pmanager.dateGlobalSpikeArrest(apiId, resourceId);
-		}else{
-			if(lastTime!=null){
-				timeCheck = lastTime.getTime();
-			}
-		}
-	
-		if(lastTime==null || DatesDiff(timeCheck,currentTime)>t){
+	private boolean SpikeArrestDecision(String rate, String apiId,
+			String appId, String resourceId, Date currentTime) {
+
+		int t = intervalTimeValue(rate);
+
+		LastTime lastTime = pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId,
+						appId);
+
+		if (lastTime == null) {
 			updateSpikeArrestApply(lastTime, apiId, resourceId, appId, currentTime);
 			return true;
+		} 
+		else {
+
+			Date timeCheck = null;
+			if (sp.isGlobal()) {
+				timeCheck = pmanager.dateGlobalSpikeArrest(apiId, resourceId);
+			} else {
+				timeCheck = lastTime.getTime();
+			}
+
+			if (DatesDiff(timeCheck, currentTime) > t) {
+				updateSpikeArrestApply(lastTime, apiId, resourceId, appId, currentTime);
+				return true;
+			}
+
 		}
-		else return false;
-				   	    	    	 
+
+		return false;
+
 	}
 	
 	/**
@@ -271,17 +279,20 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 			lastTime.setResourceId(resourceId);
 			lastTime.setAppId(appId);
 			lastTime.setTime(currentTime);
-			//TODO
+			
 			//init - time, for callback
 			lastTime.setState("init");
 			lastTime.setPrevTime(currentTime);
+			
 			pmanager.findAndModify(lastTime);
 		} else {
 			//init - time, for callback
 			lastTime.setState("pending");
 			lastTime.setPrevTime(lastTime.getTime());
+			
 			//current time
 			lastTime.setTime(currentTime);
+			
 			pmanager.findAndModify(lastTime);
 		}
 		
