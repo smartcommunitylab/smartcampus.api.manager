@@ -100,7 +100,7 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 		} else {
 			
 			if (appId == null) {
-				decision = SpikeArrestDecision(rate, apiId, resourceId,
+				decision = SpikeArrestDecision(rate, apiId, null, resourceId,
 						currentTime);
 
 			} else {
@@ -118,54 +118,6 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 				" Spike Arrest policy DENIES access.");
 		}
 	}
-	
-	/**
-	 * Function that checks last anonymous access to an api resource.
-	 * It retrieves data from last time table where app id is null.
-	 * It checks the max value of date and check if the different of two dates is greater than
-	 * rate.
-	 * If access is granted then it return true otherwise false.
-	 * 
-	 * @param rate : String
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param currentTime : Date
-	 * @return if access is granted then true else false
-	 */
-	private  boolean SpikeArrestDecision(String rate, String apiId, String resourceId, Date currentTime) {	
-		List<LastTime> list = new ArrayList<LastTime>();
-		
-		LastTime lastTimeApp= pmanager.retrievePolicySpikeArrestByApiAndRAndAppId(apiId, resourceId, null); 
-		LastTime ltime = pmanager.retrievePolicySpikeArrestByApiAndResouceId(apiId, resourceId);
-		
-		if(ltime!=null){
-			list.add(ltime);
-		}
-		if(lastTimeApp!=null){
-			list.add(lastTimeApp);
-		}
-		
-		if(list.size()>0){
-			Date maxLastTime;
-			if(sp.isGlobal()){
-				maxLastTime = pmanager.dateGlobalSpikeArrest(apiId, resourceId);
-			}else{
-				maxLastTime= getMax(list);
-			}
-			int t=intervalTimeValue(rate);
-		
-		
-			if(	DatesDiff(maxLastTime,currentTime) >t){
-				updateSpikeArrestApply(lastTimeApp, apiId, resourceId, null, currentTime);
-				return true;  
-			}else
-				return false;
-		}else{
-			updateSpikeArrestApply(null, apiId, resourceId, null, currentTime);
-			return true;
-		}
-		
-	}	
 	
 	/**
 	 * Function that checks last access of an app to an api resource.
@@ -210,23 +162,6 @@ public class SpikeArrestApply implements PolicyDatastoreApply{
 
 		return false;
 
-	}
-	
-	/**
-	 * Return max value of last time dates.
-	 * 
-	 * @param lastTimes : list of {@link LastTime} instances
-	 * @return maximum value
-	 */
-	private Date getMax(List<LastTime> lastTimes) {
-		Date max = new Date(Long.MIN_VALUE);
-		for (int i = 0; i < lastTimes.size(); i++) {
-			Date lastTime = lastTimes.get(i).getTime();
-			if (lastTime.after(max)) {
-				max = lastTime;
-			}
-		}
-		return max;
 	}
 
 	/**

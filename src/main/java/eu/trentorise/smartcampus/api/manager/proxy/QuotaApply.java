@@ -190,7 +190,7 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 			if (appId == null) {
 				decision = QuotaDecision(timeLimit, resourceQuota, apiId,
-						resourceId, currentTime);
+						null, resourceId, currentTime);
 			} else {
 				decision = QuotaDecision(timeLimit, resourceQuota, apiId,
 						appId, resourceId, currentTime);
@@ -254,44 +254,6 @@ public class QuotaApply implements PolicyDatastoreApply{
 
 	}
 	
-	/**
-	 * Checks if anonymous access to api resource can be granted.
-	 * 
-	 * @param timeLimit : int
-	 * @param resourceQuota : int
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param currentTime : Date
-	 * @return if access is granted then true else false
-	 */
-	private boolean QuotaDecision(int timeLimit, int resourceQuota, 
-			String apiId, String resourceId, Date currentTime) {
-
-		PolicyQuota pq = pmanager.retrievePolicyQuotaByParamIds(apiId, resourceId, null);
-		
-		int counter = 1;
-
-		if (pq!=null && DatesDiff(pq.getTime(), currentTime) < timeLimit) {
-			//global is true
-			if(p.isGlobal()){
-				counter = +pmanager.sumGlobalQuota(apiId, resourceId);
-			}else{
-				counter = +pq.getCount();
-			}
-		}
-		
-		updatePolicyQuota(pq, apiId, resourceId, null, currentTime,
-				timeLimit);
-
-		if (resourceQuota!=0 && counter <= resourceQuota)
-			return true;
-		else if(resourceQuota==0 && counter <= p.getAllowCount())
-			return true;
-		else
-			return false;
-
-	}
-
 	/**
 	 * Calculates difference from d2 to d1 in milliseconds.
 	 * 
