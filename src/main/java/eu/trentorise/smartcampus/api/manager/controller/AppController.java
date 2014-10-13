@@ -86,7 +86,7 @@ public class AppController {
 	@RequestMapping(value = "/{appId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
 	public ResultData getResourceAppById(@PathVariable String appId){
-		logger.info("App by id.");
+		logger.info("Retrieve App by id.");
 		try {
 			App a = smanager.getAppById(appId);
 			if (a != null) {

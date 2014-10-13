@@ -72,7 +72,7 @@ public class ResourceController {
 			produces="application/json")
 	@ResponseBody
 	public ResultData getResourceApiById(@PathVariable String apiId, @PathVariable String resourceId){
-		logger.info("Resource by id.");
+		logger.info("Retrieve Resource by id.");
 		try {
 			Resource r = manager.getResourceApiByResourceId(apiId, resourceId);
 			
@@ -104,7 +104,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData getResourcePolicyById(@PathVariable String apiId, @PathVariable String resourceId,
 			@PathVariable String policyId){
-		logger.info("Policy Resource by id.");
+		logger.info("Retrieve Policy Resource by id.");
 		try {
 			Policy p = manager.getPolicyResourceApiByResourceId(apiId, resourceId, policyId);
 			if(p!=null){
@@ -131,7 +131,7 @@ public class ResourceController {
 	@RequestMapping(value = "/add/{apiId}/resource", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData addResource(@PathVariable String apiId, @RequestBody Resource resource) {
-		logger.info("Update api resource.");
+		logger.info("Add api resource.");
 		try{
 			Resource updateApiR = manager.addResourceApi(apiId,resource);
 			if(updateApiR!=null){
@@ -164,7 +164,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody SpikeArrest p){
-		logger.info("Add policy to resource.");
+		logger.info("Add policy Spike Arrest to resource.");
 		try {
 			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -200,7 +200,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody Quota p){
-		logger.info("Add policy to resource.");
+		logger.info("Add policy Quota to resource.");
 		try {
 			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -236,7 +236,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody IPAccessControl p){
-		logger.info("Add policy to resource.");
+		logger.info("Add policy IP Access Control to resource.");
 		try {
 			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -272,7 +272,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody VerifyAppKey p){
-		logger.info("Add policy to resource.");
+		logger.info("Add policy Verify App Key to resource.");
 		try {
 			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -308,7 +308,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody OAuth p){
-		logger.info("Add policy to resource.");
+		logger.info("Add policy OAuth to resource.");
 		try {
 			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -376,7 +376,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody SpikeArrest p){
-		logger.info("Update policy to resource.");
+		logger.info("Update policy Spike Arrest to resource.");
 		try {
 			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -412,7 +412,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody Quota p){
-		logger.info("Update policy to resource.");
+		logger.info("Update policy Quota to resource.");
 		try{
 			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -448,7 +448,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody IPAccessControl p){
-		logger.info("Update policy to resource.");
+		logger.info("Update policy IP Access Control to resource.");
 		try{
 			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -484,7 +484,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody VerifyAppKey p){
-		logger.info("Update policy to resource.");
+		logger.info("Update policy Verify App Key to resource.");
 		try{
 			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
@@ -520,7 +520,7 @@ public class ResourceController {
 	@ResponseBody
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody OAuth p){
-		logger.info("Update policy to resource.");
+		logger.info("Update policy OAuth to resource.");
 		try{
 			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {

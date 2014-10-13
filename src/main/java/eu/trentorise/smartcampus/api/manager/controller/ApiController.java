@@ -30,14 +30,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
-import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
-import eu.trentorise.smartcampus.api.manager.model.Policy;
-import eu.trentorise.smartcampus.api.manager.model.Quota;
-import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
-import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
-import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
@@ -74,7 +68,7 @@ public class ApiController {
 	@RequestMapping(value = "/id/{apiId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
 	public ResultData getApiById(@PathVariable String apiId){
-		logger.info("Api by id.");
+		logger.info("Retrieve Api by id.");
 		Api api;
 		try {
 			api = smanager.getApiById(apiId);
@@ -103,7 +97,7 @@ public class ApiController {
 	@RequestMapping(value = "/name/{apiId}", method = RequestMethod.GET, produces="application/json")
 	@ResponseBody
 	public ResultData getApiByName(@PathVariable String apiId){
-		logger.info("Api name.");
+		logger.info("Retrieve Api name.");
 		
 		try {
 			String api = smanager.getApiByName(apiId);
@@ -238,7 +232,7 @@ public class ApiController {
 	@ResponseBody
 	public ResultData getApiStatusByStatusName(@PathVariable String apiId, 
 			@PathVariable String statusName) {
-		logger.info("List api by owner id.");
+		logger.info("Retrieve api status searching by status name.");
 		
 		try {
 			Status s = smanager.getApiStatusByStatusName(apiId, statusName);
@@ -268,7 +262,7 @@ public class ApiController {
 			produces="application/json")
 	@ResponseBody
 	public ResultData getApiStatus(@PathVariable String apiId) {
-		logger.info("List api by owner id.");
+		logger.info("List api status.");
 		List<Status> s;
 		try {
 			s = smanager.getApiStatus(apiId);

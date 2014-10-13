@@ -71,7 +71,7 @@ public class PolicyController {
 			produces="application/json")
 	@ResponseBody
 	public ResultData getPolicyApiById(@PathVariable String apiId, @PathVariable String policyId){
-		logger.info("Policy by id.");
+		logger.info("Retrieve Policy by id.");
 		Policy p;
 		try {
 			p = smanager.getPolicyApiByPolicyId(apiId, policyId);
@@ -100,7 +100,7 @@ public class PolicyController {
 	@RequestMapping(value = "/add/{apiId}/policy/spikeArrest", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
-		logger.info("Update api policy.");
+		logger.info("Add Spike Arrest api policy.");
 		try{
 			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
@@ -130,7 +130,7 @@ public class PolicyController {
 	@RequestMapping(value = "/add/{apiId}/policy/quota", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Quota p) {
-		logger.info("Update api policy.");
+		logger.info("Add Quota api policy.");
 		try{
 			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
@@ -160,7 +160,7 @@ public class PolicyController {
 	@RequestMapping(value = "/add/{apiId}/policy/ip", method = RequestMethod.POST, consumes="application/json")
 	@ResponseBody
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody IPAccessControl p) {
-		logger.info("Update api policy.");
+		logger.info("Add IP Access Control api policy.");
 		try{
 			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
@@ -191,7 +191,7 @@ public class PolicyController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody VerifyAppKey p) {
-		logger.info("Update api policy.");
+		logger.info("Add Verify App Key api policy.");
 		try{
 			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
@@ -222,7 +222,7 @@ public class PolicyController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData addPolicy(@PathVariable String apiId, @RequestBody OAuth p) {
-		logger.info("Update api policy.");
+		logger.info("Add OAuth api policy.");
 		try{
 			Policy updateApiP = smanager.addPolicyApi(apiId, p);
 			if(updateApiP!=null){
@@ -312,7 +312,7 @@ public class PolicyController {
 	@RequestMapping(value = "/update/{apiId}/policy/ip", method = RequestMethod.PUT, consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody IPAccessControl p) {
-		logger.info("Update api policy quota.");
+		logger.info("Update api policy IP Access Control.");
 		try{
 			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
@@ -343,7 +343,7 @@ public class PolicyController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody VerifyAppKey p) {
-		logger.info("Update api policy quota.");
+		logger.info("Update api policy Verify App Key.");
 		try{
 			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
@@ -374,7 +374,7 @@ public class PolicyController {
 			consumes="application/json")
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody OAuth p) {
-		logger.info("Update api policy quota.");
+		logger.info("Update api policy OAuth.");
 		try{
 			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){
