@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,7 @@ import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.ApiData;
 import eu.trentorise.smartcampus.api.manager.model.App;
 import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
+import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
@@ -894,87 +896,6 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Retrieves spike arrest policy data from Api searching by policy id.
-	 * 
-	 * @param apiId : String
-	 * @param policyId : String
-	 * @return instance of {@link SpikeArrest}
-	 */
-	public Policy getSpikeArrestPolicyApiByPolicyId(String apiId, String policyId){
-		Api api = getApiById(apiId);
-		
-		try {
-			List<Policy> plist = api.getPolicy();
-			SpikeArrest p = null;
-
-			if (plist != null) {
-				for (int i = 0; i < plist.size(); i++) {
-					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
-						p = (SpikeArrest) plist.get(i);
-					}
-				}
-			}
-			return p;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Retrieves quota data from Api searching by policy id.
-	 * 
-	 * @param apiId : String
-	 * @param policyId : String
-	 * @return instance of {@link Quota}
-	 */
-	public Policy getQuotaPolicyApiByPolicyId(String apiId, String policyId){
-		Api api = getApiById(apiId);
-		
-		try {
-			List<Policy> plist = api.getPolicy();
-			Quota p = null;
-
-			if (plist != null) {
-				for (int i = 0; i < plist.size(); i++) {
-					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
-						p = (Quota) plist.get(i);
-					}
-				}
-			}
-			return p;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Retrieves ip access control data from Api searching by policy id.
-	 * 
-	 * @param apiId : String
-	 * @param policyId : String
-	 * @return instance of {@link IPAccessControl}
-	 */
-	public Policy getIPAccessControlPolicyApiByPolicyId(String apiId, String policyId){
-		Api api = getApiById(apiId);
-		
-		try {
-			List<Policy> plist = api.getPolicy();
-			IPAccessControl p = null;
-
-			if (plist != null) {
-				for (int i = 0; i < plist.size(); i++) {
-					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
-						p = (IPAccessControl) plist.get(i);
-					}
-				}
-			}
-			return p;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}
-	
-	/**
 	 * Retrieves policy data from Api searching by policy name.
 	 * 
 	 * @param apiId : String
@@ -1208,121 +1129,6 @@ public class PersistenceManager {
 				for (int i = 0; i < plist.size(); i++) {
 					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
 						p = plist.get(i);
-					}
-				}
-			}
-			return p;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Retrieve spike arrest policy resource by policyId.
-	 * 
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param policyId : String
-	 * @return instance of {@link SpikeArrest} resource
-	 */
-	public Policy getSpikeArrestPolicyResourceApiByResourceId(String apiId, String resourceId, 
-			String policyId){
-		Resource resource = getResourceApiByResourceId(apiId, resourceId);
-		
-		try {
-			List<Policy> plist = resource.getPolicy();
-			SpikeArrest p = null;
-
-			if (plist != null) {
-				for (int i = 0; i < plist.size(); i++) {
-					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
-						p = (SpikeArrest) plist.get(i);
-					}
-				}
-			}
-			return p;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Retrieve quota policy resource by policyId.
-	 * 
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param policyId : String
-	 * @return instance of {@link Quota} resource
-	 */
-	public Policy getQuotaPolicyResourceApiByResourceId(String apiId, String resourceId, String policyId){
-		Resource resource = getResourceApiByResourceId(apiId, resourceId);
-
-		try {
-			List<Policy> plist = resource.getPolicy();
-			Quota p = null;
-
-			if (plist != null) {
-				for (int i = 0; i < plist.size(); i++) {
-					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
-						p = (Quota) plist.get(i);
-					}
-				}
-			}
-			return p;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Retrieve IP access control policy resource by policyId.
-	 * 
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param policyId : String
-	 * @return instance of {@link IPAccessControl} resource
-	 */
-	public Policy getIPAccessControlPolicyResourceApiByResourceId(String apiId, String resourceId, 
-			String policyId){
-		Resource resource = getResourceApiByResourceId(apiId, resourceId);
-
-		try {
-			List<Policy> plist = resource.getPolicy();
-			IPAccessControl p = null;
-
-			if (plist != null) {
-				for (int i = 0; i < plist.size(); i++) {
-					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
-						p = (IPAccessControl) plist.get(i);
-					}
-				}
-			}
-			return p;
-		} catch (java.lang.NullPointerException n) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Retrieve Verify app key policy resource by policyId.
-	 * 
-	 * @param apiId : String
-	 * @param resourceId : String
-	 * @param policyId : String
-	 * @return instance of {@link VerifyAppKey} resource
-	 */
-	public Policy getVerifyAppKeyPolicyResourceApiByResourceId(String apiId, String resourceId, 
-			String policyId){
-		Resource resource = getResourceApiByResourceId(apiId, resourceId);
-
-		try {
-			List<Policy> plist = resource.getPolicy();
-			VerifyAppKey p = null;
-
-			if (plist != null) {
-				for (int i = 0; i < plist.size(); i++) {
-					if (plist.get(i).getId().equalsIgnoreCase(policyId)) {
-						p = (VerifyAppKey) plist.get(i);
 					}
 				}
 			}
@@ -1640,6 +1446,42 @@ public class PersistenceManager {
 				}
 			}
 			
+		}
+		
+		//check OAuth parameters
+		if(p instanceof OAuth){
+			//TODO
+			/*
+			 * operation cannot be null
+			 * operation value are only two else error
+			 * if operation==Validate Token the
+			 * 		validate endpoint cannot be null.
+			 * if endpoint is not null then uri validator
+			 */
+			String oauthOp = ((OAuth) p).getOp();
+			if(oauthOp==null){
+				throw new IllegalArgumentException("For policy oauth, operation is required.");
+			}else{
+				if(!oauthOp.equalsIgnoreCase("verifyToken") &&
+						oauthOp.equalsIgnoreCase("validateToken")){
+					throw new IllegalArgumentException("For policy oauth, operation possible value" +
+							" are: verify token or validate token.");
+				}
+				
+				//check endpoint
+				if(oauthOp.equalsIgnoreCase("validateToken")){
+					String endp = ((OAuth) p).getEndpoint();
+					if(endp==null){
+						throw new IllegalArgumentException("For policy oauth, if operation is" +
+								" validate token, then enpoint cannot be null.");
+					}else{
+						UrlValidator validator = new UrlValidator();
+						if(!validator.isValid(endp)){
+							throw new IllegalArgumentException("Endpoint is not a valid url.");
+						}
+					}
+				}
+			}
 		}
 				
 	}

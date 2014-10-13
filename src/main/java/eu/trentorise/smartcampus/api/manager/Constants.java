@@ -39,5 +39,5 @@ public class Constants {
 	 * possible value for rule of policy IP Access Control
 	 */
 	public enum POLICY_IP_RULE{ALLOW,DENY};
-
+	
 }

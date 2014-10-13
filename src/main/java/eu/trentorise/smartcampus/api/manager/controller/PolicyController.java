@@ -22,12 +22,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
+import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
+import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
+import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
@@ -49,7 +55,7 @@ public class PolicyController {
 	 * Instance of {@link SecurityManager}.
 	 */
 	@Autowired
-	private SecurityManager manager;
+	private SecurityManager smanager;
 	
 	/**
 	 * Rest service that retrieves policy of an Api by policy and api id.
@@ -68,7 +74,7 @@ public class PolicyController {
 		logger.info("Policy by id.");
 		Policy p;
 		try {
-			p = manager.getPolicyApiByPolicyId(apiId, policyId);
+			p = smanager.getPolicyApiByPolicyId(apiId, policyId);
 			
 			if(p!=null){
 				return new ResultData(p, HttpServletResponse.SC_OK, "Policy data found");
@@ -80,5 +86,329 @@ public class PolicyController {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 	}
+	
+	/**
+	 * Rest service that adds a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Add policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/spikeArrest", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
+		logger.info("Update api policy.");
+		try{
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that adds a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Add policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/quota", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody Quota p) {
+		logger.info("Update api policy.");
+		try{
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that adds a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link IPAccessControl}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Add policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/ip", method = RequestMethod.POST, consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody IPAccessControl p) {
+		logger.info("Update api policy.");
+		try{
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that adds a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link VerifyAppKey}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Add policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/appkey", method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody VerifyAppKey p) {
+		logger.info("Update api policy.");
+		try{
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that adds a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link OAuth}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Add policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/oauth", method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody OAuth p) {
+		logger.info("Update api policy.");
+		try{
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
 
+	/**
+	 * Rest service that updates a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SpikeArrest}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/spikeArrest", method = RequestMethod.PUT, consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody SpikeArrest p) {
+		logger.info("Update api policy spike arrest.");
+		try{
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updates a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link Quota}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/quota", method = RequestMethod.PUT, consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody Quota p) {
+		logger.info("Update api policy quota.");
+		try{
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updates a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link IPAccessControl}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/ip", method = RequestMethod.PUT, consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody IPAccessControl p) {
+		logger.info("Update api policy quota.");
+		try{
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updates a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link VerifyAppKey}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/appkey", method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody VerifyAppKey p) {
+		logger.info("Update api policy quota.");
+		try{
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updates a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link OAuth}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/oauth", method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody OAuth p) {
+		logger.info("Update api policy quota.");
+		try{
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that deletes an Policy Api from database by passing its id.
+	 * 
+	 * @param apiId : String
+	 * @param policyId : String
+	 * @return instance of {@link ResultData} with status (OK or FORBIDDEN) and a string message : 
+	 * 			"Delete done!" otherwise exception error message.
+	 */
+	@RequestMapping(value = "/delete/{apiId}/policy/{policyId}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public ResultData deletePolicy(@PathVariable String apiId, @PathVariable String policyId){
+		logger.info("Delete api resource.");
+		
+		try {
+			smanager.deletePolicyApi(apiId,policyId);
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		return new ResultData(null, HttpServletResponse.SC_OK, "Delete done!");
+	}
 }
