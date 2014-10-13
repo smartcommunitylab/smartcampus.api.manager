@@ -25,7 +25,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
-import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
+import eu.trentorise.smartcampus.api.manager.model.util.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.proxy.PolicyDecisionPoint;
 import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
 
