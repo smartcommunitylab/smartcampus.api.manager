@@ -13,62 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package eu.trentorise.smartcampus.api.manager.model;
+package eu.trentorise.smartcampus.api.manager.model.policy;
+
+
+//import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * Model for oauth policy:
- * name : name of policy must be unique,
- * token : access token, we expect to be in request header not in model,
- * operation : verify token, validate token,
- * validate endpoint : endpoint to validate access token (scope and expiry).
+ * Policy model of Verify App Key
+ * anonymous : boolean, variable used to check if user allows anonymous access to api.
  * 
  * @author Giulia Canobbio
  *
  */
-public class OAuth extends Policy{
+//@Document
+public class VerifyAppKey extends Policy{
 
 	/**
 	 * Default serial version
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private String op;
-	private String endpoint;
-	
+	//@Field
+	private boolean anonymous;
+
 	/**
-	 * Operation value can be: 
-	 * Verify Token,
-	 * Validate Token.
 	 * 
-	 * @return operation : String
+	 * @return if anonymous access is allowed then true else false
 	 */
-	public String getOp() {
-		return op;
+	public boolean isAnonymous() {
+		return anonymous;
 	}
-	/**
-	 * Operation value can be: 
-	 * Verify Token,
-	 * Validate Token.
-	 * 
-	 * @param op : String
-	 */
-	public void setOp(String op) {
-		this.op = op;
-	}
+
 	/**
 	 * 
-	 * @return oauth endpoint : String
+	 * @param anonymous : boolean, allow anonymous access
 	 */
-	public String getEndpoint() {
-		return endpoint;
-	}
-	/**
-	 * 
-	 * @param endpoint : String
-	 */
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
+	public void setAnonymous(boolean anonymous) {
+		this.anonymous = anonymous;
 	}
 	
 	
+
 }

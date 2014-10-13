@@ -25,8 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.ResultData;
+import eu.trentorise.smartcampus.api.manager.model.util.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.proxy.PolicyDecisionPoint;
 import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
 

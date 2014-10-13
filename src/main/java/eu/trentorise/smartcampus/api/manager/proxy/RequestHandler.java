@@ -32,9 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
-import eu.trentorise.smartcampus.api.manager.model.ObjectInMemory;
-import eu.trentorise.smartcampus.api.manager.model.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.util.ObjectInMemory;
+import eu.trentorise.smartcampus.api.manager.model.util.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
 /**

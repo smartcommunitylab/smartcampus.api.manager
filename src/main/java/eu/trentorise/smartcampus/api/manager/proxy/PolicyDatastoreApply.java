@@ -15,7 +15,7 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.proxy;
 
-import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.policy.Policy;
 /**
  * Interface that apply policy logic.
  * 

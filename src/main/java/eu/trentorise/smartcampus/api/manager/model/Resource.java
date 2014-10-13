@@ -18,6 +18,8 @@ package eu.trentorise.smartcampus.api.manager.model;
 import java.io.Serializable;
 import java.util.List;
 
+import eu.trentorise.smartcampus.api.manager.model.policy.Policy;
+
 //import org.springframework.data.annotation.Id;
 //import org.springframework.data.mongodb.core.index.Indexed;
 //import org.springframework.data.mongodb.core.mapping.*;

@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.trentorise.smartcampus.api.manager.model.ApiData;
 import eu.trentorise.smartcampus.api.manager.model.App;
-import eu.trentorise.smartcampus.api.manager.model.Quota;
-import eu.trentorise.smartcampus.api.manager.model.QuotaStatus;
+import eu.trentorise.smartcampus.api.manager.model.policy.Quota;
+import eu.trentorise.smartcampus.api.manager.model.policy.QuotaStatus;
 import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;

@@ -22,7 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
+import eu.trentorise.smartcampus.api.manager.model.policy.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.proxy.LastTime;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
 

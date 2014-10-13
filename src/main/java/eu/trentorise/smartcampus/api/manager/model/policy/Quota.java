@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package eu.trentorise.smartcampus.api.manager.model;
+package eu.trentorise.smartcampus.api.manager.model.policy;
 
 import java.util.List;
+
 
 //import org.springframework.data.mongodb.core.mapping.Field;
 
