@@ -20,6 +20,8 @@
 					<option>Quota</option>
 					<option>IP Access Control</option>
 					<option>Verify App Key</option>
+					<option>OAuth</option>
+					<option>SAML</option>
 				</select>
 			</div>
 			
@@ -206,6 +208,31 @@
 							</div>
 						</div>
 				</div>
+			</div>
+			
+			<!-- OAuth -->
+			<div ng-show="policy.type === 'OAuth'">
+				<div class="form-group">
+					<label for="policyop">Rule</label> 
+					<select id="policyop" class="form-control" ng-model="policy.op">
+						<option value="verifyToken">Verify Token</option>
+						<option value="validateToken">Validate Token</option>
+					</select>
+				</div>
+				<div class="form-group" ng-show="policy.op === 'validateToken' &&
+					policy.type ==='OAuth'">
+					<label for="policyendpoint">Endpoint</label> 
+					<input type="text" class="form-control" 
+						placeholder="http://...... endpoint where to validate OAuth token" 
+						id="policyendpoint" 
+						ng-model="policy.endpoint" >
+				</div>
+				
+			</div>
+			
+			<!-- SAML -->
+			<div ng-show="policy.type === 'SAML'">
+				
 			</div>
 			
 			<!-- Quota and spike arrest -->

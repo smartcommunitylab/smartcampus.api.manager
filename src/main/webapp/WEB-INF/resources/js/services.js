@@ -91,6 +91,10 @@ services.factory('Resource', ['$resource',
 				method: 'POST',
 				url: 'api/:apiId/resource/:resourceId/add/policy/appkey'
             },
+            createOAuthResource:{
+				method: 'POST',
+				url: 'api/:apiId/resource/:resourceId/add/policy/oauth'
+            },
             updateSpikeArrestResource:{
 				method: 'PUT',
 				url: 'api/:apiId/resource/:resourceId/update/policy/spikeArrest'
@@ -106,6 +110,10 @@ services.factory('Resource', ['$resource',
             updateVAppKeyResource:{
 				method: 'PUT',
 				url: 'api/:apiId/resource/:resourceId/update/policy/appkey'
+            },
+            updateOAuthResource:{
+				method: 'PUT',
+				url: 'api/:apiId/resource/:resourceId/update/policy/oauth'
             },
 			removePolicy:{
             	method: 'DELETE',
@@ -169,6 +177,10 @@ services.factory('Policy', ['$resource',
 				method: 'POST',
 				url: 'api/add/:apiId/policy/appkey'
 			},
+			createOAuth:{
+				method: 'POST',
+				url: 'api/add/:apiId/policy/oauth'
+			},
 			updateSpikeArrest:{
 				method: 'PUT',
 				url: 'api/update/:apiId/policy/spikeArrest'
@@ -184,6 +196,10 @@ services.factory('Policy', ['$resource',
 			updateVAppKey:{
 				method: 'PUT',
 				url: 'api/update/:apiId/policy/appkey'
+			},
+			updateOAuth:{
+				method: 'PUT',
+				url: 'api/update/:apiId/policy/oauth'
 			},
 			remove:{
 				method: 'DELETE',

@@ -139,12 +139,32 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 				
 				var obj = {apiId: id, 
 						apiName: data.data , 
-						apiStatus: status};
+						apiStatus: status,
+						apiStatusList: []
+						};
 
 				$scope.list.push(obj);
+				
 			});
 			
-			//console.log($scope.list);
+		};
+		
+		var addStatuslist = function(id){
+			
+			for(var i=0;i<$scope.list.length;i++){
+				Api.getStatusList({
+					apiId : id
+				},function(data){
+					
+					$scope.list[i].apiStatusList.push(data.data);
+			
+				});
+			
+				console.log('Api app list');
+			
+				console.log($scope.list);
+			
+			}
 		};
 		
 		App.getApp({
@@ -192,7 +212,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   		}, function(data){
   			//$scope.apisList = data.data;
   			
-  			console.log('Api list');
+  			//console.log('Api list');
   			
   			if(!$scope.permissions){
   				$scope.permissions=[];
@@ -207,15 +227,18 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   				$scope.permissions.push(obj);
   			}
   			
-  			console.log($scope.permissions);
+  			//console.log($scope.permissions);
   			
   		});
   		
   		$scope.retrieveStatusPermission = function(name){
-  			console.log('Retrieve status permission');
+  			//console.log('Retrieve status permission');
+  			//console.log(name);
   			for(var i=0;i<$scope.list.length;i++){
-  				if(name===$scope.list.apiName){
-  					return $scope.list.apiStatus;
+  				//console.log($scope.list[i].apiName);
+  				if(name===$scope.list[i].apiName){
+  					//console.log($scope.list[i].apiStatus);
+  					return $scope.list[i].apiStatus;
   				}
   			}
   		};
@@ -512,6 +535,18 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 			}
 			else if(type=='Verify App Key'){
 				Policy.createVAppKey({
+					apiId: apiid
+					},$scope.policy,
+					function (data) {
+						if(data.status == 200){
+							$location.path('api/'+apiid);
+						}else{
+							$scope.errorMsg = data.message;
+						}
+				});
+			}
+			else if(type=='OAuth'){
+				Policy.createOAuth({
 					apiId: apiid
 					},$scope.policy,
 					function (data) {
@@ -888,6 +923,18 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeo
 							}
 					});
 				}
+				else if(type=='OAuth'){
+					Policy.updateOAuth({
+						apiId: apiid
+						},$scope.policy,
+						function (data) {
+							if(data.status == 200){
+								$location.path('api/'+apiid);
+							}else{
+								$scope.errorMsg = data.message;
+							}
+					});
+				}
 				
 	        };
 			
@@ -1239,6 +1286,19 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 								}
 						});
 					}
+					else if(type=='OAuth'){
+						Resource.updateOAuthResource({
+							apiId: apiid,
+							resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+								}
+						});
+					}
 		        };
 		        
 		        $scope.remove = function () {
@@ -1438,6 +1498,19 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 					}
         			else if(type=='Verify App Key'){
 						Resource.createVAppKeyResource({
+							apiId: apiid,
+							resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+								}
+						});
+					}
+        			else if(type=='OAuth'){
+						Resource.createOAuthResource({
 							apiId: apiid,
 							resourceId: rid
 							},$scope.policy,
