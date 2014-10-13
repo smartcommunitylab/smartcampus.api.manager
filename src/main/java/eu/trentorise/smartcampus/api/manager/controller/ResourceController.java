@@ -28,13 +28,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.trentorise.smartcampus.api.manager.model.Resource;
-import eu.trentorise.smartcampus.api.manager.model.ResultData;
 import eu.trentorise.smartcampus.api.manager.model.policy.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.policy.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.policy.Policy;
 import eu.trentorise.smartcampus.api.manager.model.policy.Quota;
 import eu.trentorise.smartcampus.api.manager.model.policy.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.policy.VerifyAppKey;
+import eu.trentorise.smartcampus.api.manager.model.util.ResultData;
 import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
 import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
