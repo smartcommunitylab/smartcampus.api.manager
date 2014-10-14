@@ -3,7 +3,7 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
 	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
-		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
     	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
  
 	<context:property-placeholder location="classpath:apimanager.properties" />

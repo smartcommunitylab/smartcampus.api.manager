@@ -9,9 +9,10 @@
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
 		<java-version>1.6</java-version>
-		<org.springframework-version>3.2.8.RELEASE</org.springframework-version>
+		<org.springframework-version>4.0.2.RELEASE</org.springframework-version><!-- 3.2.8.RELEASE -->
+		<org.springframework-security>3.2.0.RELEASE</org.springframework-security>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
-		<org.slf4j-version>1.6.6</org.slf4j-version>
+		<org.slf4j-version>1.7.6</org.slf4j-version>
 	</properties>
 	
 	<repositories>
@@ -27,7 +28,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${org.springframework-version}</version>
 			<exclusions>
 				<!-- Exclude Commons Logging in favor of SLF4j -->
 				<exclusion>
@@ -41,25 +41,27 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
+
 		
 		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<version>${org.springframework-security}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<version>${org.springframework-security}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<version>${org.springframework-security}</version>
 		</dependency>
+		
 				
 		<!-- AspectJ -->
 		<dependency>
@@ -137,11 +139,11 @@
 			<version>1.2</version>
 		</dependency>
 		
-		<!-- Spring data mongodb -->
+		<!-- Spring data mongodb  -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>1.5.1.RELEASE</version>
+			<version>1.4.1.RELEASE</version>
 		</dependency>
 		
 		<dependency>
@@ -161,7 +163,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -179,7 +181,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>3.1.1.RELEASE</version>
+			<version>3.2.8.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -242,4 +244,13 @@
             </plugin>
         </plugins>
     </build>
+    <dependencyManagement>
+    	<dependencies>
+    		<dependency>
+    			<groupId>org.springframework</groupId>
+    			<artifactId>spring-context</artifactId>
+    			<version>${org.springframework-version}</version>
+    		</dependency>
+    	</dependencies>
+    </dependencyManagement>
 </project>
