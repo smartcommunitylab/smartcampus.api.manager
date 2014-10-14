@@ -32,12 +32,12 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.App;
+import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
+import eu.trentorise.smartcampus.api.manager.model.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
-import eu.trentorise.smartcampus.api.manager.model.policy.IPAccessControl;
-import eu.trentorise.smartcampus.api.manager.model.policy.Policy;
-import eu.trentorise.smartcampus.api.manager.model.policy.Quota;
-import eu.trentorise.smartcampus.api.manager.model.policy.SourceAddress;
-import eu.trentorise.smartcampus.api.manager.model.policy.SpikeArrest;
+import eu.trentorise.smartcampus.api.manager.model.SourceAddress;
+import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
