@@ -26,7 +26,7 @@ public class OAuthApply implements PolicyDatastoreApply{
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(OAuthApply.class);
 	
-	// global variable
+	// global variable 
 	private String apiId;
 	private String resourceId;
 	private String appId; // valore non utilizzato nel caso solo validatione/verifica presenza token
