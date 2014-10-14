@@ -20,8 +20,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.trentorise.smartcampus.api.manager.model.policy.IPAccessControl;
-import eu.trentorise.smartcampus.api.manager.model.policy.SourceAddress;
+import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
+import eu.trentorise.smartcampus.api.manager.model.SourceAddress;
 
 /**
  * Class that apply policy IP Access Control.

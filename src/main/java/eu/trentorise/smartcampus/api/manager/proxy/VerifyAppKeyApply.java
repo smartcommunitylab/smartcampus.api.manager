@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.trentorise.smartcampus.api.manager.model.ApiData;
 import eu.trentorise.smartcampus.api.manager.model.App;
-import eu.trentorise.smartcampus.api.manager.model.policy.VerifyAppKey;
+import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 
 /**

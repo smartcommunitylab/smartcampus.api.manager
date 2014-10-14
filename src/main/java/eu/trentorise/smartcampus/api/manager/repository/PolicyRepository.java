@@ -17,7 +17,7 @@ package eu.trentorise.smartcampus.api.manager.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import eu.trentorise.smartcampus.api.manager.model.policy.Policy;
+import eu.trentorise.smartcampus.api.manager.model.Policy;
 
 import java.lang.String;
 import java.util.List;

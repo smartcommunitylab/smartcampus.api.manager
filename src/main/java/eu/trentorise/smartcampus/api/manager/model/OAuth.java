@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package eu.trentorise.smartcampus.api.manager.model.policy;
+package eu.trentorise.smartcampus.api.manager.model;
+
+
 
 
 /**
