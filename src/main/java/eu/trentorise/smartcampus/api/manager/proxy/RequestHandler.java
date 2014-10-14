@@ -177,8 +177,14 @@ public class RequestHandler{
 			String ipAddress = request.getHeader("X-FORWARDED-FOR");
 			if (ipAddress == null) {
 				ipAddress = request.getRemoteAddr();
+				map.put("X-FORWARDED-FOR", ipAddress);
 			}
-			map.put("X-FORWARDED-FOR", ipAddress);
+			
+			//check if token exists in headers
+			/*String token = request.getHeader("token");
+			if(token!=null){
+				map.put("token", token);
+			}*/
 
 			// check that appId retrieved from request is correct
 			if (appId != null) {

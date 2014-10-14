@@ -16,7 +16,6 @@
 package eu.trentorise.smartcampus.api.manager.proxy;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
+import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
-import eu.trentorise.smartcampus.api.manager.model.proxy.LastTime;
-import eu.trentorise.smartcampus.api.manager.model.proxy.PolicyQuota;
 import eu.trentorise.smartcampus.api.manager.model.util.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
@@ -73,7 +71,7 @@ public class PolicyDecisionPoint {
 		// logger.info("policiesList() - ApiId: {}", apiId);
 
 		List<Policy> pToApply = new ArrayList<Policy>();
-		boolean qfound = false, spfound = false, ipfound = false, vappfound = false;
+		boolean qfound = false, spfound = false, ipfound = false, vappfound = false, oauthfound = false;
 		
 		// api policies
 		try {
@@ -103,6 +101,9 @@ public class PolicyDecisionPoint {
 				if (listContainsClass(pToApply,"Verify App Key")) {
 					vappfound=true;
 				}
+				if(listContainsClass(pToApply, "OAuth")){
+					oauthfound = true;
+				}
 
 			}
 			// api policies
@@ -120,6 +121,9 @@ public class PolicyDecisionPoint {
 						pToApply.add(policies.get(i));
 					}
 					if (policies.get(i) instanceof VerifyAppKey && !vappfound) {
+						pToApply.add(policies.get(i));
+					}
+					if (policies.get(i) instanceof OAuth && !oauthfound) {
 						pToApply.add(policies.get(i));
 					}
 				}
@@ -157,6 +161,12 @@ public class PolicyDecisionPoint {
 			//Verify App Key
 			if(type.equalsIgnoreCase("Verify App Key")){
 				if(list.get(i) instanceof VerifyAppKey){
+					return true;
+				}
+			}
+			//OAuth
+			if(type.equalsIgnoreCase("OAuth")){
+				if(list.get(i) instanceof OAuth){
 					return true;
 				}
 			}
@@ -211,6 +221,11 @@ public class PolicyDecisionPoint {
 							(VerifyAppKey)pToApply.get(i), appSecret);
 					vapp.setManager(manager);
 					batch.add(vapp);
+				}
+				else if(pToApply.get(i) instanceof OAuth){
+					String token = headers.get("token");
+					OAuthApply oauth = new OAuthApply(apiId, resourceId, appId, token,(OAuth)pToApply.get(i));
+					batch.add(oauth);
 				}
 			}
 			//apply policies
