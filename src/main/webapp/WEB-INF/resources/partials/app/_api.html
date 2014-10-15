@@ -48,10 +48,12 @@
                  <div class="form-group">
                     <label for="protocol">Api status: </label>
                     <select id="mStatus" class="form-control"
-								ng-model="a.status">
-					<!-- <option>DEFAULT</option>  -->
-						<option  ng-repeat="s in retrieveStatusPermission(api.apiName)">
-							{{s.name}}
+								ng-model="a.status"
+								ng-repeat="s in permissions | filter:api.apiName">
+						<option>DEFAULT</option>
+						<div>
+						<option  ng-repeat="n in s.apiStatus">
+							{{n.name}}
 						</option>
 					</select>
                 </div>
