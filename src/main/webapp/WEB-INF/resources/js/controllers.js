@@ -147,9 +147,11 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 				
 			});
 			
+			console.log($scope.list);
+			
 		};
 		
-		var addStatuslist = function(id){
+		/*var addStatuslist = function(id){
 			
 			for(var i=0;i<$scope.list.length;i++){
 				Api.getStatusList({
@@ -165,7 +167,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 				console.log($scope.list);
 			
 			}
-		};
+		};*/
 		
 		App.getApp({
 			appId : appid
@@ -203,6 +205,12 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 				$location.path('apps');
 			});
 		};
+		
+		$scope.updateApiData = function(apiId,apiStatus){
+			console.log(apiId);
+			console.log(apiStatus);
+			
+		};
 			
 		//Change permission
   		var list = [];
@@ -238,6 +246,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   				//console.log($scope.list[i].apiName);
   				if(name===$scope.list[i].apiName){
   					//console.log($scope.list[i].apiStatus);
+  					console.log($scope.list[i].apiStatus);
   					return $scope.list[i].apiStatus;
   				}
   			}
