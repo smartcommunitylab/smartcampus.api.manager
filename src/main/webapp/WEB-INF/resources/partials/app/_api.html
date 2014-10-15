@@ -48,10 +48,9 @@
                  <div class="form-group">
                     <label for="protocol">Api status: </label>
                     <select id="mStatus" class="form-control"
-								ng-model="a.status"
+								ng-model="astatus"
 								ng-repeat="s in permissions | filter:api.apiName">
 						<option>DEFAULT</option>
-						<div>
 						<option  ng-repeat="n in s.apiStatus">
 							{{n.name}}
 						</option>
@@ -62,7 +61,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" ng-click="cancel()" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" ng-click="keep()" ng-disabled="form.$invalid && accessInformation.authentication.accessProtocol === 'OAuth2'" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                <button type="button" ng-click="updateApiData(api.apiId,astatus)" ng-disabled="form.$invalid && a.status" class="btn btn-primary" data-dismiss="modal">Update</button>
             </div>
         </div>
         <!-- /.modal-content -->
