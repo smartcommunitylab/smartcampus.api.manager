@@ -28,14 +28,28 @@ public class IPAddressValidator {
 	
 	private Pattern pattern;
 	private Matcher matcher;
-	
-	private static final String URI_PATTERN = "([0-9]+).([0-9]+).([0-9]+).([0-9]+)";
+	/*
+	 * [01]?\\d\\d?  
+	 * Can be one or two digits. If three digits appear, it must start either 0 or 1
+	 * e.g ([0-9], [0-9][0-9],[0-1][0-9][0-9])
+	 * 
+	 * 2[0-4]\\d
+	 * start with 2, follow by 0-4 and end with any digit (2[0-4][0-9]) 
+	 * 25[0-5]
+	 * start with 2, follow by 5 and ends with 0-5 (25[0-5]) 
+	 */
+	private static final String IPADDRESS_PATTERN = 
+			"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+			"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+			"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+			"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+			//"([0-9]+).([0-9]+).([0-9]+).([0-9]+)";
 	
 	/**
 	 * New instance of {@link IPAddressValidator}.
 	 */
 	public IPAddressValidator(){
-		pattern = Pattern.compile(URI_PATTERN);
+		pattern = Pattern.compile(IPADDRESS_PATTERN);
 	}
 	
 	/**
