@@ -106,7 +106,7 @@
 					</select>
 				</div>
 				
-				<div class="form-group">
+				<div class="form-group" ng-show="policy.rule ==='DENY' || exception">
 						<label for="status">White List: Allow IP Address</label>
             			<div class="row">
                 			<div class="col-lg-5">
@@ -151,7 +151,7 @@
             		</div>
 				
 				
-				<div class="form-group">
+				<div class="form-group" ng-show="policy.rule ==='ALLOW' || exception">
 						<label for="status">Black List: Not allowed IP Address</label>
             			<div class="row">
                 			<div class="col-lg-5">	
@@ -192,6 +192,10 @@
             			</div>
             			<hr/>
             		</div>
+            		
+            		<button type="button" class="btn btn-info" ng-click="exception=true" ng-show="!exception">
+						Exception
+    				</button>
 			</div>
 			
 			<!-- Verify App Key -->
