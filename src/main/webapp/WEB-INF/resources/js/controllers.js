@@ -362,8 +362,8 @@ app.controller('addResourceCtrl', ['$scope', '$location', '$routeParams', 'Resou
      }
 ]);
 
-app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy', 'Api',
-     function ($scope, $location, $routeParams, Policy, Api) {
+app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'Policy', 'Api',
+     function ($scope, $location, $routeParams, $timeout, Policy, Api) {
 		$scope.title = 'New';
 		var apiid = $routeParams.apiId;
 		//var qstatus = [];
@@ -506,6 +506,10 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 							$location.path('api/'+apiid);
 						}else{
 							$scope.errorMsg = data.message;
+							//if error message is for a duplicate policy
+							if($scope.errorMsg.indexOf('already exists')!=-1){
+								$scope.policy = null;
+							}
 						}
 				});
 			}
@@ -523,6 +527,11 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 							$location.path('api/'+apiid);
 						}else{
 							$scope.errorMsg = data.message;
+							
+							//if error message is for a duplicate policy
+							if($scope.errorMsg.indexOf('already exists')!=-1){
+								$scope.policy = null;
+							}
 						}
 				});
 			}
@@ -539,6 +548,11 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 							$location.path('api/'+apiid);
 						}else{
 							$scope.errorMsg = data.message;
+
+							//if error message is for a duplicate policy
+							if($scope.errorMsg.indexOf('already exists')!=-1){
+								$scope.policy = null;
+							}
 						}
 				});
 			}
@@ -551,6 +565,11 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 							$location.path('api/'+apiid);
 						}else{
 							$scope.errorMsg = data.message;
+							
+							//if error message is for a duplicate policy
+							if($scope.errorMsg.indexOf('already exists')!=-1){
+								$scope.policy = null;
+							}
 						}
 				});
 			}
@@ -563,10 +582,19 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', 'Policy'
 							$location.path('api/'+apiid);
 						}else{
 							$scope.errorMsg = data.message;
+
+							//if error message is for a duplicate policy
+							if($scope.errorMsg.indexOf('already exists')!=-1){
+								$scope.policy = null;
+							}
 						}
 				});
 			}
 		};
+		
+		$timeout(function () {
+			$scope.errorMsg = null;
+	    }, 20000);
      }
 ]);
 
@@ -1246,6 +1274,11 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 								}else{
 									$scope.errorMsg = data.message;
 									$scope.msg = null;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
 								}
 						});
 					}
@@ -1262,6 +1295,11 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 								}else{
 									$scope.errorMsg = data.message;
 									$scope.msg = null;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
 								}
 						});
 					}
@@ -1276,9 +1314,17 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$location.path('api/'+apiid);
+									$scope.policy = data.data;
+									$scope.msg = data.message;
+									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
+									$scope.msg = null;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
 								}
 						});
 					}
@@ -1289,9 +1335,17 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$location.path('api/'+apiid);
+									$scope.policy = data.data;
+									$scope.msg = data.message;
+									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
+									$scope.msg = null;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
 								}
 						});
 					}
@@ -1302,9 +1356,17 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$location.path('api/'+apiid);
+									$scope.policy = data.data;
+									$scope.msg = data.message;
+									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
+									$scope.msg = null;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
 								}
 						});
 					}
@@ -1327,8 +1389,8 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 			}
 ]);
 
-app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 'Resource', 'Api',
-            function($scope, $location, $routeParams, Resource, Api){
+app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', '$timeout', 'Resource', 'Api',
+            function($scope, $location, $routeParams, $timeout, Resource, Api){
             	$scope.title = 'New Resource';
             	
             	var apiid = $routeParams.apiId;
@@ -1472,6 +1534,11 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
         							$location.path('/show/'+apiid+'/resource/'+rid);
         						}else{
         							$scope.errorMsg = data.message;
+        							
+        							//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
         						}
         				});
         			}
@@ -1485,6 +1552,11 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
         							$location.path('/show/'+apiid+'/resource/'+rid);
         						}else{
         							$scope.errorMsg = data.message;
+        							
+        							//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
         						}
         				});
         			}
@@ -1502,6 +1574,11 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 									$location.path('api/'+apiid);
 								}else{
 									$scope.errorMsg = data.message;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
 								}
 						});
 					}
@@ -1515,6 +1592,11 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 									$location.path('api/'+apiid);
 								}else{
 									$scope.errorMsg = data.message;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
 								}
 						});
 					}
@@ -1528,10 +1610,19 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 									$location.path('api/'+apiid);
 								}else{
 									$scope.errorMsg = data.message;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
 								}
 						});
 					}
         		};
+        		
+        		$timeout(function () {
+					$scope.errorMsg = null;
+			    }, 20000);
 			}
 ]);
 
