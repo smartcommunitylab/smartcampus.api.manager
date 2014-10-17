@@ -163,6 +163,7 @@ public class RequestHandler{
 						String headerValue = headers.nextElement();
 						// do not save in headers appId
 						if (!headerName.equalsIgnoreCase("appId")) {
+							//logger.info("Add in my header: {}",headerName);
 							map.put(headerName, headerValue);
 						} else {
 							// retrieve appId from headers
@@ -177,7 +178,7 @@ public class RequestHandler{
 			String ipAddress = request.getHeader("X-FORWARDED-FOR");
 			if (ipAddress == null) {
 				ipAddress = request.getRemoteAddr();
-				map.put("X-FORWARDED-FOR", ipAddress);
+				map.put("x-forwarded-for", ipAddress);
 			}
 			
 			//check if token exists in headers

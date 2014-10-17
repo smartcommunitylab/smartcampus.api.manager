@@ -209,7 +209,8 @@ public class PolicyDecisionPoint {
 				}
 				else if(pToApply.get(i) instanceof IPAccessControl){
 					
-					String appIp = headers.get("X-FORWARDED-FOR");
+					String appIp = headers.get("x-forwarded-for");
+					//logger.info("PDP app ip: {}",appIp);
 					IPAccessControlApply ipa = new IPAccessControlApply(apiId, resourceId, 
 							(IPAccessControl)pToApply.get(i), appIp);
 					batch.add(ipa);
