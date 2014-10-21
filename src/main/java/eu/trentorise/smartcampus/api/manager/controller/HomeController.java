@@ -72,7 +72,7 @@ public class HomeController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public ResultData requestHandl(HttpServletRequest request){
+	public ResultData requestHandl(HttpServletRequest request, HttpServletResponse response){
 		logger.info("-----------------------------------------------");
 		logger.info("----------------START-------------------------------");
 		
@@ -88,6 +88,7 @@ public class HomeController {
 			
 		} catch (IllegalArgumentException i) {
 			logger.info("Exception: {}", i.getMessage());
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
 					i.getMessage());
 		}catch(SecurityException s){
