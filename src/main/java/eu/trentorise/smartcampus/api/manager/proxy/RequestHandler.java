@@ -15,10 +15,13 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.proxy;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +39,7 @@ import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.util.ObjectInMemory;
 import eu.trentorise.smartcampus.api.manager.model.util.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
+import eu.trentorise.smartcampus.api.manager.util.PatternMatcher;
 
 /**
  * Handle request on api.
@@ -120,6 +124,15 @@ public class RequestHandler{
 			RequestHandlerObject result = new RequestHandlerObject();
 
 			String requestUri = request.getRequestURI();
+			String encodedUri;
+			try {//TODO spring utf-8 encoding
+				logger.info("Try encoding");
+				encodedUri = new String(requestUri.getBytes("UTF-8"),"ASCII");
+				logger.info("{}",encodedUri);
+			} catch (UnsupportedEncodingException e) {
+				logger.info("Problem in encoding");
+				e.printStackTrace();
+			}
 			String[] slist = requestUri.split("/", 3);
 
 			String path;
@@ -132,6 +145,21 @@ public class RequestHandler{
 
 			// retrieve api id and resource from static resource
 			if (all != null && all.size() > 0) {
+				
+				//TODO pattern matcher
+				logger.info("Match pattern....");
+				Iterator<Entry<String, ObjectInMemory>> it = all.entrySet().iterator();
+				while(it.hasNext()){
+					Map.Entry<String, ObjectInMemory> pairs = 
+							(Map.Entry<String, ObjectInMemory>) it.next();
+					boolean match = new PatternMatcher(path, pairs.getKey()).compute();
+					if(match){
+						logger.info("Api id {}",pairs.getValue().getApiId());
+						logger.info("Resource id {}",pairs.getValue().getResourceId());
+					}
+				}
+				logger.info("Match pattern.... END");
+				
 				if (all.containsKey(path)) {
 					ObjectInMemory obj = all.get(path);
 					apiId = obj.getApiId();
@@ -143,6 +171,7 @@ public class RequestHandler{
 					resourceId = obj.getResourceId();
 				}
 			}
+			
 			if (apiId == null && resourceId == null) {
 				throw new IllegalArgumentException(
 						"There is no api and resource for this path {}.");
