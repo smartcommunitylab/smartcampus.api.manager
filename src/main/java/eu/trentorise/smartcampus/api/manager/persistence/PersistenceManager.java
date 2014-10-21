@@ -15,6 +15,9 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.persistence;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,7 +44,6 @@ import eu.trentorise.smartcampus.api.manager.model.Resource;
 import eu.trentorise.smartcampus.api.manager.model.SourceAddress;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
-import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.repository.ApiRepository;
 import eu.trentorise.smartcampus.api.manager.repository.AppRepository;
 import eu.trentorise.smartcampus.api.manager.repository.PolicyRepository;
@@ -1401,50 +1403,102 @@ public class PersistenceManager {
 			}
 			
 			//TODO check ip address
-			//check same ip with different mask
 			
-			//retrieve element of whitelist
-			if(wlist!=null && blist!=null){
-				for (int i = 0; i < wlist.size(); i++) {
-					String ip = wlist.get(i).getIp();
-					int mask = wlist.get(i).getMask();
-
-					for (int j = 0; j < blist.size(); j++) {
-						String bip = blist.get(j).getIp();
-						if (ip.equalsIgnoreCase(bip)) {
-							int bmask = blist.get(j).getMask();
-							// same ip check mask
-							if (bmask < mask) {
-								throw new IllegalArgumentException(
-										"IP Conflict, for ip "
-												+ ip
-												+ " with mask "
-												+ mask
-												+ " in whitelist and  ip "
-												+ bip
-												+ " with mask "
-												+ bmask
-												+ " in blacklist. You allow ip access for one that"
-												+ " is alredy denied.");
+			//check subset
+			if(((IPAccessControl)p).getRule().equalsIgnoreCase(Constants.POLICY_IP_RULE.ALLOW.toString())
+					&& wlist!=null){
+				//check that wlist is a subset of blist
+				for(int i=0;i<wlist.size();i++){
+					boolean isInRange = false;
+					try {
+						Inet4Address a = (Inet4Address) InetAddress.getByName(wlist.get(i).getIp());
+						byte[] b = a.getAddress();
+						int subnet = ((b[0] & 0xFF) << 24) |
+				                 	((b[1] & 0xFF) << 16) |
+				                 	((b[2] & 0xFF) << 8)  |
+				                 	((b[3] & 0xFF) << 0);
+						int bits = wlist.get(i).getMask();
+						
+						//check if in blacklist, this addr is in range of one of them
+						for(int j=0;j<blist.size();j++){
+							Inet4Address ab = (Inet4Address) InetAddress.getByName(blist.get(j).getIp());
+							byte[] abb = ab.getAddress();
+							int ip = ((b[0] & 0xFF) << 24) |
+					                 	((abb[1] & 0xFF) << 16) |
+					                 	((abb[2] & 0xFF) << 8)  |
+					                 	((abb[3] & 0xFF) << 0);
+							
+							//check range
+							int mask = -1 << (32 - bits);
+							
+							if((subnet & mask) == (ip & mask)){
+								//ip is in range
+								isInRange = true;
 							}
-
-							// take into account rule
-							/*
-							 * if(((IPAccessControl) p).getRule().
-							 * equalsIgnoreCase
-							 * (Constants.POLICY_IP_RULE.ALLOW.toString())){
-							 * //mask with lesser number must stay in ALLOW, ow
-							 * error
-							 * 
-							 * }else{//DENY //mask with lesser number must stay
-							 * in ALLOW, ow error }
-							 */
-
-							// Blacklist a subset of whitelist
 						}
+						
+						//If ip in wlist is not in range then error
+						if(!isInRange){
+							throw new IllegalArgumentException("In list, Ip "
+									+ wlist.get(i).getIp() + " with mask " + wlist.get(i).getMask()
+									+ " is not an exception of blacklist.");
+						}
+						
+					} catch (UnknownHostException e) {
+						throw new IllegalArgumentException("In list, Ip "
+								+ wlist.get(i).getIp() + " with mask " + wlist.get(i).getMask()
+								+ " is not valid.");
 					}
 				}
 			}
+			
+			if(((IPAccessControl)p).getRule().equalsIgnoreCase(Constants.POLICY_IP_RULE.DENY.toString())
+					&& blist!=null){
+				//check that blist is a subset of wlist
+				for(int i=0;i<blist.size();i++){
+					boolean isInRange = false;
+					try {
+						Inet4Address a = (Inet4Address) InetAddress.getByName(blist.get(i).getIp());
+						byte[] b = a.getAddress();
+						int subnet = ((b[0] & 0xFF) << 24) |
+				                 	((b[1] & 0xFF) << 16) |
+				                 	((b[2] & 0xFF) << 8)  |
+				                 	((b[3] & 0xFF) << 0);
+						int bits = blist.get(i).getMask();
+						
+						//check if in whitelist, this addr is in range of one of them
+						for(int j=0;j<wlist.size();j++){
+							Inet4Address ab = (Inet4Address) InetAddress.getByName(wlist.get(j).getIp());
+							byte[] abb = ab.getAddress();
+							int ip = ((b[0] & 0xFF) << 24) |
+					                 	((abb[1] & 0xFF) << 16) |
+					                 	((abb[2] & 0xFF) << 8)  |
+					                 	((abb[3] & 0xFF) << 0);
+							
+							//check range
+							int mask = -1 << (32 - bits);
+							
+							if((subnet & mask) == (ip & mask)){
+								//ip is in range
+								isInRange = true;
+							}
+						}
+						
+						//If ip in wlist is not in range then error
+						if(!isInRange){
+							throw new IllegalArgumentException("In list, Ip "
+									+ blist.get(i).getIp() + " with mask " + blist.get(i).getMask()
+									+ " is not an exception of whitelist.");
+						}
+						
+					} catch (UnknownHostException e) {
+						throw new IllegalArgumentException("In list, Ip "
+								+ wlist.get(i).getIp() + " with mask " + wlist.get(i).getMask()
+								+ " is not valid.");
+					}
+				}
+			}
+			
 			
 		}
 		
