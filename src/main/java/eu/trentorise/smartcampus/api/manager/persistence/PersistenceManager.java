@@ -484,8 +484,8 @@ public class PersistenceManager {
 		if(resourceApiExists(apiId, r.getName())){
 			throw new IllegalArgumentException("Resource already exists. Change name.");
 		}
-		if(resourceUriApiExists(apiId, r.getUri())){
-			throw new IllegalArgumentException("Resource already exists. Change uri.");
+		if(resourceUriApiExists(apiId, r.getUri(), r.getVerb())){
+			throw new IllegalArgumentException("Resource already exists. Change uri or verb.");
 		}
 
 		if(r.getId()==null || r.getId().equalsIgnoreCase("")){
@@ -598,10 +598,11 @@ public class PersistenceManager {
 			}
 			oldr.setName(r.getName());
 			//check new uri
-			if (!oldr.getUri().equalsIgnoreCase(r.getUri())) {
-				if (resourceUriApiExists(apiId, r.getUri())) {
+			if (!oldr.getUri().equalsIgnoreCase(r.getUri()) 
+					|| !oldr.getVerb().equalsIgnoreCase(r.getVerb())) {
+				if (resourceUriApiExists(apiId, r.getUri(), r.getVerb())) {
 					throw new IllegalArgumentException("Resource already exists. " +
-							"Change uri.");
+							"Change uri or verb.");
 				}
 			}
 			oldr.setUri(r.getUri());
@@ -1597,14 +1598,20 @@ public class PersistenceManager {
 	 * Checks if a resource with a given uri is already saved in db.
 	 * 
 	 * @param apiId : String
-	 * @param resourceName : String
+	 * @param resourceUri : String
+	 * @param resourceVerb : String
 	 * @return true if a resource with a given name exists, false otherwise
 	 * @throws CustomAuthenticationException 
 	 */
-	public boolean resourceUriApiExists(String apiId, String resourceUri){
+	public boolean resourceUriApiExists(String apiId, String resourceUri, String resourceVerb){
 		List<Resource> rlist = getResourceApiByResourceUri(apiId, resourceUri);
 		if(rlist!=null && rlist.size()>0){
-			return true;
+			//check verb
+			for(int i=0;i<rlist.size();i++){
+				if(rlist.get(i).getVerb().equalsIgnoreCase(resourceVerb)){
+					return true;
+				}
+			}
 		}
 		return false;
 	}
