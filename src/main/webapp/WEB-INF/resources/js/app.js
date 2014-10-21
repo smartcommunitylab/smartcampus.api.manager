@@ -16,11 +16,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         $httpProvider.interceptors.push(function ($q, $location) {
         	return {
                 'responseError': function (response) {
-                    if (response.status === 401) {
+                    if (response.status === 401 || response.status === 404) {
+                    	console.log('401 or 404');
                     	$location.path('/');
                         return $q.reject(response);
                     } else {
-                    	//$location.path('/');
                     	return $q.reject(response);
                     }
                 }
