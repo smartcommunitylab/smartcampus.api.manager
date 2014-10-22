@@ -135,11 +135,16 @@ public class IPAccessControlApply implements PolicyDatastoreApply{
 		boolean WL_or = false;
 
 		try {
-			for (int i = 0; i < BL.size(); i++) {
-				BL_or = BL_or || IP(BL.get(i).getMask(), ip2ipbv(BL.get(i).getIp()), ip2ipbv(appIp));
+			if(BL!=null){
+				for (int i = 0; i < BL.size(); i++) {
+					BL_or = BL_or || IP(BL.get(i).getMask(), ip2ipbv(BL.get(i).getIp()), ip2ipbv(appIp));
+				}
 			}
-			for (int i = 0; i < WL.size(); i++) {
-				WL_or = WL_or || IP(WL.get(i).getMask(), ip2ipbv(WL.get(i).getIp()), ip2ipbv(appIp));
+			
+			if(WL!=null){
+				for (int i = 0; i < WL.size(); i++) {
+					WL_or = WL_or || IP(WL.get(i).getMask(), ip2ipbv(WL.get(i).getIp()), ip2ipbv(appIp));
+				}
 			}
 		} catch (UnknownHostException e) {
 			return false;
