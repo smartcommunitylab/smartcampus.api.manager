@@ -76,12 +76,21 @@ public class PolicyDecisionPoint {
 		// api policies
 		try {
 			Api api = manager.getApiById(apiId);
+			
+			if(api==null){
+				throw new SecurityException("You are not allowed to access this api because it does not exist");
+			}
 
 			// resource policies
 			if (resourceId != null) {
 
 				Resource r = manager.getResourceApiByResourceId(apiId,
 						resourceId);
+				
+				if(r==null){
+					throw new SecurityException("You are not allowed to access this resource because it does not exist");
+				}
+				
 				// retrieve policy resource
 				List<Policy> rplist = r.getPolicy();
 				if (rplist != null && rplist.size() > 0) {
