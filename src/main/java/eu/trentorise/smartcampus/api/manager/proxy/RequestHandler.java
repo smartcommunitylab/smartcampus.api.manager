@@ -377,6 +377,7 @@ public class RequestHandler{
 
 						// save in object
 						if(basepath.equalsIgnoreCase(path)){
+							logger.info("Found api");
 							ObjectInMemory m1 = new ObjectInMemory();
 							m1.setApiId(apiId);
 							all.put(basepath, m1);
@@ -392,8 +393,9 @@ public class RequestHandler{
 									String uri = rlist.get(j).getUri();
 
 									// save in object
-									if (basepath.equalsIgnoreCase(basepath
+									if (path.equalsIgnoreCase(basepath
 											+ uri)) {
+										logger.info("Found resource");
 										ObjectInMemory m = new ObjectInMemory();
 										m.setApiId(apiId);
 										m.setResourceId(rId);
