@@ -1418,7 +1418,6 @@ public class PersistenceManager {
 				                 	((b[1] & 0xFF) << 16) |
 				                 	((b[2] & 0xFF) << 8)  |
 				                 	((b[3] & 0xFF) << 0);
-						int bits = wlist.get(i).getMask();
 						
 						//check if in blacklist, this addr is in range of one of them
 						for(int j=0;j<blist.size();j++){
@@ -1428,13 +1427,13 @@ public class PersistenceManager {
 					                 	((abb[1] & 0xFF) << 16) |
 					                 	((abb[2] & 0xFF) << 8)  |
 					                 	((abb[3] & 0xFF) << 0);
-							
+							int bits = blist.get(i).getMask();
 							
 							//check range
 							int mask = -1 << (32 - bits);
 							
 							if((subnet & mask) == (ip & mask)){
-								if(bits> blist.get(i).getMask()){
+								if(bits< blist.get(i).getMask()){
 									//ip is in range
 									isInRange = true;
 								}
@@ -1443,7 +1442,7 @@ public class PersistenceManager {
 											+ blist.get(i).getIp() + " with mask " + wlist.get(i).getMask()
 											+ " is a duplicate ip.");
 								}
-								else{//<
+								else{//>
 									throw new IllegalArgumentException("In list, Ip "
 											+ blist.get(i).getIp() + " with mask " + wlist.get(i).getMask()
 											+ " is not an exception.");
@@ -1478,7 +1477,6 @@ public class PersistenceManager {
 				                 	((b[1] & 0xFF) << 16) |
 				                 	((b[2] & 0xFF) << 8)  |
 				                 	((b[3] & 0xFF) << 0);
-						//int bits = blist.get(i).getMask();
 						
 						//check if in whitelist, this addr is in range of one of them
 						for(int j=0;j<wlist.size();j++){
