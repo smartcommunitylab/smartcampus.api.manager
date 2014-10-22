@@ -1440,12 +1440,12 @@ public class PersistenceManager {
 								else if(bits== blist.get(i).getMask()){
 									throw new IllegalArgumentException("In list, Ip "
 											+ blist.get(i).getIp() + " with mask " + wlist.get(i).getMask()
-											+ " is a duplicate of blacklist ip.");
+											+ " is a duplicate ip.");
 								}
 								else{//<
 									throw new IllegalArgumentException("In list, Ip "
 											+ blist.get(i).getIp() + " with mask " + wlist.get(i).getMask()
-											+ " is not an exception of blacklist.");
+											+ " is not an exception.");
 								}
 							}
 						}
@@ -1500,12 +1500,12 @@ public class PersistenceManager {
 								else if(bits== wlist.get(i).getMask()){
 									throw new IllegalArgumentException("In list, Ip "
 											+ blist.get(i).getIp() + " with mask " + blist.get(i).getMask()
-											+ " is a duplicate of whitelist ip.");
+											+ " is a duplicate ip.");
 								}
 								else{//<
 									throw new IllegalArgumentException("In list, Ip "
 											+ blist.get(i).getIp() + " with mask " + blist.get(i).getMask()
-											+ " is not an exception of whitelist.");
+											+ " is not an exception.");
 								}
 							}
 						}
