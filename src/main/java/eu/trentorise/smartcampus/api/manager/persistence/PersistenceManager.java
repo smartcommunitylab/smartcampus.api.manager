@@ -1433,11 +1433,11 @@ public class PersistenceManager {
 							int mask = -1 << (32 - bits);
 							
 							if((subnet & mask) == (ip & mask)){
-								if(bits< blist.get(i).getMask()){
+								if(bits< wlist.get(i).getMask()){
 									//ip is in range
 									isInRange = true;
 								}
-								else if(bits== blist.get(i).getMask()){
+								else if(bits== wlist.get(i).getMask()){
 									throw new IllegalArgumentException("In list, Ip "
 											+ blist.get(i).getIp() + " with mask " + wlist.get(i).getMask()
 											+ " is a duplicate ip.");
@@ -1493,11 +1493,11 @@ public class PersistenceManager {
 							
 							if((subnet & mask) == (ip & mask)){
 								//check mask
-								if(bits< wlist.get(i).getMask()){
+								if(bits< blist.get(i).getMask()){
 									//ip is in range
 									isInRange = true;
 								}
-								else if(bits== wlist.get(i).getMask()){
+								else if(bits== blist.get(i).getMask()){
 									throw new IllegalArgumentException("In list, Ip "
 											+ blist.get(i).getIp() + " with mask " + blist.get(i).getMask()
 											+ " is a duplicate ip.");
