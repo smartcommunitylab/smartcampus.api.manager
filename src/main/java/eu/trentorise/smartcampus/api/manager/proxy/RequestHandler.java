@@ -87,6 +87,10 @@ public class RequestHandler{
 				// save in object
 				ObjectInMemory m1 = new ObjectInMemory();
 				m1.setApiId(apiId);
+				if(basepath.contains("{") && basepath.contains("}")){
+					m1.setPattern(true);
+				}else m1.setPattern(false);
+				
 				all.put(basepath, m1);
 
 				//get resource
@@ -95,12 +99,16 @@ public class RequestHandler{
 					for(int j=0;j<rlist.size();j++){
 						String rId = rlist.get(j).getId();
 						String uri = rlist.get(j).getUri();
-						
+						String resourcepath = basepath+uri;
 						//save in object
 						ObjectInMemory m = new ObjectInMemory();
 						m.setApiId(apiId);
 						m.setResourceId(rId);
-						all.put(basepath+uri, m);
+						if(resourcepath.contains("{") && resourcepath.contains("}")){
+							m1.setPattern(true);
+						}else m1.setPattern(false);
+						
+						all.put(resourcepath, m);
 					}
 				}
 			}
@@ -124,15 +132,6 @@ public class RequestHandler{
 			RequestHandlerObject result = new RequestHandlerObject();
 
 			String requestUri = request.getRequestURI();
-			String encodedUri;
-			try {//TODO spring utf-8 encoding
-				logger.info("Try encoding");
-				encodedUri = new String(requestUri.getBytes("UTF-8"),"ASCII");
-				logger.info("{}",encodedUri);
-			} catch (UnsupportedEncodingException e) {
-				logger.info("Problem in encoding");
-				e.printStackTrace();
-			}
 			String[] slist = requestUri.split("/", 3);
 
 			String path;
@@ -146,30 +145,43 @@ public class RequestHandler{
 			// retrieve api id and resource from static resource
 			if (all != null && all.size() > 0) {
 				
-				//TODO pattern matcher
-				logger.info("Match pattern....");
-				Iterator<Entry<String, ObjectInMemory>> it = all.entrySet().iterator();
-				while(it.hasNext()){
-					Map.Entry<String, ObjectInMemory> pairs = 
-							(Map.Entry<String, ObjectInMemory>) it.next();
-					boolean match = new PatternMatcher(path, pairs.getKey()).compute();
-					if(match){
-						logger.info("Api id {}",pairs.getValue().getApiId());
-						logger.info("Resource id {}",pairs.getValue().getResourceId());
-					}
-				}
-				logger.info("Match pattern.... END");
-				
 				if (all.containsKey(path)) {
 					ObjectInMemory obj = all.get(path);
 					apiId = obj.getApiId();
 					resourceId = obj.getResourceId();
 				} else {
-					retrieveUrlFromMemory(path);
+					//retrieveUrlFromMemory(path);
+					initMemory();
 					ObjectInMemory obj = all.get(path);
-					apiId = obj.getApiId();
-					resourceId = obj.getResourceId();
+					logger.info("After obj");
+					if(obj!=null){
+						logger.info("In obj");
+						apiId = obj.getApiId();
+						resourceId = obj.getResourceId();
+					}
+					else{
+						logger.info("Pattern");
+						//search a pattern
+						
+						//TODO pattern matcher
+						logger.info("Match pattern....");
+						Iterator<Entry<String, ObjectInMemory>> it = all.entrySet().iterator();
+						while(it.hasNext()){
+							Map.Entry<String, ObjectInMemory> pairs = 
+									(Map.Entry<String, ObjectInMemory>) it.next();
+							if(pairs.getValue().isPattern()){
+								logger.info("A pattern found");
+								boolean match = new PatternMatcher(pairs.getKey(),path).compute();
+								if(match){
+									logger.info("Api id {}",pairs.getValue().getApiId());
+									logger.info("Resource id {}",pairs.getValue().getResourceId());
+								}
+							}
+						}
+						logger.info("Match pattern.... END");
+					}
 				}
+				
 			}
 			
 			if (apiId == null && resourceId == null) {
@@ -274,7 +286,8 @@ public class RequestHandler{
 					apiId = obj.getApiId();
 					resourceId = obj.getResourceId();
 				} else {
-					retrieveUrlFromMemory(path);
+					/*retrieveUrlFromMemory(path);*/
+					initMemory();
 					ObjectInMemory obj = all.get(path);
 					apiId = obj.getApiId();
 					resourceId = obj.getResourceId();
@@ -359,7 +372,7 @@ public class RequestHandler{
 	 * 
 	 * @param path : String
 	 */
-	private void retrieveUrlFromMemory(String path){
+	/*private void retrieveUrlFromMemory(String path){
 		
 		if(all!=null && all.size()>0){
 			boolean found = false;
@@ -380,6 +393,11 @@ public class RequestHandler{
 							logger.info("Found api");
 							ObjectInMemory m1 = new ObjectInMemory();
 							m1.setApiId(apiId);
+							
+							if(basepath.contains("{") && basepath.contains("}")){
+								m1.setPattern(true);
+							}else m1.setPattern(false);
+							
 							all.put(basepath, m1);
 							found = true;
 						}
@@ -391,15 +409,21 @@ public class RequestHandler{
 								for (int j = 0; j < rlist.size(); j++) {
 									String rId = rlist.get(j).getId();
 									String uri = rlist.get(j).getUri();
-
+									String resourcepath = basepath
+											+ uri;
+									
 									// save in object
-									if (path.equalsIgnoreCase(basepath
-											+ uri)) {
+									if (path.equalsIgnoreCase(resourcepath)) {
 										logger.info("Found resource");
 										ObjectInMemory m = new ObjectInMemory();
 										m.setApiId(apiId);
 										m.setResourceId(rId);
-										all.put(basepath + uri, m);
+										
+										if(resourcepath.contains("{") && resourcepath.contains("}")){
+											m.setPattern(true);
+										}else m.setPattern(false);
+										
+										all.put(resourcepath, m);
 										found = true;
 									}
 								}
@@ -415,7 +439,7 @@ public class RequestHandler{
 				
 			}
 		}
-	}
+	}*/
 	
 	
 }

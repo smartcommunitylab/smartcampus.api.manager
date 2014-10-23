@@ -16,7 +16,8 @@
 package eu.trentorise.smartcampus.api.manager.model.util;
 
 /**
- * In memory object, with url, apiId, resourceId.
+ * In memory object, with url, apiId, resourceId and
+ * flag pattern.
  * 
  * @author Giulia Canobbio
  *
@@ -25,6 +26,7 @@ public class ObjectInMemory {
 	
 	private String apiId;
 	private String resourceId;
+	private boolean pattern;
 	
 	/**
 	 * 
@@ -54,7 +56,20 @@ public class ObjectInMemory {
 	public void setResourceId(String resourceId) {
 		this.resourceId = resourceId;
 	}
-	
+	/**
+	 * 
+	 * @return pattern : boolean
+	 */
+	public boolean isPattern() {
+		return pattern;
+	}
+	/**
+	 * 
+	 * @param pattern : boolean
+	 */
+	public void setPattern(boolean pattern) {
+		this.pattern = pattern;
+	}
 	
 
 }
