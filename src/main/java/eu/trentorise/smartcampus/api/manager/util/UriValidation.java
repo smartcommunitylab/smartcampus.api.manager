@@ -29,7 +29,7 @@ public class UriValidation {
 	private Pattern pattern;
 	private Matcher matcher;
 	
-	private static final String URI_PATTERN = "(/[a-zA-Z]:)?(/[a-zA-Z0-9]+)+/?";
+	private static final String URI_PATTERN = "(/[a-zA-Z{}]:)?(/[a-zA-Z0-9{}]+)+/?";
 	
 	/**
 	 * New instance of {@link UriValidation}.
