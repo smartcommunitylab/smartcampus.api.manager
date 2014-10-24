@@ -236,7 +236,26 @@
 			
 			<!-- SAML -->
 			<div ng-show="policy.type === 'SAML'">
-				
+				<div class="form-group">	
+						<label for="valSigner">Validate Signer</label> 
+						<div class="row">
+							<div class="col-lg-8">
+								Do you want to validate signer?
+							</div>
+							<div class="col-lg-2">
+								<input type="checkbox" class="form-control" id="policyvalSigner" 
+									ng-model="policy.valSigner" />
+							</div>
+						</div>
+				</div>
+				<div class="form-group" ng-show="policy.valSigner &&
+					policy.type ==='SAML'">
+					<label for="policytruststore">Truststore endpoint</label> 
+					<input type="text" class="form-control" 
+						placeholder="http://...... endpoint where to retrieve certificate" 
+						id="policytruststore" 
+						ng-model="policy.truststore" >
+				</div>
 			</div>
 			
 			<!-- Quota and spike arrest -->

@@ -95,6 +95,10 @@ services.factory('Resource', ['$resource',
 				method: 'POST',
 				url: 'api/:apiId/resource/:resourceId/add/policy/oauth'
             },
+            createSAMLResource:{
+				method: 'POST',
+				url: 'api/:apiId/resource/:resourceId/add/policy/saml'
+            },
             updateSpikeArrestResource:{
 				method: 'PUT',
 				url: 'api/:apiId/resource/:resourceId/update/policy/spikeArrest'
@@ -114,6 +118,10 @@ services.factory('Resource', ['$resource',
             updateOAuthResource:{
 				method: 'PUT',
 				url: 'api/:apiId/resource/:resourceId/update/policy/oauth'
+            },
+            updateSAMLResource:{
+				method: 'PUT',
+				url: 'api/:apiId/resource/:resourceId/update/policy/saml'
             },
 			removePolicy:{
             	method: 'DELETE',
@@ -181,6 +189,10 @@ services.factory('Policy', ['$resource',
 				method: 'POST',
 				url: 'api/add/:apiId/policy/oauth'
 			},
+			createSAML:{
+				method: 'POST',
+				url: 'api/add/:apiId/policy/saml'
+			},
 			updateSpikeArrest:{
 				method: 'PUT',
 				url: 'api/update/:apiId/policy/spikeArrest'
@@ -200,6 +212,10 @@ services.factory('Policy', ['$resource',
 			updateOAuth:{
 				method: 'PUT',
 				url: 'api/update/:apiId/policy/oauth'
+			},
+			updateSAML:{
+				method: 'PUT',
+				url: 'api/update/:apiId/policy/saml'
 			},
 			remove:{
 				method: 'DELETE',

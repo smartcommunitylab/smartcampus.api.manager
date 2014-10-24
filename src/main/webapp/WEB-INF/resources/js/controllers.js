@@ -590,6 +590,23 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeou
 						}
 				});
 			}
+			else if(type=='SAML'){
+				Policy.createSAML({
+					apiId: apiid
+					},$scope.policy,
+					function (data) {
+						if(data.status == 200){
+							$location.path('api/'+apiid);
+						}else{
+							$scope.errorMsg = data.message;
+
+							//if error message is for a duplicate policy
+							if($scope.errorMsg.indexOf('already exists')!=-1){
+								$scope.policy = null;
+							}
+						}
+				});
+			}
 		};
 		
 		$timeout(function () {
@@ -972,6 +989,18 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$timeo
 							}
 					});
 				}
+				else if(type=='SAML'){
+					Policy.updateSAML({
+						apiId: apiid
+						},$scope.policy,
+						function (data) {
+							if(data.status == 200){
+								$location.path('api/'+apiid);
+							}else{
+								$scope.errorMsg = data.message;
+							}
+					});
+				}
 				
 	        };
 			
@@ -1268,17 +1297,19 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							function (data) {
 								if(data.status == 200){
 									//$location.path('/show/'+apiid+'/resource/'+rid);
-									$scope.policy = data.data;
+									var listPolicies = data.data.policy;
+									for(var i=0;i<listPolicies.length;i++){
+										if(listPolicies[i].id===$scope.policy.id){
+											$scope.policy = listPolicies[i];
+										}
+									}
+									//$scope.policy = data.data;
 									$scope.msg = data.message;
 									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
 									$scope.msg = null;
-									
-									//if error message is for a duplicate policy
-									if($scope.errorMsg.indexOf('already exists')!=-1){
-										$scope.policy = null;
-									}
+
 								}
 						});
 					}
@@ -1289,17 +1320,18 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$scope.policy = data.data;
+									var listPolicies = data.data.policy;
+									for(var i=0;i<listPolicies.length;i++){
+										if(listPolicies[i].id===$scope.policy.id){
+											$scope.policy = listPolicies[i];
+										}
+									}
 									$scope.msg = data.message;
 									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
 									$scope.msg = null;
-									
-									//if error message is for a duplicate policy
-									if($scope.errorMsg.indexOf('already exists')!=-1){
-										$scope.policy = null;
-									}
+
 								}
 						});
 					}
@@ -1314,17 +1346,18 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$scope.policy = data.data;
+									var listPolicies = data.data.policy;
+									for(var i=0;i<listPolicies.length;i++){
+										if(listPolicies[i].id===$scope.policy.id){
+											$scope.policy = listPolicies[i];
+										}
+									}
 									$scope.msg = data.message;
 									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
 									$scope.msg = null;
-									
-									//if error message is for a duplicate policy
-									if($scope.errorMsg.indexOf('already exists')!=-1){
-										$scope.policy = null;
-									}
+
 								}
 						});
 					}
@@ -1335,17 +1368,18 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$scope.policy = data.data;
+									var listPolicies = data.data.policy;
+									for(var i=0;i<listPolicies.length;i++){
+										if(listPolicies[i].id===$scope.policy.id){
+											$scope.policy = listPolicies[i];
+										}
+									}
 									$scope.msg = data.message;
 									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
 									$scope.msg = null;
-									
-									//if error message is for a duplicate policy
-									if($scope.errorMsg.indexOf('already exists')!=-1){
-										$scope.policy = null;
-									}
+
 								}
 						});
 					}
@@ -1356,17 +1390,40 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 							},$scope.policy,
 							function (data) {
 								if(data.status == 200){
-									$scope.policy = data.data;
+									var listPolicies = data.data.policy;
+									for(var i=0;i<listPolicies.length;i++){
+										if(listPolicies[i].id===$scope.policy.id){
+											$scope.policy = listPolicies[i];
+										}
+									}
 									$scope.msg = data.message;
 									$scope.errorMsg = null;
 								}else{
 									$scope.errorMsg = data.message;
 									$scope.msg = null;
 									
-									//if error message is for a duplicate policy
-									if($scope.errorMsg.indexOf('already exists')!=-1){
-										$scope.policy = null;
+								}
+						});
+					}
+					else if(type=='SAML'){
+						Resource.updateSAMLResource({
+							apiId: apiid,
+							resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									var listPolicies = data.data.policy;
+									for(var i=0;i<listPolicies.length;i++){
+										if(listPolicies[i].id===$scope.policy.id){
+											$scope.policy = listPolicies[i];
+										}
 									}
+									$scope.msg = data.message;
+									$scope.errorMsg = null;
+								}else{
+									$scope.errorMsg = data.message;
+									$scope.msg = null;
+
 								}
 						});
 					}
@@ -1602,6 +1659,24 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 					}
         			else if(type=='OAuth'){
 						Resource.createOAuthResource({
+							apiId: apiid,
+							resourceId: rid
+							},$scope.policy,
+							function (data) {
+								if(data.status == 200){
+									$location.path('api/'+apiid);
+								}else{
+									$scope.errorMsg = data.message;
+									
+									//if error message is for a duplicate policy
+									if($scope.errorMsg.indexOf('already exists')!=-1){
+										$scope.policy = null;
+									}
+								}
+						});
+					}
+        			else if(type=='SAML'){
+						Resource.createSAMLResource({
 							apiId: apiid,
 							resourceId: rid
 							},$scope.policy,
