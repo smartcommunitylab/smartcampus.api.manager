@@ -31,6 +31,7 @@ import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SAML;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.model.util.RequestHandlerObject;
@@ -71,7 +72,8 @@ public class PolicyDecisionPoint {
 		// logger.info("policiesList() - ApiId: {}", apiId);
 
 		List<Policy> pToApply = new ArrayList<Policy>();
-		boolean qfound = false, spfound = false, ipfound = false, vappfound = false, oauthfound = false;
+		boolean qfound = false, spfound = false, ipfound = false, vappfound = false, oauthfound = false, 
+				samlfound = false;
 		
 		// api policies
 		try {
@@ -113,6 +115,9 @@ public class PolicyDecisionPoint {
 				if(listContainsClass(pToApply, "OAuth")){
 					oauthfound = true;
 				}
+				if(listContainsClass(pToApply, "SAML")){
+					samlfound = true;
+				}
 
 			}
 			// api policies
@@ -135,6 +140,9 @@ public class PolicyDecisionPoint {
 					if (policies.get(i) instanceof OAuth && !oauthfound) {
 						pToApply.add(policies.get(i));
 					}
+					if (policies.get(i) instanceof SAML && !samlfound) {
+						pToApply.add(policies.get(i));
+					}
 				}
 
 			}
@@ -147,6 +155,20 @@ public class PolicyDecisionPoint {
 		return pToApply;
 	}
 	
+	/**
+	 * Check if a type of policy is in the list.
+	 * Type is the type of policy to search and its possible value are:
+	 * 1- Quota
+	 * 2- Spike Arrest
+	 * 3- IP Access Control
+	 * 4- Verify App Key
+	 * 5- OAuth
+	 * 6- SAML
+	 * 
+	 * @param list : list of {@link Policy}
+	 * @param type : String
+	 * @return boolean: true if a type of policy is found, otherwise false
+	 */
 	private boolean listContainsClass(List<Policy> list, String type){
 		for(int i=0;i<list.size();i++){
 			//Quota
@@ -176,6 +198,12 @@ public class PolicyDecisionPoint {
 			//OAuth
 			if(type.equalsIgnoreCase("OAuth")){
 				if(list.get(i) instanceof OAuth){
+					return true;
+				}
+			}
+			//SAML
+			if(type.equalsIgnoreCase("SAML")){
+				if(list.get(i) instanceof SAML){
 					return true;
 				}
 			}
@@ -236,6 +264,9 @@ public class PolicyDecisionPoint {
 					String token = headers.get("token");
 					OAuthApply oauth = new OAuthApply(apiId, resourceId, appId, token,(OAuth)pToApply.get(i));
 					batch.add(oauth);
+				}
+				else if(pToApply.get(i) instanceof SAML){
+					//TODO
 				}
 			}
 			//apply policies
