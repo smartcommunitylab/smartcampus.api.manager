@@ -31,6 +31,7 @@ import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SAML;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
 import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
@@ -319,13 +320,48 @@ public class SecurityManager {
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
 			
-			//check if a policy ip access control is already in
+			//check if a policy oauth is already in
 			List<Policy> listp = api.getPolicy();
 			if(listp!=null && listp.size()>0){
 				for(int i=0;i<listp.size();i++){
 					if(listp.get(i) instanceof OAuth){
 						throw new IllegalArgumentException(
 								"A policy oauth already exists, " +
+								"you cannot add a new one before deleting it.");
+					}
+				}
+			}
+			
+			return pmanager.addPolicyApi(apiId, p);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
+	/**
+	 * This function checks user permission before
+	 * adding a policy to api.
+	 * Policy must be a SAML.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SAML}
+	 * @return instance of {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
+	public Policy addPolicyApi(String apiId, SAML p) throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			
+			//check if a policy SAML is already in
+			List<Policy> listp = api.getPolicy();
+			if(listp!=null && listp.size()>0){
+				for(int i=0;i<listp.size();i++){
+					if(listp.get(i) instanceof SAML){
+						throw new IllegalArgumentException(
+								"A policy SAML already exists, " +
 								"you cannot add a new one before deleting it.");
 					}
 				}
@@ -484,6 +520,28 @@ public class SecurityManager {
 	 * @throws CustomAuthenticationException
 	 */
 	public Policy updatePolicyApi(String apiId, OAuth p) throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			return pmanager.updatePolicyApi(apiId, p);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
+	/**
+	 * This function checks user permission before
+	 * updating a policy in an api.
+	 * Policy must be a SAML.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SAML}
+	 * @return instance of updated {@link Policy}
+	 * @throws CustomAuthenticationException
+	 */
+	public Policy updatePolicyApi(String apiId, SAML p) throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){
 			return pmanager.updatePolicyApi(apiId, p);
@@ -908,6 +966,43 @@ public class SecurityManager {
 	
 	/**
 	 * This function checks user permission before
+	 * adding a SAML policy to a resource in an api.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String 
+	 * @param resourceId : String
+	 * @param p : instance of {@link SAML}
+	 * @return instance of {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
+	public Resource addPolicyResourceApi(String apiId, String resourceId, SAML p) 
+			throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			
+			//check if a policy SAML is already in
+			Resource r = pmanager.getResourceApiByResourceId(apiId, resourceId);
+			List<Policy> listp = r.getPolicy();
+			if(listp!=null && listp.size()>0){
+				for(int i=0;i<listp.size();i++){
+					if(listp.get(i) instanceof SAML){
+						throw new IllegalArgumentException(
+								"A policy SAML already exists, " +
+								"you cannot add a new one before deleting it.");
+					}
+				}
+			}
+			
+			return pmanager.addPolicyResourceApi(apiId, resourceId, p);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
+	/**
+	 * This function checks user permission before
 	 * updating a policy of a resource in an api.
 	 * Policy must be a Spike Arrest.
 	 * It throws a security exception, if user has not the right
@@ -1016,6 +1111,30 @@ public class SecurityManager {
 	 * @throws CustomAuthenticationException
 	 */
 	public Resource updatePolicyResourceApi(String apiId, String resourceId, OAuth p) 
+			throws CustomAuthenticationException{
+		Api api = pmanager.getApiById(apiId);
+		if(security.canUserDoThisOperation(api.getOwnerId())){
+			return pmanager.updatePolicyResourceApi(apiId, resourceId, p);
+		}
+		else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
+	/**
+	 * This function checks user permission before
+	 * updating a policy of a resource in an api.
+	 * Policy must be a SAML.
+	 * It throws a security exception, if user has not the right
+	 * permissions.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link SAML}
+	 * @return instance of updated {@link Resource}
+	 * @throws CustomAuthenticationException
+	 */
+	public Resource updatePolicyResourceApi(String apiId, String resourceId, SAML p) 
 			throws CustomAuthenticationException{
 		Api api = pmanager.getApiById(apiId);
 		if(security.canUserDoThisOperation(api.getOwnerId())){

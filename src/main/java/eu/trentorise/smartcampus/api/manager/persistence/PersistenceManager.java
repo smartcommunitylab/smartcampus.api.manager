@@ -41,6 +41,7 @@ import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SAML;
 import eu.trentorise.smartcampus.api.manager.model.SourceAddress;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.Status;
@@ -1403,8 +1404,6 @@ public class PersistenceManager {
 				}
 			}
 			
-			//TODO check ip address
-			
 			//check subset
 			if(((IPAccessControl)p).getRule().equalsIgnoreCase(Constants.POLICY_IP_RULE.ALLOW.toString())
 					&& wlist!=null){
@@ -1560,6 +1559,25 @@ public class PersistenceManager {
 							throw new IllegalArgumentException("Endpoint is not a valid url.");
 						}
 					}
+				}
+			}
+		}
+		
+		//check SAML parameters
+		if(p instanceof SAML){
+			//TODO
+			String truststore = ((SAML) p).getTruststore();
+			
+			if( ((SAML) p).isValSigner() && truststore==null){
+				throw new IllegalArgumentException("For policy SAML, truststore is a required token" +
+						"when you want to validate signer.");
+			}
+			
+			//validate truststore
+			if(truststore!=null){
+				UrlValidator validator = new UrlValidator();
+				if(!validator.isValid(truststore)){
+					throw new IllegalArgumentException("TrustStore is not a valid endpoint.");
 				}
 			}
 		}
