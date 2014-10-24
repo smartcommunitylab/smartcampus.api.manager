@@ -31,6 +31,7 @@ import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
+import eu.trentorise.smartcampus.api.manager.model.SAML;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.model.util.ResultData;
@@ -238,6 +239,37 @@ public class PolicyController {
 		}
 		
 	}
+	
+	/**
+	 * Rest service that adds a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SAML}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Add policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/add/{apiId}/policy/saml", method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addPolicy(@PathVariable String apiId, @RequestBody SAML p) {
+		logger.info("Add SAML api policy.");
+		try{
+			Policy updateApiP = smanager.addPolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Add policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in adding data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
 
 	/**
 	 * Rest service that updates a policy api.
@@ -375,6 +407,37 @@ public class PolicyController {
 	@ResponseBody
 	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody OAuth p) {
 		logger.info("Update api policy OAuth.");
+		try{
+			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
+			if(updateApiP!=null){
+				return new ResultData(updateApiP, HttpServletResponse.SC_OK, "Update policy successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+						"Problem in updating data.");
+			}
+		}catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Rest service that updates a policy api.
+	 * 
+	 * @param apiId : String
+	 * @param p : instance of {@link SAML}
+	 * @return instance of {@link ResultData} with updated api data, status (OK, INTERNAL SERVER ERROR,
+	 * 			BAD REQUEST or FORBIDDEN) and a string message : 
+	 * 			"Updated policy Successfully" if it is ok, otherwise "Problem in updating data".
+	 * 			If exception is threw then it is the exception message.
+	 */
+	@RequestMapping(value = "/update/{apiId}/policy/saml", method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updatePolicy(@PathVariable String apiId, @RequestBody SAML p) {
+		logger.info("Update api policy SAML.");
 		try{
 			Policy updateApiP = smanager.updatePolicyApi(apiId, p);
 			if(updateApiP!=null){

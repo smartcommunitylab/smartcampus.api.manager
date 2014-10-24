@@ -32,6 +32,7 @@ import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.Policy;
 import eu.trentorise.smartcampus.api.manager.model.Quota;
 import eu.trentorise.smartcampus.api.manager.model.Resource;
+import eu.trentorise.smartcampus.api.manager.model.SAML;
 import eu.trentorise.smartcampus.api.manager.model.SpikeArrest;
 import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.model.util.ResultData;
@@ -327,6 +328,42 @@ public class ResourceController {
 	}
 	
 	/**
+	 * Rest that add a SAML policy to resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link SAML}
+	 * @return instance of {@link ResultData} with resource data having the new policy, 
+	 * 			status (OK, BAD REQUEST, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"Resource policy added successfully." if it is ok, 
+	 * 			otherwise "Problem in saving policy to resource api."
+	 * 			or if exception is thrown, the error message.
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/add/policy/saml", 
+			method = RequestMethod.POST, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData addResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+			@RequestBody SAML p){
+		logger.info("Add policy SAML to resource.");
+		try {
+			Resource r = manager.addPolicyResourceApi(apiId, resourceId, p);
+			if (r != null) {
+				return new ResultData(r, HttpServletResponse.SC_OK,
+						"Resource policy added successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"Problem in saving policy to resource api.");
+			}
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
+					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+	}
+	
+	/**
 	 * Rest service that updates a resource api.
 	 * Policy parameter must be set to null, because this method
 	 * does not update policy, only uri and verb parameters, otherwise
@@ -521,6 +558,42 @@ public class ResourceController {
 	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
 			@RequestBody OAuth p){
 		logger.info("Update policy OAuth to resource.");
+		try{
+			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
+			if (r != null) {
+				return new ResultData(r, HttpServletResponse.SC_OK,
+						"Resource policy updated successfully.");
+			} else {
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND,
+						"Problem in updating policy to resource api.");
+			}
+		} catch (IllegalArgumentException i) {
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST,
+					i.getMessage());
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+	}
+	
+	/**
+	 * Rest that update an SAML policy to resource api.
+	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param p : instance of {@link SAML}
+	 * @return instance of {@link ResultData} with resource data having the updated policy, 
+	 * 			status (OK, BAD REQUEST, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"Resource policy updated successfully."" if it is ok, 
+	 * 			otherwise "Problem in updating policy to resource api."
+	 * 			or if exception is thrown, the error message.
+	 */
+	@RequestMapping(value = "/{apiId}/resource/{resourceId}/update/policy/saml", 
+			method = RequestMethod.PUT, 
+			consumes="application/json")
+	@ResponseBody
+	public ResultData updateResourcePolicy(@PathVariable String apiId, @PathVariable String resourceId,
+			@RequestBody SAML p){
+		logger.info("Update policy SAML to resource.");
 		try{
 			Resource r = manager.updatePolicyResourceApi(apiId, resourceId, p);
 			if (r != null) {
