@@ -87,9 +87,10 @@ public class RequestHandler{
 				// save in object
 				ObjectInMemory m1 = new ObjectInMemory();
 				m1.setApiId(apiId);
+				
 				if(basepath.contains("{") && basepath.contains("}")){
 					m1.setPattern(true);
-				}else m1.setPattern(false);
+				}//else m1.setPattern(false);
 				
 				all.put(basepath, m1);
 
@@ -104,9 +105,10 @@ public class RequestHandler{
 						ObjectInMemory m = new ObjectInMemory();
 						m.setApiId(apiId);
 						m.setResourceId(rId);
+						
 						if(resourcepath.contains("{") && resourcepath.contains("}")){
-							m1.setPattern(true);
-						}else m1.setPattern(false);
+							m.setPattern(true);
+						}//else m.setPattern(false);
 						
 						all.put(resourcepath, m);
 					}
@@ -153,32 +155,32 @@ public class RequestHandler{
 					//retrieveUrlFromMemory(path);
 					initMemory();
 					ObjectInMemory obj = all.get(path);
-					logger.info("After obj");
+					
 					if(obj!=null){
-						logger.info("In obj");
+						
 						apiId = obj.getApiId();
 						resourceId = obj.getResourceId();
 					}
 					else{
-						logger.info("Pattern");
-						//search a pattern
 						
 						//TODO pattern matcher
-						logger.info("Match pattern....");
 						Iterator<Entry<String, ObjectInMemory>> it = all.entrySet().iterator();
 						while(it.hasNext()){
+							
 							Map.Entry<String, ObjectInMemory> pairs = 
 									(Map.Entry<String, ObjectInMemory>) it.next();
+							
 							if(pairs.getValue().isPattern()){
-								logger.info("A pattern found");
+								
 								boolean match = new PatternMatcher(pairs.getKey(),path).compute();
 								if(match){
 									logger.info("Api id {}",pairs.getValue().getApiId());
 									logger.info("Resource id {}",pairs.getValue().getResourceId());
+									apiId = pairs.getValue().getApiId();
+									resourceId = pairs.getValue().getResourceId();
 								}
 							}
 						}
-						logger.info("Match pattern.... END");
 					}
 				}
 				
