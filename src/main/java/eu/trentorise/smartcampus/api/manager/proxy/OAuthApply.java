@@ -79,9 +79,7 @@ public class OAuthApply implements PolicyDatastoreApply{
 			throw new IllegalArgumentException(
 					"Api or Resource id cannot be null.");
 		} else {
-			boolean decision;
-
-			decision = OAuthDecision(p.getOp(), p.getEndpoint(), apiId,
+			boolean decision = OAuthDecision(p.getOp(), p.getEndpoint(), apiId,
 					resourceId, appId, token);
 
 			if (decision)
