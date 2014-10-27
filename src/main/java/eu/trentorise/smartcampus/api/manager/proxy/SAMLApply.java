@@ -16,6 +16,7 @@
 package eu.trentorise.smartcampus.api.manager.proxy;
 
 import java.io.ByteArrayInputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,7 +33,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.Conditions;
+import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.Subject;
+import org.opensaml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml2.core.SubjectConfirmationData;
 import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
@@ -46,6 +54,7 @@ import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.util.Base64;
 import org.opensaml.xml.validation.ValidationException;
+import org.opensaml.xml.validation.ValidatorSuite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -141,6 +150,10 @@ public class SAMLApply implements PolicyDatastoreApply{
 				XMLObject responseXmlObj = unmarshaller.unmarshall(element);
 
 				Response response = (Response) responseXmlObj;
+				
+				//TODO validate schema of response SAML
+				//validateResponseAgainstSchema(response);
+				
 				String statusCode = response.getStatus().getStatusCode()
 						.getValue();
 				System.out.print("StatusCode:" + statusCode);
@@ -151,26 +164,26 @@ public class SAMLApply implements PolicyDatastoreApply{
 
 					/*
 					 * TODO validate assertion
-					 * 1. Validating the Status OK 
-					 * 2. Looking for an Authentication Statement
+					 * 1. Validating the Status - OK
+					 * 2. Looking for an Authentication Statement - OK
 					 * [describes a statement by the SAML authority asserting
 					 * that the assertion subject was authenticated by a
 					 * particular means at a particular time][the relying party
 					 * may require information additional to the assertion
 					 * itself in order to assess the level of confidence they
 					 * can place in that assertion] 
-					 * 3. Looking for a Conditions statement 
-					 * 4. Checking that the timestamps in the assertion are valid OK 
-					 * 5. Checking that the Attribute namespace matches, if provided 
-					 * 6. Miscellaneous format confirmations 
-					 * 7. Confirming Issuer matches 
-					 * 8. Confirming a Subject Confirmation was provided and contains valid timestamps
-					 * 9. Checking that the Audience matches, if provided 
-					 * 10. Checking the Recipient 
+					 * 3. Looking for a Conditions statement - OK
+					 * 4. Checking that the timestamps in the assertion are valid - OK 
+					 * 5. Checking that the Attribute namespace matches, if provided - OK
+					 * 6. Miscellaneous format confirmations - OK
+					 * 7. Confirming Issuer matches - OK
+					 * 8. Confirming a Subject Confirmation was provided and contains valid timestamps - OK
+					 * 9. Checking that the Audience matches, if provided - OK
+					 * 10. Checking the Recipient - OK
 					 * 11. Validating the Signature Is the response signed? OK Is the assertion
 					 * signed? Is the correct certificate supplied in the
 					 * keyinfo? 
-					 * 12. Checking that the Site URL Attribute contains a valid site url, if provided 
+					 * 12. Checking that the Site URL Attribute contains a valid site url, if provided - OK
 					 * 13. Looking for portal and organization id, if provided
 					 */
 
@@ -179,53 +192,93 @@ public class SAMLApply implements PolicyDatastoreApply{
 					 * which is issuer?
 					 */
 
+					//check issuer
+					validateIssuer(response.getIssuer(), null);//TODO issuerIDP
+					
 					List<Assertion> assList = response.getAssertions();
-
-					Assertion assertion = assList.get(0);
-
-					/* TODO
-					 * If assertion is encrypted:
-					 * EncryptedAssertion encryptedAssertion=response.getEncryptedAssertions().get(0);
-					 * Assertion assertion2 = decrypt(encryptedAssertion,credential);
-					 * I need to have credential of certificate.
-					 */
-
-					/* check the current timestamp against the NotBefore and
-					 * NotOnOrAfter elements in the assertion
-					 */
-					validateTimes(assertion);
-
-					// check signatures
-					if (!validateSigner) {
-						System.out.print("Grant: post request with SAMLAssertion or retrieve user info.");
-						//TODO what about Issuer field?
-						result = true;
+					
+					//The response must contain at least one Assertion
+					if(assList == null || assList.isEmpty()){
+						logger.info("The response must contain at least one Assertion");
+						throw new SecurityException("Invalid SAML, the response must contain at least one Assertion");
+					}
+					
+					//validate assertion - Looking for Authentication Statement
+					boolean foundValidSubject = false;
+					for(Assertion assertion : assList){
 						
-					} else {
+						//Check issuer
+						if(assertion.getIssuer() ==null){
+							logger.info("Assertion issuer must not be null.");
+							throw new SecurityException("Assertion issuer must not be null.");
+						}
 						
-						Signature sig = response.getSignature();
-						int num_firme = 0;
+						/* TODO
+						 * If assertion is encrypted:
+						 * EncryptedAssertion encryptedAssertion=response.getEncryptedAssertions().get(0);
+						 * Assertion assertion2 = decrypt(encryptedAssertion,credential);
+						 * I need to have credential of certificate.
+						 */
 
-						// check signature response
-						if (response.isSigned()) {
-							num_firme++;
-							result = validateSignature(sig, p.getTruststore());
+						/* check the current timestamp against the NotBefore and
+						 * NotOnOrAfter elements in the assertion
+						 */
+						validateTimes(assertion);
+						
+						//check signature is not null
+						if(assertion.getSignature()==null){
+							throw new SecurityException("Assertion signature is missing");
+						}
+						
+						// check signatures
+						if (!validateSigner) {
+							logger.info("Grant: post request with SAMLAssertion or retrieve user info.");
+							result = true;
+							
 						} else {
-							System.out.print("Signature response is not here.");
+							
+							Signature sig = response.getSignature();
+							int num_firme = 0;
+
+							// check signature response
+							if (response.isSigned()) {
+								num_firme++;
+								result = validateSignature(sig, p.getTruststore());
+							} else {
+								logger.info("Signature response is not here.");
+							}
+
+							// check signature assertion
+							Signature signature = assertion.getSignature();
+							if (assertion.isSigned()) {
+								num_firme++;
+								result = validateSignature(signature, p.getTruststore());
+							} else {
+								logger.info("Signature assertion is not here.");
+							}
+
+							if (num_firme == 0) {
+								logger.info("Error: No validation signature");
+							}
+						}
+						
+						
+						//check AuthnStatements and validate the Subject accordingly
+						if(assertion.getAuthnStatements() !=null && !assertion.getAuthnStatements().isEmpty()){
+							Subject subject = assertion.getSubject();
+							if(validateAuthenticationSubject(subject)){
+								validateAudienceRestrictionCondition(assertion.getConditions(),null);//TODO spIdentifier
+								foundValidSubject = true;
+							}
 						}
 
-						// check signature assertion
-						Signature signature = assertion.getSignature();
-						if (assertion.isSigned()) {
-							num_firme++;
-							result = validateSignature(signature, p.getTruststore());
-						} else {
-							System.out.print("Signature assertion is not here.");
-						}
-
-						if (num_firme == 0) {
-							System.out.print("Error: No validation signature");
-						}
+					}
+					
+					if(!foundValidSubject){
+						logger.info("The response did not contain any Authentication Statement " +
+								"that matched the Subject Confirmation criteria");
+						throw new SecurityException("The response did not contain any Authentication Statement " +
+								"that matched the Subject Confirmation criteria");
 					}
 
 				}
@@ -319,5 +372,123 @@ public class SAMLApply implements PolicyDatastoreApply{
 		}
 		return result;
 	}
+	
+	//TODO validate schema
+	private void validateResponseAgainstSchema(Response response){
+		ValidatorSuite schemaValidators = org.opensaml.Configuration.getValidatorSuite("saml2-core-schema-validator");
+		try {
+			schemaValidators.validate(response);
+		} catch (ValidationException e) {
+			logger.info("Saml validation error");
+			throw new SecurityException("Saml validation error");
+		}
+	}
+	
+	//TODO validate Issuer
+	//NOTE: I do not know issuerIDP value or where retrieves it.
+	private void validateIssuer(Issuer issuer, String issuerIDP){
+		if(issuer == null){
+			return;
+		}
+		//Issuer value must match Issuer IDP
+		if(!issuer.getValue().equalsIgnoreCase(issuerIDP)){
+			logger.info("Issuer value {} does not match issuer IDP",issuer);
+			throw new SecurityException("Issuer value does not match issuer IDP");
+		}
+		
+		//Format must be nameid-format-entity
+		if(issuer.getFormat()!=null
+				&& !org.opensaml.saml2.core.NameIDType.ENTITY.equals(issuer.getFormat()) 
+				){
+			logger.info("Issuer format is not null and does not equal: {}", org.opensaml.saml2.core.NameIDType.ENTITY);
+			throw new SecurityException("Issuer is not null and does not equal to NAMEID_FORMAT_ENTITY");
+		}
+	}
+	
+	//TODO validate the Subject of an Authentication Statement
+	private boolean validateAuthenticationSubject(Subject subject){
+		if(subject.getSubjectConfirmations() == null){
+			return false;
+		}
+		//Need to find a Bearer Subject Confirmation method
+		for(SubjectConfirmation subjectConf : subject.getSubjectConfirmations()){
+			if(SubjectConfirmation.METHOD_BEARER.equals(subjectConf.getMethod())){
+				validateSubjectConfirmation(subjectConf.getSubjectConfirmationData(), null, null, null);//TODO assertionConsumerURL, clientAddress, requestId
+			}
+		}
+		return true;
+	}
+	
+	//TODO validate a Bearer Subject Confirmation
+	private void validateSubjectConfirmation(SubjectConfirmationData subjectConfData, String assertionConsumerURL, String clientAddress, String requestId){
+		if(subjectConfData == null){
+			logger.info("Subject Confirmation Data of a Bearer Subject Confirmation is null");
+			throw new SecurityException("Subject Confirmation Data of a Bearer Subject Confirmation is null");
+		}
+		
+		//Recipient must match assertion consumer URL
+		String recipient = subjectConfData.getRecipient();
+		if(recipient == null || !recipient.equals(assertionConsumerURL)){//TODO where I can find assertion Consumer URL?
+			logger.info("Recipient {} does not match assertion consumer URL", recipient);
+			throw new SecurityException("Recipient does not match assertion consumer URL");
+		}
+		
+		//check timestamp
+		if(subjectConfData.getNotOnOrAfter() == null || subjectConfData.getNotOnOrAfter().isAfterNow()){
+			logger.info("Subject Conf Data does not contain NotOnOrAfter or it has expired.");
+			throw new SecurityException("Subject Conf Data does not contain NotOnOrAfter or it has expired.");
+		}
+		
+		//check address
+		if(subjectConfData.getAddress() != null && !subjectConfData.getAddress().equals(clientAddress)){//TODO where I can find client address?
+			logger.info("Subject Conf Data address {} does not match client address", subjectConfData.getAddress());
+			throw new SecurityException("Subject Conf Data address does not match client address");
+		}
+		
+		//It must not contain a NotBefore timestamp
+		if(subjectConfData.getNotBefore() != null){
+			logger.info("Subject Conf Data must not contain a NotBefore timestamp");
+			throw new SecurityException("Subject Conf Data must not contain a NotBefore timestamp");
+		}
+		
+		//InResponseTo must match the AuthnRequest request id
+		if(requestId != null && !requestId.equals(subjectConfData.getInResponseTo())){
+			logger.info("InResponseTo String does not match the original request id {}", requestId);
+			throw new SecurityException("InResponseTo String does not match the original request id");
+		}
+	}
+	
+	//TODO validate Audience Restriction Condition
+	private void validateAudienceRestrictionCondition(Conditions conditions, String spIdentifier){
+		if(conditions == null){
+			logger.info("Conditions are null");
+			throw new SecurityException("Conditions are null");
+		}
+		List<AudienceRestriction> audienceRestrs = conditions.getAudienceRestrictions();
+		if(!matchSaml2AudienceRestriction(spIdentifier, audienceRestrs)){//TODO where I can find spIdentifier
+			logger.info("Assertion does not contain unique subject provider identifier {} in the audience restriction conditions", spIdentifier);
+			throw new SecurityException("InResponseTo String does not match the original request id");
+		}
+	}
+
+	//TODO match spIdentifier and Audience Restrictions
+	//NOTE appliesTo is spIdentifier - where I can find it?
+	private boolean matchSaml2AudienceRestriction(String appliesTo, List<AudienceRestriction> audienceRestrs) {
+		if(audienceRestrs != null && !audienceRestrs.isEmpty()){
+			for(AudienceRestriction audienceRestriction : audienceRestrs){
+				if(audienceRestriction.getAudiences() != null){
+					for(Audience audience : audienceRestriction.getAudiences()){
+						
+						if(appliesTo.equals(audience.getAudienceURI())){
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 
 }
