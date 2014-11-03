@@ -23,7 +23,9 @@ import org.springframework.web.client.RestTemplate;
 import eu.trentorise.smartcampus.api.manager.model.OAuth;
 import eu.trentorise.smartcampus.api.manager.model.util.ValidateToken;
 /**
- * Apply oauth policy logic.
+ * Class that apply oauth policy logic.
+ * It retrieves a boolean value from endpoint:
+ * true if token is valid, otherwise false.
  * 
  * @author Giulia Canobbio
  *
