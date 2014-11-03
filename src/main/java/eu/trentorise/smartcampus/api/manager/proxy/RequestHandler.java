@@ -145,46 +145,46 @@ public class RequestHandler{
 			logger.info("(a)Api Basepath: {}", path);
 
 			// retrieve api id and resource from static resource
-			if (all != null && all.size() > 0) {
-				
-				if (all.containsKey(path)) {
-					ObjectInMemory obj = all.get(path);
-					apiId = obj.getApiId();
-					resourceId = obj.getResourceId();
-				} else {
-					//retrieveUrlFromMemory(path);
-					initMemory();
-					ObjectInMemory obj = all.get(path);
+			if(path.contains("{") && path.contains("}")){
+				initMemory();
+				//TODO pattern matcher
+				Iterator<Entry<String, ObjectInMemory>> it = all.entrySet().iterator();
+				while(it.hasNext()){
 					
-					if(obj!=null){
+					Map.Entry<String, ObjectInMemory> pairs = 
+							(Map.Entry<String, ObjectInMemory>) it.next();
+					
+					if(pairs.getValue().isPattern()){
 						
-						apiId = obj.getApiId();
-						resourceId = obj.getResourceId();
-					}
-					else{
-						
-						//TODO pattern matcher
-						Iterator<Entry<String, ObjectInMemory>> it = all.entrySet().iterator();
-						while(it.hasNext()){
-							
-							Map.Entry<String, ObjectInMemory> pairs = 
-									(Map.Entry<String, ObjectInMemory>) it.next();
-							
-							if(pairs.getValue().isPattern()){
-								
-								boolean match = new PatternMatcher(pairs.getKey(),path).compute();
-								if(match){
-									logger.info("Api id {}",pairs.getValue().getApiId());
-									logger.info("Resource id {}",pairs.getValue().getResourceId());
-									apiId = pairs.getValue().getApiId();
-									resourceId = pairs.getValue().getResourceId();
-								}
-							}
+						boolean match = new PatternMatcher(pairs.getKey(),path).compute();
+						if(match){
+							logger.info("Api id {}",pairs.getValue().getApiId());
+							logger.info("Resource id {}",pairs.getValue().getResourceId());
+							apiId = pairs.getValue().getApiId();
+							resourceId = pairs.getValue().getResourceId();
 						}
 					}
 				}
-				
 			}
+			else{
+				if (all != null && all.size() > 0) {
+					if (all.containsKey(path)) {
+						ObjectInMemory obj = all.get(path);
+						apiId = obj.getApiId();
+						resourceId = obj.getResourceId();
+					} else {
+						//retrieveUrlFromMemory(path);
+						initMemory();
+						ObjectInMemory obj = all.get(path);
+						if(obj!=null){
+							apiId = obj.getApiId();
+							resourceId = obj.getResourceId();
+						}
+					}
+					
+				}
+			}
+			
 			
 			if (apiId == null && resourceId == null) {
 				throw new IllegalArgumentException(
