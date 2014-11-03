@@ -41,7 +41,7 @@ public class OAuthApply implements PolicyDatastoreApply{
 	// global variable 
 	private String apiId;
 	private String resourceId;
-	private String appId; // valore non utilizzato nel caso solo validatione/verifica presenza token
+	private String appId; // not needed value, only for validation/check that token is in request
 	private String token;// get from request header
 	private OAuth p;
 	
@@ -64,7 +64,7 @@ public class OAuthApply implements PolicyDatastoreApply{
 
 	@Override
 	public void apply() {
-		// TODO Auto-generated method stub
+
 		decision();
 	}
 	
@@ -121,15 +121,14 @@ public class OAuthApply implements PolicyDatastoreApply{
 			} else {
 				
 				if(token!=null && operation.equalsIgnoreCase("validateToken") && p.getEndpoint()!=null){
-					//TODO
+					
 					rtemplate = new RestTemplate();
-					//endpoint: I suppose is my rest service test/verifyToken
+					
 					try{
+						//Endpoint returns a boolean value: true if token is valid else false
 						ValidateToken result = rtemplate.getForObject(p.getEndpoint(),
 							ValidateToken.class, new Object[]{});
-						//request valid token to endpoint
-						//check that it is still valid
-						//if not then check scope and expiry
+						//check that active is true
 						if(result.isActive()){
 							return true;
 						}
