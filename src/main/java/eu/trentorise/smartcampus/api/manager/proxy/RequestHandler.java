@@ -147,7 +147,7 @@ public class RequestHandler{
 			// retrieve api id and resource from static resource
 			if(path.contains("{") && path.contains("}")){
 				initMemory();
-				//TODO pattern matcher
+				//pattern matcher
 				Iterator<Entry<String, ObjectInMemory>> it = all.entrySet().iterator();
 				while(it.hasNext()){
 					
