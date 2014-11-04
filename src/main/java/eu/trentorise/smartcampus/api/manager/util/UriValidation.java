@@ -15,6 +15,8 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.util;
 
+import java.util.EmptyStackException;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,13 +43,43 @@ public class UriValidation {
 	/**
 	 * Validate uri of a resource, checking if it matches pattern.
 	 * 
-	 * @param hex 
-	 * 			: String to validate
+	 * @param hex : String to validate
 	 * @return boolean value true if it matches otherwise false
 	 */
 	public boolean validate(final String hex){
 		matcher = pattern.matcher(hex);
-		return matcher.matches();
+		boolean val = matcher.matches();
+		if(val){
+			return graphValidate(hex);
+		}
+		return val;
+	}
+	
+	/**
+	 * Suppose that there is only one '{' and '}'.
+	 * Check that '{' and '}' make a balanced string.
+	 * 
+	 * @param hex : String to validate
+	 * @return boolean value
+	 */
+	public boolean graphValidate(final String hex){
+		Stack<String> st = new Stack<String>();
+		for(char ch : hex.toCharArray()){
+			if(ch == '{'){
+				st.push(""+ch);
+			}
+			if(ch == '}'){
+				try{
+					st.pop();
+				}catch(EmptyStackException e){
+					return false;
+				}
+			}
+		}
+		if(st.empty()){
+			return true;
+		}
+		return false;
 	}
 
 }
