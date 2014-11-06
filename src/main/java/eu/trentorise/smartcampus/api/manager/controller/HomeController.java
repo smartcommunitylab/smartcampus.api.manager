@@ -61,23 +61,27 @@ public class HomeController {
 	}
 	
 	/**
-	 * Try Request Handler class, with retrieving api url from request.
-	 * GET method.
+	 * Try Request Handler class, with retrieving api url from request
+	 * and saml 2.0 assertion from request body.
 	 * 
+	 * @param samlart : String, saml 2.0 assertion encoding in Base64
 	 * @param request : instance of {@link HttpServletRequest}
+	 * @param response : instance of {@link HttpServletResponse}
 	 * @return instance of {@link ResultData} with data, 
 	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"ok", otherwise "Error".
 	 * 			If exception is threw then its error is returned.
 	 */
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping()
 	@ResponseBody
-	public ResultData requestHandl(HttpServletRequest request, HttpServletResponse response){
+	public ResultData requestHandl(@RequestBody(required=false) String samlart, 
+			HttpServletRequest request, HttpServletResponse response){
 		logger.info("-----------------------------------------------");
 		logger.info("----------------START-------------------------------");
 		
+		logger.info("samlart {}",samlart);
 		try {
-			RequestHandlerObject r = requestHandler.handleRequest(request);
+			RequestHandlerObject r = requestHandler.handleRequest(request,samlart);
 			pdp.applyPoliciesBatch(r);
 
 			logger.info("------------------END-----------------------------");

@@ -122,10 +122,11 @@ public class RequestHandler{
 	 * http(s)://context-path/api_basepath/resource_path
 	 * 
 	 * @param request : instance of {@link HttpServletRequest}
+	 * @param samlart : String, saml 2.0 assertion encoding in Base64
 	 * @return instance of {@link RequestHandlerObject} with api id, resource id
 	 * 			and a map of request headers.
 	 */
-	public RequestHandlerObject handleRequest(HttpServletRequest request){
+	public RequestHandlerObject handleRequest(HttpServletRequest request, String samlart){
 
 		if (request != null) {
 
@@ -228,6 +229,11 @@ public class RequestHandler{
 			if(token!=null){
 				map.put("token", token);
 			}*/
+			
+			//saml assertion
+			if(samlart!=null){
+				map.put("samlart", samlart);
+			}
 
 			// check that appId retrieved from request is correct
 			if (appId != null) {
