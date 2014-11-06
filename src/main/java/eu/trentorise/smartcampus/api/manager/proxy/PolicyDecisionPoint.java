@@ -266,7 +266,10 @@ public class PolicyDecisionPoint {
 					batch.add(oauth);
 				}
 				else if(pToApply.get(i) instanceof SAML){
-					//TODO
+					//TODO where to retrieve samlassertion? Seems in request body
+					String samlAssertion = headers.get("samlart");//for test in headers
+					SAMLApply saml = new SAMLApply(apiId, resourceId, (SAML)pToApply.get(i), samlAssertion);
+					batch.add(saml);
 				}
 			}
 			//apply policies
