@@ -123,8 +123,8 @@ public class VerifyAppKeyApply implements PolicyDatastoreApply{
 			VerifyAppKey p, String appKey){
 		// check if anonymous is true or false
 		boolean anonymous = p.isAnonymous();
-		// if true => grant
-		if(anonymous){
+		// if true && appId is not in headers => grant
+		if(anonymous && appId==null){
 			return true;
 		}
 		else{
