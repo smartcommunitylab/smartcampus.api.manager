@@ -125,6 +125,30 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
     function($scope, $location, $routeParams, App, Api){
 		var appid = $routeParams.appId;
 		
+		var elem = $routeParams.elem;
+		
+		if(elem){
+			if(elem==='permission'){
+				$scope.isTabApiActive = false;
+				$scope.isTabPermissionActive = true;
+				$scope.isTabKeyActive = false;
+				
+			}else if(elem==='key'){
+				$scope.isTabApiActive = false;
+				$scope.isTabPermissionActive = false;
+				$scope.isTabKeyActive = true;
+				
+			}else{
+				$scope.isTabApiActive = true;
+				$scope.isTabPermissionActive = false;
+				$scope.isTabKeyActive = false;
+			}
+		}else{
+			$scope.isTabApiActive = true;
+			$scope.isTabPermissionActive = false;
+			$scope.isTabKeyActive = false;
+		}
+		
 		var listApi = function(id,status){
 			
 			if(!$scope.list){
@@ -173,7 +197,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 				appId : appid,
 				apiId : id
 				}, function(data){
-					$location.path('apps');
+					$location.path('/app/'+appId);
 					});
 			};
 			
@@ -181,14 +205,8 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 			App.remove({
 				appId : appid
 			}, function(data){
-				$location.path('apps');
+				$location.path('/app/'+appId);
 			});
-		};
-		
-		$scope.updateApiData = function(apiId,apiStatus){
-			console.log(apiId);
-			console.log(apiStatus);
-			
 		};
 			
 		//Change permission
@@ -264,7 +282,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   				},$scope.app,
   					function (data) {
   						if(data.status == 200){
-  							$location.path('apps');
+  							$location.path('/app/'+appId+'/permission');
   						}else{
   							$scope.errorMsg = data.message;
   						}

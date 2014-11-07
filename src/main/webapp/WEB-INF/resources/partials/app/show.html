@@ -12,15 +12,15 @@
                     </ul>
                     
                      <tabset >
-                    	<tab heading="Api" ng-show="app.apis">
+                    	<tab heading="Api" active="isTabApiActive">
                     		<div ng-include="'partials/app/_api.html'"></div>
                     	</tab>
                     	
-                    	<tab heading="Manage Permission">
+                    	<tab heading="Manage Permission" active="isTabPermissionActive">
                     		<div ng-include="'partials/app/_permission.html'"></div>
                     	</tab>
                     	
-                    	<tab heading="Key">
+                    	<tab heading="Key" active="isTabKeyActive">
                     		<div ng-include="'partials/app/_key.html'"></div>
                     	</tab>
                     	
