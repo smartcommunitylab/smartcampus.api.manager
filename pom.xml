@@ -221,6 +221,13 @@
 			<version>1.4.01</version>
 		</dependency>
 		
+		<!-- Google library -->
+		<dependency>
+  			<groupId>com.google.api-client</groupId>
+  			<artifactId>google-api-client</artifactId>
+  			<version>1.18.0-rc</version>
+		</dependency>
+		
 	</dependencies>
 	
     <build>
