@@ -54,6 +54,8 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
                                'Policy',
     function($scope, $route, $routeParams, $location, Api, Resource, Policy){
 		var apiid = $routeParams.apiId;
+		
+		//tab selection
 		var elem = $routeParams.elem;
 		
 		if(elem){
@@ -125,6 +127,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
     function($scope, $location, $routeParams, App, Api){
 		var appid = $routeParams.appId;
 		
+		//tab selection
 		var elem = $routeParams.elem;
 		
 		if(elem){
@@ -149,6 +152,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 			$scope.isTabKeyActive = false;
 		}
 		
+		//create a json object with api id, name and status list
 		var listApi = function(id,status){
 			
 			if(!$scope.list){
@@ -173,7 +177,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 			
 		};
 		
-		
+		//retrieve list of api in app
 		App.getApp({
 			appId : appid
 		}, function(data){
@@ -191,7 +195,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 			
 		});
 		
-		
+		//delete api list of app
 		$scope.deleteApi = function (id) {
 			App.removeApiData({
 				appId : appid,
@@ -200,7 +204,8 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 					$location.path('/app/'+appId);
 					});
 			};
-			
+		
+		//delete app
 		$scope.remove = function () {
 			App.remove({
 				appId : appid
@@ -209,9 +214,8 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 			});
 		};
 			
-		//Change permission
+		//Change permission tab
   		var list = [];
-  		console.log('Change permission');
   	
   		Api.list({
   		}, function(data){
@@ -365,6 +369,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 			$scope.apiStatus = data.data;
 		});
 		
+		//for quota policy
 		$scope.addStatus = function(){
 			if(!$scope.policy.qstatus){
 				$scope.policy.qstatus = [];
@@ -393,6 +398,8 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 			console.log($scope.policy.qstatus);
 		};
 		
+		//for ip access control policy
+		//white list of ip
 		$scope.addWIp = function(){
 			if(!$scope.policy.whiteList){
 				$scope.policy.whiteList = [];
@@ -439,6 +446,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 			console.log($scope.policy.whiteList);
 		};
 		
+		//black list of ip
 		$scope.addBIp = function(){
 			if(!$scope.policy.blackList){
 				$scope.policy.blackList = [];
@@ -484,6 +492,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 			}
 			console.log($scope.policy.blackList);
 		};
+		
 		
 		var timer = $interval(function () {
 			$scope.errorMsg = null;
@@ -800,6 +809,7 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$inter
 				$scope.apiStatus = data.data;
 			});
 			
+			//for Quota policy
 			$scope.addStatus = function(){
 				if(!$scope.policy.qstatus){
 					$scope.policy.qstatus = [];
@@ -828,6 +838,8 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$inter
 				console.log($scope.policy.qstatus);
 			};
 			
+			//for IP Access Control policy
+			//white list of ip
 			$scope.addWIp = function(){
 				if(!$scope.policy.whiteList){
 					$scope.policy.whiteList = [];
@@ -874,6 +886,7 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$inter
 				console.log($scope.policy.whiteList);
 			};
 			
+			//black list of ip
 			$scope.addBIp = function(){
 				if(!$scope.policy.blackList){
 					$scope.policy.blackList = [];
@@ -919,6 +932,7 @@ app.controller('editPolicyCtrl', ['$scope', '$location', '$routeParams', '$inter
 				}
 				console.log($scope.policy.blackList);
 			};
+			
 			
 			$scope.submit = function () {
 				var type = $scope.policy.type;
@@ -1190,6 +1204,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 					$scope.apiStatus = data.data;
 				});
 				
+				//for quota policy
 				$scope.addStatus = function(){
 					if(!$scope.policy.qstatus){
 						$scope.policy.qstatus = [];
@@ -1218,6 +1233,8 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 					console.log($scope.policy.qstatus);
 				};
 				
+				//for Ip Access Control policy
+				//white list of ip
 				$scope.addWIp = function(){
 					if(!$scope.policy.whiteList){
 						$scope.policy.whiteList = [];
@@ -1264,6 +1281,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 					console.log($scope.policy.whiteList);
 				};
 				
+				//black list of ip
 				$scope.addBIp = function(){
 					if(!$scope.policy.blackList){
 						$scope.policy.blackList = [];
@@ -1309,6 +1327,7 @@ app.controller('editResourcePolicyCtrl', ['$scope', '$location', '$routeParams',
 					}
 					console.log($scope.policy.blackList);
 				};
+				
 		        
 		        $scope.submit = function () {
 		        	var type = $scope.policy.type;
@@ -1484,6 +1503,7 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
     				$scope.apiStatus = data.data;
     			});
             	
+            	//for Quota policy
             	$scope.addStatus = function(){
 					if(!$scope.policy.qstatus){
 						$scope.policy.qstatus = [];
@@ -1512,6 +1532,8 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 					console.log($scope.policy.qstatus);
 				};
 				
+				//for Ip Access Control policy
+				//white list of ip
 				$scope.addWIp = function(){
 					if(!$scope.policy.whiteList){
 						$scope.policy.whiteList = [];
@@ -1558,6 +1580,7 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 					console.log($scope.policy.whiteList);
 				};
 				
+				//black list of ip
 				$scope.addBIp = function(){
 					if(!$scope.policy.blackList){
 						$scope.policy.blackList = [];
@@ -1603,6 +1626,7 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 					}
 					console.log($scope.policy.blackList);
 				};
+				
 				
 				var timer = $interval(function () {
 					$scope.errorMsg = null;
@@ -1729,8 +1753,7 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 						});
 					}
         		};
-        		
-        		
+        	
 			}
 ]);
 
