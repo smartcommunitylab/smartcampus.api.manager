@@ -415,7 +415,7 @@ public class ScenarioApi {
 		app1.setName("Openservice app junit-test-update");
 		app1.setKey("junit.test.openservice.1.app");
 		
-		apiManager.updateApp(app1);
+		apiManager.updateAppKey(app1);
 		
 		log.info("Update app 1 of api terminated.");
 	}

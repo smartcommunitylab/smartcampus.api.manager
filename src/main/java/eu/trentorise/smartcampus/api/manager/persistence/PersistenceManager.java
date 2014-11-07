@@ -394,12 +394,12 @@ public class PersistenceManager {
 	}
 	
 	/**
-	 * Update an key of existing App.
+	 * Update a key of existing App.
 	 * 
 	 * @param app : instance of {@link App}
 	 * @return updated instace of {@link App}
 	 */
-	public App updateApp(App app){
+	public App updateAppKey(App app){
 		String name = app.getName();
 		//Different name or api list
 		if(app.getId()==null){
@@ -457,7 +457,7 @@ public class PersistenceManager {
 			}
 		}
 		
-		updateApp(app);
+		updateAppApiData(app);
 	}
 	
 	/*

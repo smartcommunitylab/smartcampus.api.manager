@@ -1227,7 +1227,7 @@ public class SecurityManager {
 	public App updateApp(App app) throws CustomAuthenticationException{
 		App savedApp = pmanager.getAppById(app.getId());
 		if(security.canUserDoThisOperation(savedApp.getOwnerId())){
-			return pmanager.updateApp(app);
+			return pmanager.updateAppKey(app);
 		}
 		else {
 			throw new CustomAuthenticationException("You are not allowed");

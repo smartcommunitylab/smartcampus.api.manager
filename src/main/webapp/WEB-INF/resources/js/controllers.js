@@ -123,8 +123,8 @@ app.controller('showApiCtrl', ['$scope', '$route' ,'$routeParams', '$location', 
 	}
 ]);
 
-app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Api',
-    function($scope, $location, $routeParams, App, Api){
+app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', '$route', 'App', 'Api',
+    function($scope, $location, $routeParams, $route, App, Api){
 		var appid = $routeParams.appId;
 		
 		//tab selection
@@ -173,8 +173,6 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 				
 			});
 			
-			console.log($scope.list);
-			
 		};
 		
 		//retrieve list of api in app
@@ -201,7 +199,8 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 				appId : appid,
 				apiId : id
 				}, function(data){
-					$location.path('/app/'+appId);
+					$route.reload();
+					//$location.path('/app/'+appId);
 					});
 			};
 		
@@ -210,7 +209,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 			App.remove({
 				appId : appid
 			}, function(data){
-				$location.path('/app/'+appId);
+				$location.path('/apps');
 			});
 		};
 			
@@ -245,9 +244,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   		};
   		
   		$scope.addApiData = function(apiId, apiStatus){
-  			console.log('addApiData');
-  			console.log('param status: '+apiStatus);
-  			console.log('param api id: '+apiId);
+  			
   			var obj = {apiId: apiId , apiStatus: apiStatus};
   			
   			if(!list){
@@ -286,7 +283,7 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   				},$scope.app,
   					function (data) {
   						if(data.status == 200){
-  							$location.path('/app/'+appId+'/permission');
+  							$route.reload();
   						}else{
   							$scope.errorMsg = data.message;
   						}
