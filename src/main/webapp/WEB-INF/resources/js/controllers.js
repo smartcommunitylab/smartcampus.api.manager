@@ -126,8 +126,6 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 		var appid = $routeParams.appId;
 		
 		var listApi = function(id,status){
-			//console.log(id);
-			//console.log(status);
 			
 			if(!$scope.list){
 				$scope.list = [];
@@ -151,30 +149,11 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
 			
 		};
 		
-		/*var addStatuslist = function(id){
-			
-			for(var i=0;i<$scope.list.length;i++){
-				Api.getStatusList({
-					apiId : id
-				},function(data){
-					
-					$scope.list[i].apiStatusList.push(data.data);
-			
-				});
-			
-				console.log('Api app list');
-			
-				console.log($scope.list);
-			
-			}
-		};*/
 		
 		App.getApp({
 			appId : appid
 		}, function(data){
 			$scope.app = data.data;
-			
-			//console.log($scope.app);
 			
 			//get name of api
 			for(var i=0;i<$scope.app.apis.length;i++){
@@ -218,9 +197,6 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   	
   		Api.list({
   		}, function(data){
-  			//$scope.apisList = data.data;
-  			
-  			//console.log('Api list');
   			
   			if(!$scope.permissions){
   				$scope.permissions=[];
@@ -235,17 +211,11 @@ app.controller('showAppCtrl', ['$scope', '$location', '$routeParams', 'App', 'Ap
   				$scope.permissions.push(obj);
   			}
   			
-  			//console.log($scope.permissions);
-  			
   		});
   		
   		$scope.retrieveStatusPermission = function(name){
-  			//console.log('Retrieve status permission');
-  			//console.log(name);
   			for(var i=0;i<$scope.list.length;i++){
-  				//console.log($scope.list[i].apiName);
   				if(name===$scope.list[i].apiName){
-  					//console.log($scope.list[i].apiStatus);
   					console.log($scope.list[i].apiStatus);
   					return $scope.list[i].apiStatus;
   				}
@@ -359,6 +329,10 @@ app.controller('addResourceCtrl', ['$scope', '$location', '$routeParams', 'Resou
 						}
 				});
 		};
+		
+		$scope.goBack = function(){
+			$location.path('/api/'+apiid);
+		};
      }
 ]);
 
@@ -366,7 +340,6 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
      function ($scope, $location, $routeParams, $interval, Policy, Api) {
 		$scope.title = 'New';
 		var apiid = $routeParams.apiId;
-		//var qstatus = [];
 		
 		Api.getStatusList({
 			apiId : apiid
@@ -508,7 +481,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 					function (data) {
 						if(data.status == 200){
 							$interval.cancel(timer);
-							$location.path('api/'+apiid);
+							$location.path('/api/'+apiid+'/policy');
 						}else{
 							$scope.errorMsg = data.message;
 							//if error message is for a duplicate policy
@@ -519,10 +492,6 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 				});
 			}
 			else if(type=='Quota'){
-				//check qstatus list - add only data where quota is different from 0
-				/*console.log('Check qstatus');
-				console.log(qstatus);
-				$scope.policy.qstatus = qstatus;*/
 				
 				Policy.createQuota({
 					apiId: apiid
@@ -530,7 +499,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 					function (data) {
 						if(data.status == 200){
 							$interval.cancel(timer);
-							$location.path('api/'+apiid);
+							$location.path('/api/'+apiid+'/policy');
 						}else{
 							$scope.errorMsg = data.message;
 							
@@ -552,7 +521,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 					function (data) {
 						if(data.status == 200){
 							$interval.cancel(timer);
-							$location.path('api/'+apiid);
+							$location.path('/api/'+apiid+'/policy');
 						}else{
 							$scope.errorMsg = data.message;
 
@@ -570,7 +539,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 					function (data) {
 						if(data.status == 200){
 							$interval.cancel(timer);
-							$location.path('api/'+apiid);
+							$location.path('/api/'+apiid+'/policy');
 						}else{
 							$scope.errorMsg = data.message;
 							
@@ -588,7 +557,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 					function (data) {
 						if(data.status == 200){
 							$interval.cancel(timer);
-							$location.path('api/'+apiid);
+							$location.path('/api/'+apiid+'/policy');
 						}else{
 							$scope.errorMsg = data.message;
 
@@ -606,7 +575,7 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 					function (data) {
 						if(data.status == 200){
 							$interval.cancel(timer);
-							$location.path('api/'+apiid);
+							$location.path('/api/'+apiid+'/policy');
 						}else{
 							$scope.errorMsg = data.message;
 
@@ -617,6 +586,11 @@ app.controller('addPolicyCtrl', ['$scope', '$location', '$routeParams', '$interv
 						}
 				});
 			}
+		};
+		
+		$scope.goBack = function(){
+			$interval.cancel(timer);
+			$location.path('/api/'+apiid+'/policy');
 		};
      }
 ]);
@@ -688,12 +662,16 @@ app.controller('addStatusCtrl', ['$scope', '$location', '$routeParams', 'Api',
 				},$scope.status,
 				function (data) {
 					if(data.status == 200){
-						$location.path('api/'+apiid);
+						$location.path('/api/'+apiid+'/status');
 					}else{
 						$scope.errorMsg = data.message;
 					}
 					
 				});
+		};
+		
+		$scope.goBack = function(){
+			$location.path('/api/'+apiid+'/status');
 		};
 		
 	}
@@ -715,7 +693,6 @@ app.controller('editApiCtrl', ['$scope', '$location', '$routeParams', '$interval
         	Api.update($scope.api,
         			function (data) {
         				if(data.status == 200){
-                        	//$location.path('apis');
         					$scope.api = data.data;
         					$scope.msg = data.message;
                         }else{
@@ -754,7 +731,6 @@ app.controller('editResourceCtrl', ['$scope', '$location', '$routeParams', '$int
 	            }, $scope.resource,
 	                function (data) {
 	            		if(data.status == 200){
-	            			//$location.path('api/'+apiid);
 	            			$scope.resource = data.data;
 	            			$scope.msg = data.message;
 	            			$scope.errorMsg = null;
