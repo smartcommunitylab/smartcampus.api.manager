@@ -385,7 +385,7 @@ public class SecurityManager {
 	 * @throws CustomAuthenticationException
 	 */
 	public Api updateApiParameter(Api api) throws CustomAuthenticationException{
-		if(api.getId()!=null && api.getId().equalsIgnoreCase("")){
+		if(api.getId()!=null && !api.getId().equalsIgnoreCase("")){
 			Api savedApi = pmanager.getApiById(api.getId());
 			if(security.canUserDoThisOperation(savedApi.getOwnerId())){
 				return pmanager.updateApiParameter(api);
