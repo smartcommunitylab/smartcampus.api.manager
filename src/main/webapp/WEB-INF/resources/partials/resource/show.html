@@ -74,9 +74,21 @@
 </div>
 
 <div class="row">
-	<div class="col-md-2 col-md-offset-8">
-		<a href="create/{{apiid}}/resource/{{resource.id}}/add/policy" class="btn btn-info btn-block">
-			Add Policy
-		</a>
-	</div>
+	<table class="col-md-4 col-md-offset-7">
+		<tbody>
+			<tr>
+				<td>
+					<a href="create/{{apiid}}/resource/{{resource.id}}/add/policy" 
+						class="btn btn-info btn-block">
+						Add Policy
+					</a>
+				</td>
+				<td>
+					<button type="button" ng-click="back()" class="pull-left btn btn-default">
+						Go back
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
