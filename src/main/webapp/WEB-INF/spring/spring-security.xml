@@ -25,17 +25,26 @@
 		<sec:intercept-url pattern="/" access="permitAll" />
 		<sec:intercept-url pattern="/api/**" access="hasRole('ROLE_PROVIDER')" />
 	</sec:http>
+	
+	<bean id="userDetailsService" 
+		class="eu.trentorise.smartcampus.api.manager.security.CustomUserDetailsService" /> 
 
 	<!-- BASIC AUTHENTICATION -->
 	<sec:authentication-manager id="basic-auth">
-		<sec:authentication-provider>
+		<!--<sec:authentication-provider>
 			<sec:user-service>
-				<!-- INSERT THE USERS CREDENTIALS -->
+				 INSERT THE USERS CREDENTIALS 
 				<sec:user name="1" password="1" authorities="ROLE_PROVIDER" />
 				<sec:user name="2" password="2" authorities="ROLE_PROVIDER" />
 				<sec:user name="3" password="3" authorities="ROLE_USER" />
 			</sec:user-service>
+		</sec:authentication-provider> -->
+		
+		<sec:authentication-provider user-service-ref="userDetailsService">
+			<!--<sec:password-encoder ref="bCryptEncoder"> 
+			</sec:password-encoder> -->
 		</sec:authentication-provider>
+		
 	</sec:authentication-manager>
 
 </beans>

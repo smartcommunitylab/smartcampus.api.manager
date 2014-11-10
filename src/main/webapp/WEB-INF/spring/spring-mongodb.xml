@@ -20,4 +20,7 @@
     <!-- Use this post processor to translate any MongoExceptions thrown in @Repository annotated classes -->
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
     
+    <!-- To avoid not autowired user repo in CustomUserDetails class -->
+    <context:annotation-config/>
+    
 </beans>
