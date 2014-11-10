@@ -1293,4 +1293,27 @@ public class SecurityManager {
 		}
 	}
 	
+	/*
+	 * User security
+	 * 
+	 */
+	
+	/**
+	 * Instance of {@link UserManager}
+	 */
+	@Autowired
+	private UserManager usermanager;
+	
+	/**
+	 * This function saves tracking id in user data.
+	 * 
+	 * @param trackingid : String
+	 * @throws CustomAuthenticationException
+	 */
+	public void saveUserTrackingId(String trackingid) throws CustomAuthenticationException{
+		if(!usermanager.saveUserData(security.getUsername(), trackingid)){
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+	}
+	
 }
