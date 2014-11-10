@@ -34,7 +34,7 @@
       <div ng-controller="navCtrl" class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li ng-class="{active: loc[0] === 'dashboard'}">
-            <a href="#">Dashboard</a>
+            <a href="dashboard">Dashboard</a>
           </li>
           <li ng-class="{active: loc[0] === 'apis'}">
             <a href="apis">Apis</a>

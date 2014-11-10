@@ -1,0 +1,40 @@
+<div class="row animated fadeIn">
+    <div ng-hide="!errorMsg" class="alert alert-danger">{{errorMsg}}</div>
+    <div class="col-md-8 col-md-offset-2">
+        <h2>Add a Tracking ID</h2>
+        <form name="main" novalidate role="form" ng-submit="submit()">
+        
+        <ul type="disc">
+        	<li>
+            	Setup a Google Analytics account if not subscribed already and receive a 
+                Tracking ID, which is of the format "UA-XXXXXXXX-X"
+            </li>
+            
+            <br/>
+            
+            <li>
+            	Add the Tracking ID in field below
+            	
+            	<br/>
+            	
+            	<div class="form-group" show-validation>
+                	<label for="trackingID">Tracking ID</label>
+                	<input type="text" class="form-control" id="trackingID" placeholder="UA-XXXXXXXX-X" 
+                		ng-model="trackingID" required />
+            	</div>
+            </li>
+            
+            <br/>
+            
+            <li>
+            	Click Save
+            </li>
+           
+		</ul>
+        
+       <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Save</button>
+       <button type="button" ng-click="back()" class="pull-right btn btn-default">Go back</button>
+        
+       </form>
+    </div>
+</div>

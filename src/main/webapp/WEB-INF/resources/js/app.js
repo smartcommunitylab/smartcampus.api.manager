@@ -128,6 +128,16 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/app/edit.html',
         	access: access.public
         }).
+        when('/dashboard',{
+        	controller: '',
+        	templateUrl: 'partials/analysis/start.html',
+        	access: access.public
+        }).
+        when('/dashboard/enable',{
+        	controller: '',
+        	templateUrl: 'partials/analysis/enable.html',
+        	access: access.public
+        }).
         otherwise({
             redirectTo: '/'
         });
