@@ -229,6 +229,17 @@ services.factory('Policy', ['$resource',
 	}
 ]);
 
+services.factory('Stat', ['$resource',
+    function($resource){
+		return $resource('api/ga', {}, {
+			saveTrID:{
+				method: 'POST',
+				url: 'api/ga'
+			}
+		});
+	}
+]);
+
 services.factory('Gravatar', ['$http', '$rootScope',
     function ($http, $rootScope) {
 

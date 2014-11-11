@@ -1754,3 +1754,26 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 			}
 ]);
 
+
+//Dashboard
+
+app.controller('tridCtrl', ['$scope', '$location', 'Stat',
+    function($scope, $location, Stat){
+	
+	$scope.submit = function () {
+		
+		Stat.saveTrID({
+        }, $scope.trackingID,
+            function (data) {
+        		if(data.status == 200){
+        			console.log('Done');
+        			$location.path('/dashboard/login');
+        		}else{
+        			$scope.errorMsg = data.message;
+        			console.log($scope.errorMsg);
+        		}
+            });
+    };
+	}
+]);
+

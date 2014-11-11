@@ -134,8 +134,13 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	access: access.public
         }).
         when('/dashboard/enable',{
-        	controller: '',
+        	controller: 'tridCtrl',
         	templateUrl: 'partials/analysis/enable.html',
+        	access: access.public
+        }).
+        when('/dashboard/login',{
+        	controller: '',
+        	templateUrl: 'partials/analysis/login.html',
         	access: access.public
         }).
         otherwise({

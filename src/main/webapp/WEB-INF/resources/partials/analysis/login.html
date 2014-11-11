@@ -1,0 +1,33 @@
+<div class="row animated fadeIn">
+    <div ng-hide="!errorMsg" class="alert alert-danger">{{errorMsg}}</div>
+    <div class="col-md-8 col-md-offset-2">
+        <h2>Login with Google Analytics</h2>
+        
+        To see your Dashboard, you have to login with Google Analytics and allow Open Services site to:
+        
+        <ul type="disc">
+        	<li>
+            	know who you are on Google;
+            </li>
+            
+            <br/>
+            
+            <li>
+            	view your email address;	
+            </li>
+            
+            <br/>
+            
+            <li>
+            	view your Google Analytics data.
+            </li>
+           
+		</ul>
+        
+       <form name="main" novalidate role="form" ng-submit="submit()"> 
+       <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Access Google Analytics</button>
+       <button type="button" ng-click="back()" class="pull-right btn btn-default">Go back</button>
+        
+       </form>
+    </div>
+</div>
