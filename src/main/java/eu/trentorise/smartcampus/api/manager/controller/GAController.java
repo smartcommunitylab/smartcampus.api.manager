@@ -73,5 +73,27 @@ public class GAController {
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, c.getMessage());
 		}
 	}
+	
+	/**
+	 * REST service that checks if tracking id is saved for current user.
+	 * 
+	 * @return instance of {@link ResultData} with true or false, 
+	 * 			status (OK or NOT FOUND) and a string message : 
+	 * 			"User data saved correctly." if it is ok, otherwise 
+	 * 			CustomAuthenticationException message.
+	 */
+	@RequestMapping(value = "/isEnabled", method = RequestMethod.GET, produces="application/json")
+	@ResponseBody
+	public ResultData isGAEnable(){
+		logger.info("GA Enable.");
+
+		boolean isEnabled = smanager.isGAEnable();
+		if(isEnabled){
+			return new ResultData(isEnabled, HttpServletResponse.SC_OK, "You have already saved Tracking ID.");
+		}
+		else return new ResultData(isEnabled, HttpServletResponse.SC_NOT_FOUND, 
+				"To enable Google Analytics, you have to save tracking ID.");
+		
+	}
 
 }

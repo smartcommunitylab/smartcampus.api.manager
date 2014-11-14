@@ -1757,6 +1757,17 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 
 //Dashboard
 
+app.controller('startCtrl', ['$scope', '$location', 'Stat',
+    function($scope, $location, Stat){
+		Stat.isDashEnabled({
+		}, function(data){
+			if(data.data===true){
+				$location.path('/dashboard/login');
+			}
+		});
+	}
+]);
+
 app.controller('tridCtrl', ['$scope', '$location', 'Stat',
     function($scope, $location, Stat){
 	
@@ -1773,7 +1784,7 @@ app.controller('tridCtrl', ['$scope', '$location', 'Stat',
         			console.log($scope.errorMsg);
         		}
             });
-    };
+    	};
 	}
 ]);
 

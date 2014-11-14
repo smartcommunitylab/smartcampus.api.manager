@@ -235,6 +235,10 @@ services.factory('Stat', ['$resource',
 			saveTrID:{
 				method: 'POST',
 				url: 'api/ga'
+			},
+			isDashEnabled:{
+				method: 'GET',
+				url: 'api/ga/isEnabled'
 			}
 		});
 	}

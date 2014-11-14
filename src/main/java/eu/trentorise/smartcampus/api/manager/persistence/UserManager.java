@@ -19,7 +19,7 @@ public class UserManager {
 	 * 
 	 * @param username : String
 	 * @param trackingid : String
-	 * @return boolean if update is done without error, otherwise false.
+	 * @return boolean if update is done without error then true, otherwise false.
 	 */
 	public boolean saveUserData(String username, String trackingid){
 		//TODO check pattern matcher UA-XXXXXXXX-X for tracking id
@@ -33,6 +33,24 @@ public class UserManager {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Check if tracking ID of user is already saved in db.
+	 * 
+	 * @param username : String
+	 * @return boolean, if trackingID is already saved then true, otherwise false.
+	 */
+	public boolean isTrackingIDSave(String username){
+		User u = urepo.findByUsername(username);
+		if(u!=null){
+			String trackID = u.getGatrackid();
+			if(trackID!=null && !trackID.equalsIgnoreCase("")){
+				return true;
+			}
+		}
+		return false;
+		
 	}
 
 }

@@ -1315,5 +1315,14 @@ public class SecurityManager {
 			throw new CustomAuthenticationException("You are not allowed");
 		}
 	}
+
+	/**
+	 * This function checks if Google Analytics tracking ID is already saved.
+	 * 
+	 * @return boolean value
+	 */
+	public boolean isGAEnable() {
+		return usermanager.isTrackingIDSave(security.getUsername());
+	}
 	
 }
