@@ -71,6 +71,8 @@ public class GAController {
 			return new ResultData(null, HttpServletResponse.SC_OK, "User data saved correctly.");
 		}catch(CustomAuthenticationException c){
 			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, c.getMessage());
+		}catch(IllegalArgumentException i){
+			return new ResultData(null, HttpServletResponse.SC_BAD_REQUEST, i.getMessage());
 		}
 	}
 	

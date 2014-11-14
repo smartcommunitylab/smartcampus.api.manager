@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.trentorise.smartcampus.api.manager.googleAnalytics.TrackingIDValidator;
 import eu.trentorise.smartcampus.api.manager.model.User;
 import eu.trentorise.smartcampus.api.manager.repository.UserRepository;
 
@@ -23,6 +24,12 @@ public class UserManager {
 	 */
 	public boolean saveUserData(String username, String trackingid){
 		//TODO check pattern matcher UA-XXXXXXXX-X for tracking id
+		TrackingIDValidator tval = new TrackingIDValidator();
+		boolean isValid = tval.validate(trackingid);
+		if(!isValid){
+			throw new IllegalArgumentException("This Tracking ID is not valid. The format is UA-XXXXX-YY.");
+		}
+		
 		User u = urepo.findByUsername(username);
 		u.setGatrackid(trackingid);
 		
