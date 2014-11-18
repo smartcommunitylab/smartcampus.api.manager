@@ -228,6 +228,28 @@
   			<version>1.18.0-rc</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-analytics</artifactId>
+			<version>v3-rev104-1.18.0-rc</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-jackson</artifactId>
+			<version>1.17.0-rc</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-oauth2</artifactId>
+			<version>v2-rev70-1.17.0-rc</version>
+		</dependency>
+		
 	</dependencies>
 	
     <build>

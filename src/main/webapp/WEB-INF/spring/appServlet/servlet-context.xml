@@ -8,6 +8,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	<context:property-placeholder location="classpath:apimanager.properties" />
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
@@ -30,5 +31,12 @@
 	<resources mapping="/fonts/**" location="/WEB-INF/resources/fonts/" order="-1"/>
 	<resources mapping="/js/**" location="/WEB-INF/resources/js/" order="-1"/>
 	<resources mapping="/partials/**" location="/WEB-INF/resources/partials/" order="-1"/>
+	
+	<!-- Google Helper -->
+	<beans:bean id="googleHelper" class="eu.trentorise.smartcampus.api.manager.googleAnalytics.GoogleAuthHelper">
+		<beans:constructor-arg value="${google.consumerKey}" />
+		<beans:constructor-arg value="${google.consumerSecret}" />
+		<beans:constructor-arg value="${google.callback_uri}" />
+	</beans:bean>
 	
 </beans:beans>
