@@ -1788,3 +1788,21 @@ app.controller('tridCtrl', ['$scope', '$location', 'Stat',
 	}
 ]);
 
+app.controller('dashLoginCtrl', ['$scope', '$location', 'Auth',
+    function($scope, $location, Auth){
+		
+		$scope.submit = function () {
+			Auth.gaLogin(
+				function(){
+	        	}, function(data){
+	        		console.log('success google login');
+	        		
+	        	}, function(error){
+	        		console.log('error google login');
+	        		$scope.error = error;
+	        	});
+    	};
+		
+	}
+]);
+

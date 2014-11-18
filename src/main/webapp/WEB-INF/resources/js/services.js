@@ -1,6 +1,25 @@
 'use strict';
 var services = angular.module('apiManager.services', ['ngResource', 'ngCookies']);
 
+services.factory('Auth', ['$resource', '$http', '$window',
+    function($resource, $http, $window){
+		
+		return {
+			
+			gaLogin: function (error){
+	            	$http.get('api/oauth/google/auth')
+	            	.success(function(data){
+	                	$window.location.href = data.data;
+	                	
+	                }).error(function (data) {
+	                	 error(data.error);
+	                });
+	            }
+        	
+		};
+	}
+]);
+
 services.factory('Api', ['$resource',
     function($resource){
 		return $resource('api/id/:appId', {}, {

@@ -139,7 +139,7 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	access: access.public
         }).
         when('/dashboard/login',{
-        	controller: '',
+        	controller: 'dashLoginCtrl',
         	templateUrl: 'partials/analysis/login.html',
         	access: access.public
         }).
