@@ -23,7 +23,7 @@ public class UserManager {
 	 * @return boolean if update is done without error then true, otherwise false.
 	 */
 	public boolean saveUserData(String username, String trackingid){
-		//TODO check pattern matcher UA-XXXXXXXX-X for tracking id
+		//check pattern matcher for tracking id
 		TrackingIDValidator tval = new TrackingIDValidator();
 		boolean isValid = tval.validate(trackingid);
 		if(!isValid){
@@ -58,6 +58,20 @@ public class UserManager {
 		}
 		return false;
 		
+	}
+	
+	/**
+	 * Retrieve current user tracking ID.
+	 * 
+	 * @param username : String
+	 * @return tracking ID : String
+	 */
+	public String getTrackingID(String username){
+		User u = urepo.findByUsername(username);
+		if(u!=null){
+			return u.getGatrackid();
+		}
+		else return null;
 	}
 
 }

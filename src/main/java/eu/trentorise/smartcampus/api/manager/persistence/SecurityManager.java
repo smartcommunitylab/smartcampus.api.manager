@@ -1325,4 +1325,20 @@ public class SecurityManager {
 		return usermanager.isTrackingIDSave(security.getUsername());
 	}
 	
+	/**
+	 * Retrieve user tracking ID.
+	 * 
+	 * @return tracking ID : String
+	 * @throws CustomAuthenticationException
+	 */
+	public String retrieveTrackingID() throws CustomAuthenticationException{
+		String trackingID = usermanager.getTrackingID(security.getUsername());
+		
+		if(trackingID!=null){
+			return trackingID;
+		}
+		else throw new CustomAuthenticationException("You are not allowed");
+		
+	}
+	
 }
