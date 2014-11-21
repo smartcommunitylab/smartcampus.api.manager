@@ -1780,8 +1780,8 @@ app.controller('startCtrl', ['$scope', '$location', 'Stat',
 		    chart1.options = {
 		    	title: "Access to Apis",
 		        displayExactValues: true,
-		        width: 400,
-		        height: 200,
+		        width: 500,
+		        height: 300,
 		        is3D: true,
 		        chartArea: {left:10,top:10,bottom:0,height:"100%"}
 		    };
@@ -1795,6 +1795,39 @@ app.controller('startCtrl', ['$scope', '$location', 'Stat',
 
 		    $scope.chart = chart1;
 		    
+		    //Table chart Sample
+		    var chart2 = {};
+		    chart2.type="Table";
+		    
+		    /*chart2.cols = [
+		                ['string','Path'],
+		                ['number', 'Number of Access']
+		    ];*/
+
+		    /*chart2.rows = [
+		                   ['Api1/resource/1', {v: 20, f:20}],
+		    		       ['Api2' ,{v: 30, f:30}],
+		                   ['Api2/resource3', {v: 20, f:20}],
+		                   ['Api3', {v: 80, f:80}]
+		    ];*/
+		    
+		    chart2.data = [
+		                   ['Path','Number of Access'],
+		    		       ['Api1/resource/1', {v: 20, f:20}],
+		    		       ['Api2' ,{v: 30, f:30}],
+		                   ['Api2/resource3', {v: 20, f:20}],
+		                   ['Api3', {v: 80, f:80}]
+		    ];
+		    
+		    chart2.options = {
+			        displayExactValues: true,
+			        width: 500,
+			        height: 300,
+			        chartArea: {left:10,top:10,bottom:0,height:"100%"}
+			    };
+
+		    $scope.chart2 = chart2;
+
 		    
 	}
 ]);

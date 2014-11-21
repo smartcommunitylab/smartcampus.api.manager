@@ -78,7 +78,8 @@
 
             return apiReady.promise;
         }])
-        .directive('googleChart', ['$timeout', '$window', '$rootScope', 'googleChartApiPromise', function ($timeout, $window, $rootScope, googleChartApiPromise) {
+        .directive('googleChart', ['$timeout', '$window', '$rootScope', 'googleChartApiPromise', 
+                                   function ($timeout, $window, $rootScope, googleChartApiPromise) {
             return {
                 restrict: 'A',
                 scope: {
@@ -130,7 +131,9 @@
                     function applyFormat(formatType, formatClass, dataTable) {
 
                         if (typeof($scope.chart.formatters[formatType]) != 'undefined') {
-                            if (!angular.equals($scope.chart.formatters[formatType], $scope.oldChartFormatters[formatType])) {
+                            if (!angular.equals($scope.chart.formatters[formatType], 
+                            		$scope.oldChartFormatters[formatType])) {
+                            	
                                 $scope.oldChartFormatters[formatType] = $scope.chart.formatters[formatType];
                                 $scope.formatters[formatType] = [];
 
