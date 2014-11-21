@@ -89,6 +89,11 @@
   <script src="js/directives.js"></script>
   <script src="js/services.js"></script>
   <script src="js/remoteapi.js"></script>
+  
+  <script src="js/ng-google-chart.js"></script>
+  
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  
 
 </body>
 

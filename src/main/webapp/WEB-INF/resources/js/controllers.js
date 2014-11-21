@@ -1765,6 +1765,37 @@ app.controller('startCtrl', ['$scope', '$location', 'Stat',
 				$location.path('/dashboard/login');
 			}
 		});
+		
+		//Google Chart
+		
+		//Pie chart Sample
+		 var chart1 = {};
+		    chart1.type = "PieChart";
+		    chart1.data = [
+		       ['Api', 'access'],
+		       ['Api 2', 50],
+		       ['Api 3', 80]
+		      ];
+		    chart1.data.push(['Api 1',20]);
+		    chart1.options = {
+		    	title: "Access to Apis",
+		        displayExactValues: true,
+		        width: 400,
+		        height: 200,
+		        is3D: true,
+		        chartArea: {left:10,top:10,bottom:0,height:"100%"}
+		    };
+
+		    chart1.formatters = {
+		      number : [{
+		        columnNum: 1,
+		        pattern: "#"
+		      }]
+		    };
+
+		    $scope.chart = chart1;
+		    
+		    
 	}
 ]);
 

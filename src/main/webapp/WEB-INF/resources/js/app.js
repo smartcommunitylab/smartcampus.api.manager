@@ -1,6 +1,7 @@
 'use strict';
 var app = angular.module('apiManager', ['ngRoute', 'ngCookies', 'apiManager.directives', 
-                                        'apiManager.services', 'hljs', 'ui.bootstrap']);
+                                        'apiManager.services', 'hljs', 'ui.bootstrap',
+                                        'googlechart']);
 
 app.filter('fromNow', function () {
     return function (dateString) {
