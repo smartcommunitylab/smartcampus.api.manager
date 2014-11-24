@@ -15,6 +15,7 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.persistence;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -140,6 +141,32 @@ public class SecurityManager {
 		});
 		
 		return apilist;
+	}
+	
+	/**
+	 * This function returns api name for a specific owner.
+	 * If some api exist, then it returns their name else it 
+	 * throws an exception.
+	 * 
+	 * @return string list : list of api name
+	 * @throws CustomAuthenticationException
+	 */
+	public List<String> getApiNameByOwnerId()
+			throws CustomAuthenticationException {
+		List<Api> apis = getApiByOwnerId();
+		// retrieve api name for this owner
+		if (apis != null) {
+			List<String> listName = new ArrayList<String>();
+
+			for (int i = 0; i < apis.size(); i++) {
+				listName.add(apis.get(i).getName());
+			}
+
+			return listName;
+		} else {
+			throw new CustomAuthenticationException("You are not allowed");
+		}
+
 	}
 	
 	/**
