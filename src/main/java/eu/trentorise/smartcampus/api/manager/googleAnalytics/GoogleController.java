@@ -16,6 +16,8 @@
 package eu.trentorise.smartcampus.api.manager.googleAnalytics;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +35,7 @@ import com.google.api.services.analytics.model.GaData;
 
 import eu.trentorise.smartcampus.api.manager.model.util.ResultData;
 import eu.trentorise.smartcampus.api.manager.persistence.SecurityManager;
+import eu.trentorise.smartcampus.api.manager.security.CustomAuthenticationException;
 
 
 /**
@@ -123,9 +127,8 @@ public class GoogleController {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		}else{
 			try {
-				String trackingID = smanager.retrieveTrackingID();
-				GaData data = auth.getUserData(code, trackingID);
-				logger.info("User Data: "+data);
+				//init analytics
+				auth.getUserAnalytics(code);
 				
 				response.setStatus(HttpServletResponse.SC_OK);
 					
@@ -141,4 +144,100 @@ public class GoogleController {
 	}
 	
 	//TODO Rest that retrieves gaData
+	
+	@RequestMapping(value = "/event", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public ResultData googleEvent(@PathVariable String apiName){
+		logger.info("Retrieve event from ga account.");
+		try {
+			String trackingID = smanager.retrieveTrackingID();
+			GaData event = auth.executeDataQueryEvent(trackingID, apiName);
+			return new ResultData(event, HttpServletResponse.SC_OK, "Event data found.");
+			
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, 
+					"You are not allowed.");
+			
+		}catch (IOException e) {
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem with Google Analytics.");
+			
+		}
+	}
+	
+	@RequestMapping(value = "/exception", method = RequestMethod.GET, 
+			produces = "application/json")
+	@ResponseBody
+	public ResultData googleException(@PathVariable String apiName){
+		logger.info("Retrieve exception from ga account.");
+		try {
+			String trackingID = smanager.retrieveTrackingID();
+			GaData event = auth.executeDataQueryException(trackingID, apiName);
+			return new ResultData(event, HttpServletResponse.SC_OK, "Exception data found.");
+			
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, 
+					"You are not allowed.");
+			
+		}catch (IOException e) {
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem with Google Analytics.");
+			
+		}
+	}
+	
+	@RequestMapping(value = "/event/list", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public ResultData googleListEvent(){
+		logger.info("Retrieve event list from ga account.");
+		try {
+			String trackingID = smanager.retrieveTrackingID();
+			List<GaData> elist = new ArrayList<GaData>();
+			
+			List<String> apiName = smanager.getApiNameByOwnerId();
+			for(int i=0;i<apiName.size();i++){
+				GaData event = auth.executeDataQueryEvent(trackingID, apiName.get(i));
+				elist.add(event);
+			}
+			
+			return new ResultData(elist, HttpServletResponse.SC_OK, "Event data found.");
+			
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, 
+					"You are not allowed.");
+			
+		}catch (IOException e) {
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem with Google Analytics.");
+			
+		}
+	}
+	
+	@RequestMapping(value = "/exception/list", method = RequestMethod.GET, 
+			produces = "application/json")
+	@ResponseBody
+	public ResultData googleListException(){
+		logger.info("Retrieve exception list from ga account.");
+		try {
+			String trackingID = smanager.retrieveTrackingID();
+			List<GaData> exclist = new ArrayList<GaData>();
+			
+			List<String> apiName = smanager.getApiNameByOwnerId();
+			for(int i=0;i<apiName.size();i++){
+				GaData exc = auth.executeDataQueryException(trackingID, apiName.get(i));
+				exclist.add(exc);
+			}
+			
+			return new ResultData(exclist, HttpServletResponse.SC_OK, "Exception data found.");
+			
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, 
+					"You are not allowed.");
+			
+		}catch (IOException e) {
+			return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem with Google Analytics.");
+			
+		}
+	}
 }

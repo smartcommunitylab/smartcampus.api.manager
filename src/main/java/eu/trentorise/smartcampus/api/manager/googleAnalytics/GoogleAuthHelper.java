@@ -29,8 +29,11 @@ import com.google.api.services.analytics.model.GaData.ColumnHeaders;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -67,9 +70,11 @@ public final class GoogleAuthHelper {
 	private String stateToken;
 	private final GoogleAuthorizationCodeFlow flow;
 	
-	//private static final String USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
-	
 	private String APPLICATION_NAME;
+	/**
+	 * Instance of {@link Analytics}
+	 */
+	private static Analytics analytics;
 
 	/**
 	 * Constructor initializes the Google Authorization Code Flow with CLIENT
@@ -133,54 +138,120 @@ public final class GoogleAuthHelper {
 	 * the user's profile information.
 	 * 
 	 * @param authCode : String, authentication code provided by google
-	 * @param trackingID : String
-	 * @return instance of {@link GaData} of user
 	 * @throws IOException
 	 */
-	public GaData getUserData(final String authCode, String trackingID) throws IOException{
+	public void getUserAnalytics(final String authCode) throws IOException{
 
 		final GoogleTokenResponse response = flow.newTokenRequest(authCode)
 				.setRedirectUri(CALLBACK_URI).execute();
 		final Credential credential = flow.createAndStoreCredential(response,
 				null);
-		//final HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory(credential);
 		
 		//init analytics
-		Analytics analytics = new Analytics.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(
+		analytics = new Analytics.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(
 		        APPLICATION_NAME).build();
 
+	}
+
+	/**
+	 * Retrieves event of an api from user's google Analytics account.
+	 * 
+	 * @param trackingID : String
+	 * @param apiName : String
+	 * @return instance of {@link GaData}
+	 * @throws IOException
+	 */
+	public GaData executeDataQueryEvent(String trackingID, String apiName)
+			throws IOException {
+		
 		//profile id from tracking ID
 		String[] s = trackingID.split("-");//tracking ID: UA-XXXXXX-YY where XXXXXX is profile ID
 		String profileId = s[1];
 		
-		//TODO decide filter for gaData
-		
-		//retrieve top 25 organic search keywords and traffic source by visits.
-		GaData data = executeDataQuery(analytics, profileId);
-		
-		//print data
-		printGaData(data);
-		
-		return data;
+		// Today date
+		Date today = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String dToday = format.format(today);
 
+		// Today -1 month
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+		Date beforeToday = cal.getTime();
+		String before = format.format(beforeToday);
+		
+		//TODO
+		if (analytics != null) {
+
+			GaData dataEvent = analytics.data()
+					.ga()
+					.get("ga:" + profileId, // Table Id. ga: + profile id.
+							before, // Start date.
+							dToday, // End date.
+							"ga:totalEvents")
+					// Metrics.
+					.setDimensions("ga:eventLabel,ga:eventAction")
+					.setSort("-ga:eventLabel")
+					.setFilters("ga:eventLabel contains '" + apiName + "'")
+					.setMaxResults(150).execute();
+			
+			printGaData(dataEvent);
+
+			return dataEvent;
+		} else
+			return null;
 	}
-
 	
-	private static GaData executeDataQuery(Analytics analytics, String profileId)
+	/**
+	 * Retrieves exception of an api from user's google Analytics account.
+	 * 
+	 * @param trackingID : String
+	 * @param apiName : String
+	 * @return instance of {@link GaData}
+	 * @throws IOException
+	 */
+	public GaData executeDataQueryException(String trackingID, String apiName)
 			throws IOException {
-		//TODO Example
-		return analytics.data().ga()
-				.get("ga:" + profileId, // Table Id. ga: + profile id.
-						"2012-01-01", // Start date.
-						"2012-01-14", // End date.
-						"ga:visits")
-				// Metrics.
-				.setDimensions("ga:source,ga:keyword")
-				.setSort("-ga:visits,ga:source")
-				.setFilters("ga:medium==organic").setMaxResults(25).execute();
+		
+		//profile id from tracking ID
+		String[] s = trackingID.split("-");//tracking ID: UA-XXXXXX-YY where XXXXXX is profile ID
+		String profileId = s[1];
+				
+		//Today date
+		Date today = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String dToday = format.format(today);
+		
+		//Today -1 month
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+		Date beforeToday = cal.getTime();
+		String before = format.format(beforeToday);
+		
+		// TODO
+		if (analytics != null) {
+			GaData dataExc = analytics.data()
+					.ga()
+					.get("ga:" + profileId, // Table Id. ga: + profile id.
+							before, // Start date.
+							dToday, // End date.
+							"ga:exceptions")
+					// Metrics.
+					.setDimensions("ga:exceptionDescription")
+					.setSort("-ga:exceptionDescription")
+					.setFilters("ga:exceptionDescription contains '" + apiName + "'")
+					.setMaxResults(150).execute();
+			printGaData(dataExc);
+			
+			return dataExc;
+		} else
+			return null;
 	}
 
-	
+	/**
+	 * Function that prints Google Analytics data.
+	 * 
+	 * @param results : instance of {@link GaData}
+	 */
 	private static void printGaData(GaData results) {
 		System.out.println("printing results for profile: "
 				+ results.getProfileInfo().getProfileName());
@@ -206,6 +277,4 @@ public final class GoogleAuthHelper {
 			System.out.println();
 		}
 	}
-
-
 }
