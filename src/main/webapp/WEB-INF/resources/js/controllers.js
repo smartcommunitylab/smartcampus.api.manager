@@ -1783,7 +1783,7 @@ app.controller('startCtrl', ['$scope', '$location', 'Stat',
 		        width: 500,
 		        height: 300,
 		        is3D: true,
-		        chartArea: {left:10,top:10,bottom:0,height:"100%"}
+		        chartArea: {left:30,top:30,bottom:0,height:"100%"}
 		    };
 
 		    chart1.formatters = {
@@ -1820,10 +1820,11 @@ app.controller('startCtrl', ['$scope', '$location', 'Stat',
 		    ];
 		    
 		    chart2.options = {
+		    		title: 'Access Api and Resource', 
 			        displayExactValues: true,
 			        width: 500,
 			        height: 300,
-			        chartArea: {left:10,top:10,bottom:0,height:"100%"}
+			        chartArea: {left:50,top:50,bottom:0,height:"100%"}
 			    };
 
 		    $scope.chart2 = chart2;
@@ -1866,6 +1867,174 @@ app.controller('dashLoginCtrl', ['$scope', '$location', 'Auth',
 	        		$scope.error = error;
 	        	});
     	};
+		
+	}
+]);
+
+app.controller('graphsCtrl', ['$scope', '$location', 'Auth',
+    function($scope, $location, Auth){
+		//5 graphs
+		
+		//PIE CHART
+		
+		//API access/grant
+		var chart1 = {};
+		
+		chart1.type = "PieChart";
+		chart1.data = [
+		               ['Api 1', 'Number of Access'],
+		               ['Access Granted', 50],
+		               ['Access Denied', 80]
+		               ];
+		chart1.options = {
+				title: "Api 1 access granted and denied",
+				displayExactValues: true,
+				width: 500,
+				height: 300,
+				is3D: true,
+				chartArea: {left:30,top:30,bottom:0,height:"100%"}
+		};
+
+		chart1.formatters = {
+				number : [{
+					columnNum: 1,
+					pattern: "#"
+				}]
+		};
+
+		$scope.chart = chart1;
+		
+		var chart2 = {};
+		
+		chart2.type = "PieChart";
+		chart2.data = [
+		               ['Api 2', 'Number of Access'],
+		               ['Access Granted', 10],
+		               ['Access Denied', 30]
+		               ];
+		chart2.options = {
+				title: "Api 2 access granted and denied",
+				displayExactValues: true,
+				width: 500,
+				height: 300,
+				is3D: true,
+				chartArea: {left:30,top:30,bottom:0,height:"100%"}
+		};
+
+		chart2.formatters = {
+				number : [{
+					columnNum: 1,
+					pattern: "#"
+				}]
+		};
+
+		$scope.chart2 = chart2;
+	
+		//API label (API name)
+		var chart3 = {};
+		
+		chart3.type = "PieChart";
+		chart3.data = [
+		               ['Api 3 and resource', 'Number of Access'],
+		               ['Api3', 50],
+		               ['Api3/r1', 80],
+		               ['Api3/r5', 20]
+		               ];
+		chart3.options = {
+				title: "Api 3 and Resource",
+				displayExactValues: true,
+				width: 500,
+				height: 300,
+				is3D: true,
+				chartArea: {left:30,top:30,bottom:0,height:"100%"}
+		};
+
+		chart3.formatters = {
+				number : [{
+					columnNum: 1,
+					pattern: "#"
+				}]
+		};
+
+		$scope.chart3 = chart3;
+	
+		//EXCEPTION description (API + exception)
+		var chart4 = {};
+		
+		chart4.type = "PieChart";
+		chart4.data = [
+		               ['Api 3 exception', 'total'],
+		               ['Api3 Policy Exception', 10],
+		               ['Api3 Security Exception', 25],
+		               ['Api3 IllegalArgument Exception', 20]
+		               ];
+		chart4.options = {
+				title: "Api 3 exception",
+				displayExactValues: true,
+				width: 500,
+				height: 300,
+				is3D: true,
+				chartArea: {left:30,top:30,bottom:0,height:"100%"}
+		};
+
+		chart4.formatters = {
+				number : [{
+					columnNum: 1,
+					pattern: "#"
+				}]
+		};
+
+		$scope.chart4 = chart4;
+	
+		//TABLE
+	
+		//APIs (label, value)
+		//Table chart Sample
+	    var chart5 = {};
+	    chart5.type="Table";
+	    
+	    chart5.data = [
+	                   ['Path','Number of Access'],
+	    		       ['Api1/resource/1', {v: 130, f:130}],
+	    		       ['Api2' ,{v: 40, f:40}],
+	                   ['Api3', {v: 50, f:50}],
+		               ['Api3/r1', {v: 80, f:80}],
+		               ['Api3/r5', {v: 80, f:80}]
+	    ];
+	    
+	    chart5.options = {
+	    		title: 'Access to api and resource',
+		        displayExactValues: true,
+		        width: 700,
+		        height: 500,
+		        chartArea: {left:40,top:40,bottom:0,height:"100%"}
+		    };
+
+	    $scope.chart5 = chart5;
+	
+		//EXCEPTION (description)
+	    var chart6 = {};
+	    chart6.type="Table";
+	    
+	    chart6.data = [
+	                   ['Api Exception', 'total'],
+	    		       ['Api1 Security Exception', {v: 10, f:10}],
+	    		       ['Api1 Policy Exception', {v: 15, f:15}],
+	    		       ['Api2 Policy Exception' ,{v: 3, f:3}],
+		               ['Api3 Policy Exception', {v: 10, f:10}],
+		               ['Api3 Security Exception', {v: 25, f:25}],
+		               ['Api3 IllegalArgument Exception', {v: 20, f:20}]
+	    ];
+	    
+	    chart6.options = {
+	    		title: 'Api Exception',
+		        displayExactValues: true,
+		        width: 700,
+		        height: 500,
+		        chartArea: {left:40,top:40,bottom:0,height:"100%"}
+		    };
+
+	    $scope.chart6 = chart6;
 		
 	}
 ]);

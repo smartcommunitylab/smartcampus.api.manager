@@ -144,6 +144,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/analysis/login.html',
         	access: access.public
         }).
+        when('/dashboard/graphs',{
+        	controller: 'graphsCtrl',
+        	templateUrl: 'partials/analysis/graphs.html',
+        	access: access.public
+        }).
         otherwise({
             redirectTo: '/'
         });
