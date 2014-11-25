@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.trentorise.smartcampus.api.manager.googleAnalytics.GoogleAnalyticsPostCollect;
 import eu.trentorise.smartcampus.api.manager.model.Api;
 import eu.trentorise.smartcampus.api.manager.model.IPAccessControl;
 import eu.trentorise.smartcampus.api.manager.model.OAuth;
@@ -37,6 +38,7 @@ import eu.trentorise.smartcampus.api.manager.model.VerifyAppKey;
 import eu.trentorise.smartcampus.api.manager.model.util.RequestHandlerObject;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManager;
 import eu.trentorise.smartcampus.api.manager.persistence.PersistenceManagerProxy;
+import eu.trentorise.smartcampus.api.manager.persistence.UserManager;
 
 /**
  * Class that retrieves policies of api and its resources.
@@ -62,6 +64,21 @@ public class PolicyDecisionPoint {
 	 */
 	@Autowired
 	private PersistenceManagerProxy proxyManager;
+	/**
+	 * Instance of {@link GoogleAnalyticsPostCollect}.
+	 */
+	private GoogleAnalyticsPostCollect gatemplate;
+	/**
+	 * Instance of {@link UserManager}
+	 */
+	@Autowired
+	private UserManager userManager;
+	/**
+	 * Api owner trackingID
+	 */
+	private String trackingID;
+	
+	private String apiName, rName;
 	
 	/**
 	 * Retrieves api policies and resource policies.
@@ -82,6 +99,15 @@ public class PolicyDecisionPoint {
 			if(api==null){
 				throw new SecurityException("You are not allowed to access this api because it does not exist");
 			}
+			
+			//TODO retrieve api name
+			apiName = api.getName();
+			
+			//TODO retrieve tracking id of user
+			String usernameOwner = api.getOwnerId();
+			if(userManager.isTrackingIDSave(usernameOwner)){
+				trackingID = userManager.getTrackingID(usernameOwner);
+			}
 
 			// resource policies
 			if (resourceId != null) {
@@ -92,6 +118,9 @@ public class PolicyDecisionPoint {
 				if(r==null){
 					throw new SecurityException("You are not allowed to access this resource because it does not exist");
 				}
+				
+				//TODO resource name
+				rName = r.getName();
 				
 				// retrieve policy resource
 				List<Policy> rplist = r.getPolicy();
@@ -227,6 +256,11 @@ public class PolicyDecisionPoint {
 		
 		PolicyDatastoreBatch batch = new PolicyDatastoreBatch();
 		
+		//Post data event and exception to owner id
+		if(trackingID!=null){
+			gatemplate = new GoogleAnalyticsPostCollect(trackingID, "Api Manager", "1");
+		}
+		
 		if (pToApply != null && pToApply.size() > 0) {
 			for (int i = 0; i < pToApply.size(); i++) {
 				
@@ -275,30 +309,109 @@ public class PolicyDecisionPoint {
 			//apply policies
 			MongoRollback rollback = new MongoRollback();
 			rollback.setPmanager(proxyManager);
+			
 			try{
 				batch.apply();
 				rollback.successfulPolicySP(apiId, resourceId, appId);
 				rollback.successfulPolicyQ(apiId, resourceId, appId);
 				
+				//TODO access granted ga
+				if(gatemplate!=null){
+					//event of access granted
+					if(resourceId==null){
+						gatemplate.eventTracking("API", "Access Granted", apiName, "1");
+					}else
+						gatemplate.eventTracking("API", "Access Granted", apiName+"/"+rName, "1");
+				}
+				
 			}catch(SecurityException s){
 				String msg = s.getMessage();
 				logger.info("Cause of security exception: {}",msg);
+				
+				String cause = exceptionCause(msg);
 				
 				rollback.failurePolicy(apiId, resourceId, appId, "Quota");
 				rollback.failurePolicy(apiId, resourceId, appId, "Spike Arrest");
 				
 				//exception
-				if(resourceId==null)
-					throw new SecurityException("You are not allowed to access this api. "
-							+s.getMessage());
-				else
-					throw new SecurityException("You are not allowed to access this resource. "
-							+s.getMessage());
+				if(resourceId==null){
+					
+					if (gatemplate != null) {
+						// TODO access denied ga
+						gatemplate.eventTracking("API", "Access Denied", apiName, "1");
+						// TODO exception on api (policy exception) ga
+						gatemplate.exceptionTracking(apiName+ " "+cause, false);
+					}
+					
+					throw new SecurityException("You are not allowed to access this api. "+msg);
+				}
+				else{
+					if (gatemplate != null) {
+						// TODO access denied ga
+						gatemplate.eventTracking("API", "Access Denied", apiName+"/"+rName, "1");
+						// TODO exception on api (policy exception) ga
+						gatemplate.exceptionTracking(apiName+" "+cause, false);
+					}
+					
+					throw new SecurityException("You are not allowed to access this resource."
+							+msg);
+				}
+				
 			}
 			
 		} else {
 			logger.info("Access -> GRANT");
 			//throw new IllegalArgumentException("There is no policies to apply");
+			
+			//TODO access granted ga
+			if(gatemplate!=null){
+				//event of access granted
+				if(resourceId==null){
+					gatemplate.eventTracking("API", "Access Granted", apiName, "1");
+				}else
+					gatemplate.eventTracking("API", "Access Granted", apiName+"/"+rName, "1");
+			}
 		}
+	}
+	
+	/**
+	 * Function that retrieves which policy threw exception.
+	 * 
+	 * @param msg : String
+	 * @return string : Ip Access Control, OAuth, Quota, SAML, Spike Arrest or 
+	 * 			Verify App Key Policy Exception, otherwise it is a Security Exception.
+	 */
+	private String exceptionCause (String msg){
+		//Ip Access Control
+		if(msg.contains("Ip Access Control")){
+			return "Ip Access Control Policy Exception";
+		}
+		
+		//OAuth
+		if(msg.contains("OAuth")){
+			return "OAuth Policy Exception";
+		}
+
+		//Quota
+		if(msg.contains("Quota")){
+			return "Quota Policy Exception";
+		}
+
+		//SAML
+		if(msg.contains("SAML")){
+			return "SAML Policy Exception";
+		}
+		
+		//Spike Arrest
+		if(msg.contains("Spike Arrest")){
+			return "Spike Arrest Policy Exception";
+		}
+
+		//Verify App Key
+		if(msg.contains("Verify App Key")){
+			return "Verify App Key Policy Exception";
+		}
+		
+		return "Security Exception";
 	}
 }
