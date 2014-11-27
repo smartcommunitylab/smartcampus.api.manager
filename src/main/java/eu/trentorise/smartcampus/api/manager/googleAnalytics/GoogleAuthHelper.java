@@ -33,6 +33,7 @@ import com.google.api.services.analytics.model.Webproperties;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -145,7 +146,7 @@ public final class GoogleAuthHelper {
 	 * @param authCode : String, authentication code provided by google
 	 * @throws IOException
 	 */
-	public void getUserAnalytics(final String authCode, String trackingID) throws IOException{
+	public void getUserAnalytics(final String authCode) throws IOException{
 
 		final GoogleTokenResponse response = flow.newTokenRequest(authCode)
 				.setRedirectUri(CALLBACK_URI).execute();
@@ -155,19 +156,20 @@ public final class GoogleAuthHelper {
 		//init analytics
 		analytics = new Analytics.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(
 		        APPLICATION_NAME).build();
-		
-		String profileID = getProfileId(analytics, trackingID);
-		System.out.println("Profile ID: "+profileID);
-		GaData event = executeDataQueryEvent(profileID, "Geocoding");
-		printGaData(event);
 
 	}
 	
-	private static String getProfileId(Analytics analytics, String trackingID)
-			throws IOException {
+	/**
+	 * Retrieve profile id by user's tracking id.
+	 * 
+	 * @param trackingID : String
+	 * @return profile id
+	 * @throws IOException
+	 */
+	public String getProfileId(String trackingID) throws IOException {
 		// profile id from tracking ID
 		String[] s = trackingID.split("-");// tracking ID: UA-XXXXXX-YY where
-											// XXXXXX is profile ID
+		// XXXXXX is account ID
 		String myaccountId = s[1];
 
 		String profileId = null;
@@ -233,7 +235,7 @@ public final class GoogleAuthHelper {
 	 * @return instance of {@link GaData}
 	 * @throws IOException
 	 */
-	public GaData executeDataQueryEvent(String profileID, String apiName)
+	public GaData executeDataQueryEventLabel(String profileID, String apiName)
 			throws IOException {
 		
 		// Today date
@@ -255,11 +257,82 @@ public final class GoogleAuthHelper {
 					.get("ga:" + profileID, // Table Id. ga: + profile id.
 							before, // Start date.
 							dToday, // End date.
-							"ga:totalEvents")
+							"ga:totalEvents,ga:eventValue")
 					// Metrics.
-					.setDimensions("ga:eventLabel,ga:eventAction")
+					.setDimensions("ga:eventLabel")//,ga:eventAction
 					.setSort("-ga:eventLabel")
 					.setFilters("ga:eventLabel=~^" + apiName + ".*")
+					.setMaxResults(150).execute();
+			
+			printGaData(dataEvent);
+
+			return dataEvent;
+		} else
+			return null;
+	}
+	
+	public GaData executeDataQueryEventAction(String profileID, String apiName)
+			throws IOException {
+		
+		// Today date
+		Date today = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String dToday = format.format(today);
+
+		// Today -1 month
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+		Date beforeToday = cal.getTime();
+		String before = format.format(beforeToday);
+		
+		//TODO
+		if (analytics != null) {
+
+			GaData dataEvent = analytics.data()
+					.ga()
+					.get("ga:" + profileID, // Table Id. ga: + profile id.
+							before, // Start date.
+							dToday, // End date.
+							"ga:totalEvents,ga:eventValue")
+					// Metrics.
+					.setDimensions("ga:eventAction")
+					.setSort("-ga:eventLabel")
+					.setFilters("ga:eventLabel=~^" + apiName + ".*")
+					.setMaxResults(150).execute();
+			
+			printGaData(dataEvent);
+
+			return dataEvent;
+		} else
+			return null;
+	}
+	
+	public GaData executeDataQueryListEvent(String profileID)
+			throws IOException {
+		
+		// Today date
+		Date today = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String dToday = format.format(today);
+
+		// Today -1 month
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+		Date beforeToday = cal.getTime();
+		String before = format.format(beforeToday);
+		
+		//TODO
+		if (analytics != null) {
+
+			GaData dataEvent = analytics.data()
+					.ga()
+					.get("ga:" + profileID, // Table Id. ga: + profile id.
+							before, // Start date.
+							dToday, // End date.
+							"ga:totalEvents,ga:eventValue")
+					// Metrics.
+					.setDimensions("ga:eventLabel")//,ga:eventAction
+					.setSort("-ga:eventLabel")
 					.setMaxResults(150).execute();
 			
 			printGaData(dataEvent);
@@ -310,6 +383,39 @@ public final class GoogleAuthHelper {
 		} else
 			return null;
 	}
+	
+	public GaData executeDataQueryListException(String profileID)
+			throws IOException {
+				
+		//Today date
+		Date today = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String dToday = format.format(today);
+		
+		//Today -1 month
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+		Date beforeToday = cal.getTime();
+		String before = format.format(beforeToday);
+		
+		// TODO
+		if (analytics != null) {
+			GaData dataExc = analytics.data()
+					.ga()
+					.get("ga:" + profileID, // Table Id. ga: + profile id.
+							before, // Start date.
+							dToday, // End date.
+							"ga:exceptions")
+					// Metrics.
+					.setDimensions("ga:exceptionDescription")
+					.setSort("-ga:exceptionDescription")
+					.setMaxResults(150).execute();
+			printGaData(dataExc);
+			
+			return dataExc;
+		} else
+			return null;
+	}
 
 	/**
 	 * Function that prints Google Analytics data.
@@ -340,5 +446,53 @@ public final class GoogleAuthHelper {
 
 			System.out.println();
 		}
+	}
+	
+	public List<List<String>> castGaDataObject(GaData results){
+		
+		List<List<String>> list = new ArrayList<List<String>>();
+		
+		if (results.getRows() == null || results.getRows().isEmpty()) {
+			System.out.println("No results Found.");
+		} else {
+
+			// Print actual data.
+			for (List<String> row : results.getRows()) {
+				
+				List<String> columns = new ArrayList<String>();
+				
+				for (int i=0; i< row.size();i++) {
+					String column = row.get(i);
+					
+					columns.add(column);
+				}
+				
+				list.add(columns);
+			}
+		}
+		
+		//
+		System.out.println("List of List..");
+		for(int i=0;i<list.size();i++){
+			for(int j=0;j<list.get(i).size();j++){
+				String column = list.get(i).get(j);
+				System.out.printf("%30s", column);
+			}
+		}
+		System.out.println();
+		
+		return list;
+	}
+	
+	/**
+	 * Check if analytics object is initialized.
+	 * 
+	 * @return boolean value, if it is not null then true else false
+	 */
+	public boolean isAnalyticsEnabled(){
+		if(analytics!=null){
+			return true;
+		}
+		return false;
 	}
 }
