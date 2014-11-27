@@ -30,7 +30,7 @@ public class TrackingIDValidator {
 	private Pattern pattern;
 	private Matcher matcher;
 	
-	private static final String TID_PATTERN = "([U][A])[-]([0-9]{5,7})[-]([0-9]{1,2})/?";
+	private static final String TID_PATTERN = "([U][A])[-]([0-9]{5,10})[-]([0-9]{1,2})/?";
 	
 	/**
 	 * New instance of {@link UriValidation}.
