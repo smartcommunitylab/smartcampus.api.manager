@@ -6,53 +6,68 @@
         </div>
 
 		<div class="row">
-			<h3>Chart 1</h3>
-			<div class="col-md-1 col-md-offset-3">
+			<h3>Pie Chart: Api Geocoding access</h3>
+			<div class="col-md-1 col-md-offset-3"  ng-show="chart">
 				<div google-chart chart="chart" style="padding: 0; width: 300px"></div>
 			</div>
+			<div class="alert alert-danger"  ng-show="msg1">
+				{{msg1}}
+			</div>
 		</div>
 
 
 		<div class="row">
-			<h3>Chart 2</h3>
-			<div class="col-md-6 col-md-offset-3">
+			<h3>Pie Chart: Api Geocoding path</h3>
+			<div class="col-md-6 col-md-offset-3"  ng-show="chart2">
 				<div google-chart chart="chart2" style="padding: 0; width: 400px"></div>
 			</div>
+			
+			<div class="alert alert-danger"  ng-show="msg2">
+				{{msg2}}
+			</div>
 
 		</div>
 
 
 		<div class="row">
-			<h3>Chart 3 and 4</h3>
-			<div class="col-md-1 col-md-offset-1">
+			<h3>Pie Chart: Api Geocoding Exception</h3>
+			<!-- <div class="col-md-1 col-md-offset-1">
 				<div google-chart chart="chart3" style="padding: 0; width: 400px"></div>
 			</div>
-
-			<div class="col-md-6 col-md-offset-4">
+	 -->
+			<div class="col-md-6 col-md-offset-4" ng-show="chart4">
 				<div google-chart chart="chart4" style="padding: 0; width: 400px"></div>
 			</div>
+			<div class="alert alert-danger"  ng-show="msg4">
+				{{msg4}}
+			</div>
 
 		</div>
 
 		<div class="row">
-			<h3>Chart 5</h3>
-			<div class="col-md-6 col-md-offset-3">
+			<h3>Table chart: Access to apis and their resources</h3>
+			<div class="col-md-6 col-md-offset-3" ng-show="chart5">
 				<div google-chart chart="chart5" style="padding: 0; width: 450px"></div>
 			</div>
-
+			<div class="alert alert-danger"  ng-show="msg5">
+				{{msg5}}
+			</div>
 		</div>
 
+		
 		<div class="row">
-			<h3>Chart 6</h3>
-			<div class="col-md-6 col-md-offset-3">
-				<div google-chart chart="chart6" style="padding: 0; width: 450px"></div>
+			<h3>Table Chart: Exceptions </h3>
+			<div class="col-md-6 col-md-offset-3"  ng-show="chart7">
+				<div google-chart chart="chart7" style="padding: 0; width: 450px"></div>
+			</div>
+			<div class="alert alert-danger"  ng-show="msg7">
+				{{msg7}}
 			</div>
 
-
 		</div>
 
 
-		<div class="col-md-4 col-md-offset-9">
+		<div class="col-md-9 col-md-offset-2">
         	<button type="button" ng-click="back()" class="pull-right btn btn-default">
         		Go back
         	</button>

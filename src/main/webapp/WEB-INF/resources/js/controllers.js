@@ -1757,12 +1757,22 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 
 //Dashboard
 
-app.controller('startCtrl', ['$scope', '$location', 'Stat',
-    function($scope, $location, Stat){
-		Stat.isDashEnabled({
-		}, function(data){
+app.controller('startCtrl', ['$scope', '$location', 'Stat', 'GGraph',
+    function($scope, $location, Stat, GGraph){
+		
+		GGraph.enabled({
+		},function(data){
 			if(data.data===true){
-				$location.path('/dashboard/login');
+				$location.path('/dashboard/graphs');
+			}else{
+				
+				Stat.isDashEnabled({
+				}, function(data){
+					if(data.data===true){
+						$location.path('/dashboard/login');
+					}
+				});
+				
 			}
 		});
 		
@@ -1871,170 +1881,213 @@ app.controller('dashLoginCtrl', ['$scope', '$location', 'Auth',
 	}
 ]);
 
-app.controller('graphsCtrl', ['$scope', '$location', 'Auth',
-    function($scope, $location, Auth){
-		//5 graphs
-		
-		//PIE CHART
-		
-		//API access/grant
-		var chart1 = {};
-		
-		chart1.type = "PieChart";
-		chart1.data = [
-		               ['Api 1', 'Number of Access'],
-		               ['Access Granted', 50],
-		               ['Access Denied', 80]
-		               ];
-		chart1.options = {
-				title: "Api 1 access granted and denied",
-				displayExactValues: true,
-				width: 500,
-				height: 300,
-				is3D: true,
-				chartArea: {left:30,top:30,bottom:0,height:"100%"}
-		};
-
-		chart1.formatters = {
-				number : [{
-					columnNum: 1,
-					pattern: "#"
-				}]
-		};
-
-		$scope.chart = chart1;
-		
-		var chart2 = {};
-		
-		chart2.type = "PieChart";
-		chart2.data = [
-		               ['Api 2', 'Number of Access'],
-		               ['Access Granted', 10],
-		               ['Access Denied', 30]
-		               ];
-		chart2.options = {
-				title: "Api 2 access granted and denied",
-				displayExactValues: true,
-				width: 500,
-				height: 300,
-				is3D: true,
-				chartArea: {left:30,top:30,bottom:0,height:"100%"}
-		};
-
-		chart2.formatters = {
-				number : [{
-					columnNum: 1,
-					pattern: "#"
-				}]
-		};
-
-		$scope.chart2 = chart2;
+app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
+    function($scope, $location, GGraph){
 	
-		//API label (API name)
-		var chart3 = {};
+		//chart data
+		GGraph.eventApiAction({
+			apiName : 'Geocoding'
+		}, function(data){
+			
+			
+			if(data.data!=null){
+				
+				//pie chart data one: access granted/access denied, value
+				var accessNumber = [];
+				
+				for(var i=0;i<data.data.length;i++){
+					var columns = data.data[i];
+					accessNumber.push([columns[1],{v: parseInt(columns[2]), f:parseInt(columns[2])}]);
+				}
+				
+				var chart1 = {};
+			
+				chart1.type = "PieChart";
+				
+				chart1.data = accessNumber;
+				chart1.data.unshift(['Access', 'Total Number']);
+				console.log(chart1.data);
+				
+				chart1.options = {
+					title: "Geocoding access granted and denied",
+					displayExactValues: true,
+					width: 500,
+					height: 300,
+					is3D: true,
+					chartArea: {left:5,top:5,bottom:0,height:"100%"}
+				};
+
+				chart1.formatters = {
+					number : [{
+						columnNum: 1,
+						pattern: "#"
+					}]
+				};
+
+				$scope.chart = chart1;
+			
+			}else{
+				$scope.msg1 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+			}
+		});
 		
-		chart3.type = "PieChart";
-		chart3.data = [
-		               ['Api 3 and resource', 'Number of Access'],
-		               ['Api3', 50],
-		               ['Api3/r1', 80],
-		               ['Api3/r5', 20]
-		               ];
-		chart3.options = {
-				title: "Api 3 and Resource",
-				displayExactValues: true,
-				width: 500,
-				height: 300,
-				is3D: true,
-				chartArea: {left:30,top:30,bottom:0,height:"100%"}
-		};
+		GGraph.eventApiLabel({
+			apiName : 'Geocoding'
+		}, function(data){
+			
+			
+			if(data.data!=null){
+				
+				//pie chart data two: path, value
+				var pathNumber = [];
+				
+				for(var i=0;i<data.data.length;i++){
+					var columns = data.data[i];
+					pathNumber.push([columns[0],{v: parseInt(columns[2]), f:parseInt(columns[2])}]);
+				}
+				
+				console.log('Geocoding path');
+				console.log(pathNumber);
+				
+				var chart2 = {};
+				
+				chart2.type = "PieChart";
+				
+				chart2.data = pathNumber;
+				chart2.data.unshift(['Geocoding resources', 'Total Number']);
+				console.log(chart2.data);
+				
+				chart2.options = {
+					title: "Geocoding and its resources",
+					displayExactValues: true,
+					width: 500,
+					height: 300,
+					is3D: true,
+					chartArea: {left:30,top:30,bottom:0,height:"100%"}
+				};
 
-		chart3.formatters = {
-				number : [{
-					columnNum: 1,
-					pattern: "#"
-				}]
-		};
+				chart2.formatters = {
+					number : [{
+						columnNum: 1,
+						pattern: "#"
+					}]
+				};
 
-		$scope.chart3 = chart3;
-	
-		//EXCEPTION description (API + exception)
-		var chart4 = {};
+				$scope.chart2 = chart2;
+			
+			}else{
+				$scope.msg2 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+			}
+		});
 		
-		chart4.type = "PieChart";
-		chart4.data = [
-		               ['Api 3 exception', 'total'],
-		               ['Api3 Policy Exception', 10],
-		               ['Api3 Security Exception', 25],
-		               ['Api3 IllegalArgument Exception', 20]
-		               ];
-		chart4.options = {
-				title: "Api 3 exception",
-				displayExactValues: true,
-				width: 500,
-				height: 300,
-				is3D: true,
-				chartArea: {left:30,top:30,bottom:0,height:"100%"}
-		};
+		GGraph.exceptionApi({
+			apiName : 'Geocoding'
+		}, function(data){
+			
+			if(data.data!=null){
+				var chart4 = {};
+				
+				var excData = [];
+				
+				for(var i=0;i<data.data.length;i++){
+					var columns = data.data[i];
+					excData.push([columns[0],{v: parseInt(columns[1]), f:parseInt(columns[1])}]);
+				}
+			
+				chart4.type = "PieChart";
+				
+				chart4.data = excData;
+				chart4.data.unshift(['Geocoding Exception', 'Total Number']);
+				console.log(chart4.data);
+				
+				chart4.options = {
+					title: "Api 3 exception",
+					displayExactValues: true,
+					width: 500,
+					height: 300,
+					is3D: true,
+					chartArea: {left:30,top:30,bottom:0,height:"100%"}
+				};
 
-		chart4.formatters = {
-				number : [{
-					columnNum: 1,
-					pattern: "#"
-				}]
-		};
+				chart4.formatters = {
+					number : [{
+						columnNum: 1,
+						pattern: "#"
+					}]
+				};
 
-		$scope.chart4 = chart4;
-	
-		//TABLE
-	
-		//APIs (label, value)
-		//Table chart Sample
-	    var chart5 = {};
-	    chart5.type="Table";
-	    
-	    chart5.data = [
-	                   ['Path','Number of Access'],
-	    		       ['Api1/resource/1', {v: 130, f:130}],
-	    		       ['Api2' ,{v: 40, f:40}],
-	                   ['Api3', {v: 50, f:50}],
-		               ['Api3/r1', {v: 80, f:80}],
-		               ['Api3/r5', {v: 80, f:80}]
-	    ];
-	    
-	    chart5.options = {
-	    		title: 'Access to api and resource',
-		        displayExactValues: true,
-		        width: 700,
-		        height: 500,
-		        chartArea: {left:40,top:40,bottom:0,height:"100%"}
-		    };
+				$scope.chart4 = chart4;
+			
+			}else{
+				$scope.msg4 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+			}
+		});
+				
+		GGraph.eventList({
+		}, function(data){
+			if(data.data!=null){
+				
+				var chartData = [];
+				
+				for(var i=0;i<data.data.length;i++){
+					var columns = data.data[i];
+					chartData.push([columns[0],{v: parseInt(columns[2]), f:parseInt(columns[2])}]);
+				}
+				
+				var chart5 = {};
+				chart5.type="Table";
+			
+			
+				chart5.data = chartData;
+				chart5.data.unshift(['Path','Number of Access']);
+				console.log(chart5.data);
+		    
+				chart5.options = {
+						title: 'Api Exception',
+						displayExactValues: true,
+						width: 700,
+						height: 500,
+						chartArea: {left:40,top:40,bottom:0,height:"100%"}
+			    	};
 
-	    $scope.chart5 = chart5;
-	
-		//EXCEPTION (description)
-	    var chart6 = {};
-	    chart6.type="Table";
-	    
-	    chart6.data = [
-	                   ['Api Exception', 'total'],
-	    		       ['Api1 Security Exception', {v: 10, f:10}],
-	    		       ['Api1 Policy Exception', {v: 15, f:15}],
-	    		       ['Api2 Policy Exception' ,{v: 3, f:3}],
-		               ['Api3 Policy Exception', {v: 10, f:10}],
-		               ['Api3 Security Exception', {v: 25, f:25}],
-		               ['Api3 IllegalArgument Exception', {v: 20, f:20}]
-	    ];
-	    
-	    chart6.options = {
-	    		title: 'Api Exception',
-		        displayExactValues: true,
-		        width: 700,
-		        height: 500,
-		        chartArea: {left:40,top:40,bottom:0,height:"100%"}
-		    };
+				$scope.chart5 = chart5;
+			}else{
+				$scope.msg5 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+			}
+		});
+		
+		GGraph.exceptionList({
+		}, function(data){
+			
+			if(data.data!=null){
+				var excData = [];
+				
+				for(var i=0;i<data.data.length;i++){
+					var columns = data.data[i];
+					excData.push([columns[0],{v: parseInt(columns[1]), f:parseInt(columns[1])}]);
+				}
+				
+				var chart7 = {};
+				chart7.type="Table";
+			
+			
+				chart7.data = excData;
+				chart7.data.unshift((['Api Exception','Total Number']));
+				console.log(chart7.data);
+		    
+				chart7.options = {
+						title: 'Api Exception',
+						displayExactValues: true,
+						width: 700,
+						height: 500,
+						chartArea: {left:40,top:40,bottom:0,height:"100%"}
+			    	};
 
-	    $scope.chart6 = chart6;
+				$scope.chart7 = chart7;
+			}else{
+				$scope.msg7 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+			}
+		});
 		
 	}
 ]);

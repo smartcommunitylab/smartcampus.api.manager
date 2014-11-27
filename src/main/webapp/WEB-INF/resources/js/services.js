@@ -263,6 +263,37 @@ services.factory('Stat', ['$resource',
 	}
 ]);
 
+services.factory('GGraph', ['$resource',
+    function($resource){
+		return $resource('api/oauth/google', {}, {
+			eventApiLabel:{
+				method: 'GET',
+				url: 'api/oauth/google/eventlabel/:apiName'
+			},
+			eventApiAction:{
+				method: 'GET',
+				url: 'api/oauth/google/eventaction/:apiName'
+			},
+			exceptionApi:{
+				method: 'GET',
+				url: 'api/oauth/google/exception/:apiName'
+			},
+			eventList:{
+				method: 'GET',
+				url: 'api/oauth/google/event/list'
+			},
+			exceptionList:{
+				method: 'GET',
+				url: 'api/oauth/google/exception/list'
+			},
+			enabled:{
+				method: 'GET',
+				url: 'api/oauth/google/logged'
+			}
+		});
+	}
+]);
+
 services.factory('Gravatar', ['$http', '$rootScope',
     function ($http, $rootScope) {
 
