@@ -128,7 +128,8 @@ public class GoogleController {
 		}else{
 			try {
 				//init analytics
-				auth.getUserAnalytics(code);
+				String trackingID = smanager.retrieveTrackingID();
+				auth.getUserAnalytics(code,trackingID);
 				
 				response.setStatus(HttpServletResponse.SC_OK);
 					
@@ -145,7 +146,7 @@ public class GoogleController {
 	
 	//TODO Rest that retrieves gaData
 	
-	@RequestMapping(value = "/event", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/event/{apiName}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResultData googleEvent(@PathVariable String apiName){
 		logger.info("Retrieve event from ga account.");
@@ -165,7 +166,7 @@ public class GoogleController {
 		}
 	}
 	
-	@RequestMapping(value = "/exception", method = RequestMethod.GET, 
+	@RequestMapping(value = "/exception/{apiName}", method = RequestMethod.GET, 
 			produces = "application/json")
 	@ResponseBody
 	public ResultData googleException(@PathVariable String apiName){
