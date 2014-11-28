@@ -177,58 +177,76 @@ public final class GoogleAuthHelper {
 		// Query accounts collection
 		Accounts accounts = analytics.management().accounts().list().execute();
 
+		String accountId = null;
 		if (accounts.getItems().isEmpty()) {
 			System.err.println("No accounts found");
 		} else {
-			for (int i = 0; i < accounts.getItems().size(); i++) {
-				String accountId = accounts.getItems().get(i).getId();
-				System.out.println("Account id: " + accountId);
-
-				if (accountId.equalsIgnoreCase(myaccountId)) {
-					// Query webproperties collection.
-					Webproperties webproperties = analytics.management()
-							.webproperties().list(accountId).execute();
-
-					if (webproperties.getItems().isEmpty()) {
-						System.err.println("No Webproperties found");
-					} else {
-
-						for (int j = 0; j < webproperties.getItems().size(); j++) {
-
-							String webpropertyId = webproperties.getItems()
-									.get(j).getId();
-							System.out.println("Web property id: "
-									+ webpropertyId);
-
-							if (webpropertyId.equalsIgnoreCase(trackingID)) {
-
-								// Query profiles collection.
-								Profiles profiles = analytics.management()
-										.profiles()
-										.list(accountId, webpropertyId)
-										.execute();
-
-								if (profiles.getItems().isEmpty()) {
-									System.err.println("No profiles found");
-								} else {
-
-									profileId = profiles.getItems().get(0)
-											.getId();
-								}
-
-							}
-						}
-
+			System.out.println("Account list not empty.");
+			if(accounts.getItems().get(0).getId().equalsIgnoreCase(myaccountId)){
+				accountId = accounts.getItems().get(0).getId();
+				System.out.println("Account id if: "+accountId);
+			}
+			else{
+				//account ID
+				for (int i = 0; i < accounts.getItems().size(); i++) {
+					if (accounts.getItems().get(i).getId().equalsIgnoreCase(myaccountId)) {
+						accountId = accounts.getItems().get(i).getId();
+						System.out.println("Account id for: "+accountId);
 					}
 				}
 			}
 		}
+		
+		//Web properties
+		String webpropertyId = null;
+		if(accountId!=null){
+			// Query webproperties collection.
+			Webproperties webproperties = analytics.management()
+					.webproperties().list(accountId).execute();
+
+			if (webproperties.getItems().isEmpty()) {
+				System.err.println("No Webproperties found");
+			} else {
+				System.out.println("Webproperties found");
+				if(webproperties.getItems().get(0).getId().equalsIgnoreCase(trackingID)){
+					webpropertyId = webproperties.getItems().get(0).getId();
+					System.out.println("Webproperties id if: "+webpropertyId);
+				}
+				else{
+					//account ID
+					for (int i = 0; i < webproperties.getItems().size(); i++) {
+						if (webproperties.getItems().get(i).getId().equalsIgnoreCase(trackingID)) {
+							webpropertyId = webproperties.getItems().get(i).getId();
+							System.out.println("Webproperties id for: "+webpropertyId);
+						}
+					}
+				}
+			}
+			
+		}
+		
+		//ProfileID
+		if(webpropertyId!=null){
+			
+			// Query profiles collection.
+			Profiles profiles = analytics.management().profiles().list(accountId, webpropertyId)
+					.execute();
+
+			if (profiles.getItems().isEmpty()) {
+				System.err.println("No profiles found");
+			} else {
+				System.out.println("Profiles found");
+				profileId = profiles.getItems().get(0).getId();
+			}
+		}
+		System.out.println("Profile id: "+profileId);
 		return profileId;
 	}
 
 
 	/**
-	 * Retrieves event of an api from user's google Analytics account.
+	 * Retrieve event of this api from the profile by total events and event value.
+	 * Dimension is event label.
 	 * 
 	 * @param profileID : String
 	 * @param apiName : String
@@ -259,7 +277,7 @@ public final class GoogleAuthHelper {
 							dToday, // End date.
 							"ga:totalEvents,ga:eventValue")
 					// Metrics.
-					.setDimensions("ga:eventLabel")//,ga:eventAction
+					.setDimensions("ga:eventLabel")
 					.setSort("-ga:eventLabel")
 					.setFilters("ga:eventLabel=~^" + apiName + ".*")
 					.setMaxResults(150).execute();
@@ -271,6 +289,15 @@ public final class GoogleAuthHelper {
 			return null;
 	}
 	
+	/**
+	 * Retrieve event of this api from the profile by total events and event value.
+	 * Dimension is event action.
+	 * 
+	 * @param profileID : String
+	 * @param apiName
+	 * @return instance of {@link GaData}
+	 * @throws IOException
+	 */
 	public GaData executeDataQueryEventAction(String profileID, String apiName)
 			throws IOException {
 		
@@ -296,7 +323,7 @@ public final class GoogleAuthHelper {
 							"ga:totalEvents,ga:eventValue")
 					// Metrics.
 					.setDimensions("ga:eventAction")
-					.setSort("-ga:eventLabel")
+					.setSort("-ga:eventAction")
 					.setFilters("ga:eventLabel=~^" + apiName + ".*")
 					.setMaxResults(150).execute();
 			
@@ -307,6 +334,14 @@ public final class GoogleAuthHelper {
 			return null;
 	}
 	
+	/**
+	 * Retrieves all event from this profile by total events
+	 * and event value.
+	 * 
+	 * @param profileID : String
+	 * @return instance of {@link GaData}
+	 * @throws IOException
+	 */
 	public GaData executeDataQueryListEvent(String profileID)
 			throws IOException {
 		
@@ -384,6 +419,13 @@ public final class GoogleAuthHelper {
 			return null;
 	}
 	
+	/**
+	 * Retrieves all exceptions saved in this profile.
+	 * 
+	 * @param profileID : String
+	 * @return instance of {@link GaData}
+	 * @throws IOException
+	 */
 	public GaData executeDataQueryListException(String profileID)
 			throws IOException {
 				
@@ -448,6 +490,12 @@ public final class GoogleAuthHelper {
 		}
 	}
 	
+	/**
+	 * Cast GaData object to List of String List (columns value).
+	 * 
+	 * @param results : instance of {@link GaData}
+	 * @return list of string list
+	 */
 	public List<List<String>> castGaDataObject(GaData results){
 		
 		List<List<String>> list = new ArrayList<List<String>>();
@@ -470,16 +518,6 @@ public final class GoogleAuthHelper {
 				list.add(columns);
 			}
 		}
-		
-		//
-		System.out.println("List of List..");
-		for(int i=0;i<list.size();i++){
-			for(int j=0;j<list.get(i).size();j++){
-				String column = list.get(i).get(j);
-				System.out.printf("%30s", column);
-			}
-		}
-		System.out.println();
 		
 		return list;
 	}

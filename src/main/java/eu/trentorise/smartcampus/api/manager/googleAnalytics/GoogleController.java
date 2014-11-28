@@ -176,10 +176,13 @@ public class GoogleController {
 		try {
 			String trackingID = smanager.retrieveTrackingID();
 			String profileID = auth.getProfileId(trackingID);
-			GaData event = auth.executeDataQueryEventAction(profileID, apiName);
-			
-			return new ResultData(auth.castGaDataObject(event), 
-					HttpServletResponse.SC_OK, "Event data found.");
+			if(profileID!=null){
+				GaData event = auth.executeDataQueryEventAction(profileID, apiName);
+				return new ResultData(auth.castGaDataObject(event), 
+						HttpServletResponse.SC_OK, "Event data found.");
+			}
+			else return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+					"Problem with Google Analytics. Cannot find profile id.");
 			
 		} catch (CustomAuthenticationException e) {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, 
