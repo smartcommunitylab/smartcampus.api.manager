@@ -116,7 +116,6 @@ public class ApiController {
 	/**
 	 * Rest service that retrieves api data having a specific owner id.
 	 * 
-	 * @param ownerId : String, path variable
 	 * @return instance of {@link ResultData} with api data having the given owner id, 
 	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
 	 * 			"All data" if it is ok, "There is no api data for this owner."
@@ -140,6 +139,34 @@ public class ApiController {
 			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		}
 		
+	}
+	
+	/**
+	 * Rest service that retrieves name of apis for current user.
+	 * 
+	 * @return instance of {@link ResultData} with list of api name, 
+	 * 			status (OK, NOT FOUND or FORBIDDEN) and a string message : 
+	 * 			"All data" if it is ok, "There is no api data for this owner."
+	 * 			otherwise exception CustomAuthentication message.
+	 */
+	@RequestMapping(value = "/ownerId/api", method = RequestMethod.GET, 
+			produces="application/json")
+	@ResponseBody
+	public ResultData getApiName(){
+		logger.info("List api name.");
+		
+		try {
+			List<String> apiList = smanager.getApiNameByOwnerId();
+			
+			if(apiList!=null && apiList.size()>0){
+				return new ResultData(apiList, HttpServletResponse.SC_OK, "Apis name.");
+			}else{
+				return new ResultData(null, HttpServletResponse.SC_NOT_FOUND, 
+						"There is no api data for this owner.");
+			}
+		} catch (CustomAuthenticationException e) {
+			return new ResultData(null, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
 	}
 	
 	/**
