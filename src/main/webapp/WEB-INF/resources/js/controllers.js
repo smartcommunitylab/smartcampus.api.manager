@@ -1883,19 +1883,20 @@ app.controller('graphsCtrl', ['$scope', '$location', 'Api', 'GGraph',
 		$scope.addChart = function(name){
 			//check if chart already exist
 			var index = [];
-			
+			//retrieve index of api name, if exists
 			for(var i=0;i<$scope.charts.length;i++){
 				if($scope.charts[i].api === name){
 					console.log(i);
 					index.push(i);
 				}
 			}
+			//if index then delete charts
 			if(index.length > 0){
 				for(var i=0;i<index.length;i++){
 					$scope.charts.splice(index[i],1);
 				}
 			}
-			
+			//if not, then draw
 			if(index.length === 0){
 				
 			if($scope.charts===null){
