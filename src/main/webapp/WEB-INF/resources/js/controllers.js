@@ -1807,18 +1807,6 @@ app.controller('startCtrl', ['$scope', '$location', 'Stat', 'GGraph',
 		    var chart2 = {};
 		    chart2.type="Table";
 		    
-		    /*chart2.cols = [
-		                ['string','Path'],
-		                ['number', 'Number of Access']
-		    ];*/
-
-		    /*chart2.rows = [
-		                   ['Api1/resource/1', {v: 20, f:20}],
-		    		       ['Api2' ,{v: 30, f:30}],
-		                   ['Api2/resource3', {v: 20, f:20}],
-		                   ['Api3', {v: 80, f:80}]
-		    ];*/
-		    
 		    chart2.data = [
 		                   ['Path','Number of Access'],
 		    		       ['Api1/resource/1', {v: 20, f:20}],
@@ -1879,10 +1867,184 @@ app.controller('dashLoginCtrl', ['$scope', '$location', 'Auth',
 	}
 ]);
 
-app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
-    function($scope, $location, GGraph){
+app.controller('graphsCtrl', ['$scope', '$location', 'Api', 'GGraph',
+    function($scope, $location, Api, GGraph){
 	
+		$scope.charts = [];
+		
+		//api Name
+		Api.listApiName({
+			
+		},function(data){
+			$scope.apis = data.data;
+			console.log($scope.apis);
+		});
+		
+		$scope.addChart = function(name){
+			//check if chart already exist
+			var index = [];
+			
+			for(var i=0;i<$scope.charts.length;i++){
+				if($scope.charts[i].api === name){
+					console.log(i);
+					index.push(i);
+				}
+			}
+			if(index.length > 0){
+				for(var i=0;i<index.length;i++){
+					$scope.charts.splice(index[i],1);
+				}
+			}
+			
+			if(index.length === 0){
+				
+			if($scope.charts===null){
+				$scope.charts = [];
+			}
+			
+			GGraph.eventApiAction({
+				apiName : name
+			}, function(data){
+				
+				var chartAction = {};
+				chartAction.api = name;
+				
+				chartAction.type = "PieChart";
+				
+				chartAction.options = {
+						title: name+" access granted and denied",
+						displayExactValues: true,
+						width: 500,
+						height: 300,
+						is3D: true,
+						chartArea: {left:30,top:30,bottom:0,height:"100%"}
+					};
+
+				chartAction.formatters = {
+						number : [{
+							columnNum: 1,
+							pattern: "#"
+						}]
+				};
+				
+				if(data.data!=null){
+					
+					//pie chart data one: access granted/access denied, value
+					var accessNumber = [];
+					
+					for(var i=0;i<data.data.length;i++){
+						var columns = data.data[i];
+						accessNumber.push([columns[0],{v: parseInt(columns[2]), f:parseInt(columns[2])}]);
+					}
+					
+					chartAction.data = accessNumber;
+					chartAction.data.unshift(['Access', 'Total Number']);
+				
+				}else{
+					chartAction.data = [['Access', 'Total Number']];
+					chartAction.msg = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
+				}
+				
+				$scope.charts.push(chartAction);
+			});
+			
+			GGraph.eventApiLabel({
+				apiName : name
+			}, function(data){
+				
+				var chartLabel = {};
+				chartLabel.api = name;
+				
+				chartLabel.type = "PieChart";
+				
+				chartLabel.options = {
+						title: name+" and its resources",
+						displayExactValues: true,
+						width: 500,
+						height: 300,
+						is3D: true,
+						chartArea: {left:30,top:30,bottom:0,height:"100%"}
+					};
+
+				chartLabel.formatters = {
+						number : [{
+							columnNum: 1,
+							pattern: "#"
+						}]
+					};
+				
+				if(data.data!=null){
+					
+					//pie chart data two: path, value
+					var pathNumber = [];
+					
+					for(var i=0;i<data.data.length;i++){
+						var columns = data.data[i];
+						pathNumber.push([columns[0],{v: parseInt(columns[2]), f:parseInt(columns[2])}]);
+					}
+					
+					chartLabel.data = pathNumber;
+					chartLabel.data.unshift([name+' resources', 'Total Number']);
+
+				}else{
+					chartLabel.data = [[name+' resources', 'Total Number']];
+					chartLabel.msg = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
+				}
+				
+				$scope.charts.push(chartLabel);
+			});
+			
+			GGraph.exceptionApi({
+				apiName : name
+			}, function(data){
+				
+				var chartExc = {};
+				chartExc.api = name;
+				
+				chartExc.type = "PieChart";
+				
+				chartExc.options = {
+						title: name+" Exception",
+						displayExactValues: true,
+						width: 500,
+						height: 300,
+						is3D: true,
+						chartArea: {left:30,top:30,bottom:0,height:"100%"}
+					};
+
+				chartExc.formatters = {
+						number : [{
+							columnNum: 1,
+							pattern: "#"
+						}]
+					};
+				
+				if(data.data!=null){
+					
+					var excData = [];
+					
+					for(var i=0;i<data.data.length;i++){
+						var columns = data.data[i];
+						excData.push([columns[0],{v: parseInt(columns[1]), f:parseInt(columns[1])}]);
+					}
+				
+					chartExc.data = excData;
+					chartExc.data.unshift([name+' Exception', 'Total Number']);
+				
+				}else{
+					chartExc.data = [[name+' Exception', 'Total Number']];
+					chartExc.msg = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
+				}
+				
+				$scope.charts.push(chartExc);
+			});
+			
+			}
+			
+		};
+		
 		//chart data
+		/*
 		GGraph.eventApiAction({
 			apiName : 'Geocoding'
 		}, function(data){
@@ -1943,9 +2105,6 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 					var columns = data.data[i];
 					pathNumber.push([columns[0],{v: parseInt(columns[2]), f:parseInt(columns[2])}]);
 				}
-				
-				console.log('Geocoding path');
-				console.log(pathNumber);
 				
 				var chart2 = {};
 				
@@ -2020,7 +2179,7 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 				$scope.msg4 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
 			}
 		});
-				
+		*/
 		GGraph.eventList({
 		}, function(data){
 			if(data.data!=null){

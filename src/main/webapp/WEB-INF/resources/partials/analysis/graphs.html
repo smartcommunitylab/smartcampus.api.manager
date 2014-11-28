@@ -4,7 +4,41 @@
             <h1>User Graphs</h1>
             
         </div>
+        
+        <div class="row">
+        	<h2>Choose API:</h2>
+        	
+        	<div ng-repeat="a in apis">
+        		{{a}}: <input type="checkbox" ng-model="name" ng-change="addChart(a)">
+        	</div>
+        	
+        </div>
+        
+        <hr/>
+        
+        <div class="row">
+		
+			<div class="col-md-30 col-md-offset-0">
+		
+				
+				<h3>Pie Chart Dynamic</h3>
+				
+				
+				<div class="col-md-4 col-md-offset-0" ng-repeat="chart in charts">
+					<div ng-show="chart" google-chart chart="chart" style="padding: 0; width: 300px"></div>
+					
+					<div class="alert alert-danger"  ng-show="chart.msg">
+						{{chart.msg}}
+					</div>
+					
+				</div>
+			
+			</div>
+		</div>
+		
+		<hr/>
 
+<!-- 
 		<div class="row">
 		
 			<div class="col-md-30 col-md-offset-0">
@@ -44,8 +78,8 @@
 			
 			</div>
 		</div>
-
-		<hr/>
+ 
+		<hr/>-->
 
 		<div class="row">
 			<h3>Table chart: Access to apis and their resources</h3>
