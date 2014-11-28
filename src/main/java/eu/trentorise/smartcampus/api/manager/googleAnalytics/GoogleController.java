@@ -16,8 +16,6 @@
 package eu.trentorise.smartcampus.api.manager.googleAnalytics;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -144,8 +142,15 @@ public class GoogleController {
 		return "redirect:/";
 	}
 	
-	//TODO Rest that retrieves gaData
-	
+	/**
+	 * Retrieves event data of an api searching by label.
+	 * 
+	 * @param apiName : String
+	 * @return instance of {@link ResultData} with google event data, 
+	 * 			status (OK, FORBIDDEN or NOT FOUND) and a string message : 
+	 * 			"Event data found." if it is ok, "You are not allowed" 
+	 * 			or "Problem with Google Analytics.".
+	 */
 	@RequestMapping(value = "/eventlabel/{apiName}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResultData googleEvent(@PathVariable String apiName){
@@ -169,6 +174,15 @@ public class GoogleController {
 		}
 	}
 	
+	/**
+	 * Retrieves event data of an api searching by action.
+	 * 
+	 * @param apiName : String
+	 * @return instance of {@link ResultData} with google event data, 
+	 * 			status (OK, FORBIDDEN or NOT FOUND) and a string message : 
+	 * 			"Event data found." if it is ok, "You are not allowed" 
+	 * 			or "Problem with Google Analytics.".
+	 */
 	@RequestMapping(value = "/eventaction/{apiName}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResultData googleEventAction(@PathVariable String apiName){
@@ -195,6 +209,15 @@ public class GoogleController {
 		}
 	}
 	
+	/**
+	 * Retrieves exception data of an api searching by description.
+	 * 
+	 * @param apiName : String
+	 * @return instance of {@link ResultData} with google exception data, 
+	 * 			status (OK, FORBIDDEN or NOT FOUND) and a string message : 
+	 * 			"Event data found." if it is ok, "You are not allowed" 
+	 * 			or "Problem with Google Analytics.".
+	 */
 	@RequestMapping(value = "/exception/{apiName}", method = RequestMethod.GET, 
 			produces = "application/json")
 	@ResponseBody
@@ -218,6 +241,14 @@ public class GoogleController {
 		}
 	}
 	
+	/**
+	 * Retrieves all event data.
+	 * 
+	 * @return instance of {@link ResultData} with google event data list, 
+	 * 			status (OK, FORBIDDEN or NOT FOUND) and a string message : 
+	 * 			"Event data found." if it is ok, "You are not allowed" 
+	 * 			or "Problem with Google Analytics.".
+	 */
 	@RequestMapping(value = "/event/list", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public ResultData googleListEvent(){
@@ -241,6 +272,14 @@ public class GoogleController {
 		}
 	}
 	
+	/**
+	 * Retrieves all exception data.
+	 * 
+	 * @return instance of {@link ResultData} with google exception data list, 
+	 * 			status (OK, FORBIDDEN or NOT FOUND) and a string message : 
+	 * 			"Event data found." if it is ok, "You are not allowed" 
+	 * 			or "Problem with Google Analytics.".
+	 */
 	@RequestMapping(value = "/exception/list", method = RequestMethod.GET, 
 			produces = "application/json")
 	@ResponseBody
@@ -265,15 +304,28 @@ public class GoogleController {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param request : instance of {@link HttpServletRequest}
+	 * @return instance of {@link ResultData} with boolean value, 
+	 * 			status (OK or NOT FOUND) and a string message : 
+	 * 			"You are logged in Google Analytics." if it is ok, 
+	 * 			otherwise "You have to login with Google Analytics."
+	 */
 	@RequestMapping(value = "/logged", method = RequestMethod.GET, 
 			produces = "application/json")
 	@ResponseBody
-	public ResultData isLogged(){
+	public ResultData isLogged(HttpServletRequest request){
 		logger.info("Is user logged?");
 
 		boolean isEnabled = auth.isAnalyticsEnabled();
 		if(isEnabled){
-			return new ResultData(isEnabled, HttpServletResponse.SC_OK, "You are logged in Google Analytics.");
+			if(request.getSession().getAttribute("state")!=null){
+				return new ResultData(isEnabled, HttpServletResponse.SC_OK, 
+						"You are logged in Google Analytics.");
+			}
+			else return new ResultData(false, HttpServletResponse.SC_NOT_FOUND, 
+					"You have to login with Google Analytics.");
 		}
 		else return new ResultData(isEnabled, HttpServletResponse.SC_NOT_FOUND, 
 				"You have to login with Google Analytics.");
