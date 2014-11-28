@@ -1897,7 +1897,7 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 				
 				for(var i=0;i<data.data.length;i++){
 					var columns = data.data[i];
-					accessNumber.push([columns[1],{v: parseInt(columns[2]), f:parseInt(columns[2])}]);
+					accessNumber.push([columns[0],{v: parseInt(columns[2]), f:parseInt(columns[2])}]);
 				}
 				
 				var chart1 = {};
