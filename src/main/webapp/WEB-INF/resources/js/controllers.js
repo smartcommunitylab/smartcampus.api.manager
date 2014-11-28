@@ -1759,20 +1759,18 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 
 app.controller('startCtrl', ['$scope', '$location', 'Stat', 'GGraph',
     function($scope, $location, Stat, GGraph){
-		
-		GGraph.enabled({
-		},function(data){
+	
+		Stat.isDashEnabled({
+		}, function(data){
 			if(data.data===true){
-				$location.path('/dashboard/graphs');
-			}else{
-				
-				Stat.isDashEnabled({
-				}, function(data){
+				GGraph.enabled({
+				},function(data){
 					if(data.data===true){
+						$location.path('/dashboard/graphs');
+					}else{
 						$location.path('/dashboard/login');
 					}
 				});
-				
 			}
 		});
 		
@@ -1914,7 +1912,7 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 					width: 500,
 					height: 300,
 					is3D: true,
-					chartArea: {left:5,top:5,bottom:0,height:"100%"}
+					chartArea: {left:30,top:30,bottom:0,height:"100%"}
 				};
 
 				chart1.formatters = {
@@ -1927,7 +1925,7 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 				$scope.chart = chart1;
 			
 			}else{
-				$scope.msg1 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+				$scope.msg1 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
 			}
 		});
 		
@@ -1976,7 +1974,7 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 				$scope.chart2 = chart2;
 			
 			}else{
-				$scope.msg2 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+				$scope.msg2 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
 			}
 		});
 		
@@ -2019,7 +2017,7 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 				$scope.chart4 = chart4;
 			
 			}else{
-				$scope.msg4 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+				$scope.msg4 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
 			}
 		});
 				
@@ -2045,14 +2043,14 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 				chart5.options = {
 						title: 'Api Exception',
 						displayExactValues: true,
-						width: 700,
-						height: 500,
+						width: 500,
+						height: 300,
 						chartArea: {left:40,top:40,bottom:0,height:"100%"}
 			    	};
 
 				$scope.chart5 = chart5;
 			}else{
-				$scope.msg5 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+				$scope.msg5 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
 			}
 		});
 		
@@ -2078,14 +2076,14 @@ app.controller('graphsCtrl', ['$scope', '$location', 'GGraph',
 				chart7.options = {
 						title: 'Api Exception',
 						displayExactValues: true,
-						width: 700,
-						height: 500,
+						width: 500,
+						height: 300,
 						chartArea: {left:40,top:40,bottom:0,height:"100%"}
 			    	};
 
 				$scope.chart7 = chart7;
 			}else{
-				$scope.msg7 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later.";
+				$scope.msg7 = "This chart is not available at the moment. An error in Google Analytics occured. Please try again later or reload the page.";
 			}
 		});
 		

@@ -1,39 +1,68 @@
 <div class="row animated fadeIn">
-    <div ng-hide="!errorMsg" class="alert alert-danger">{{errorMsg}}</div>
+
     <div class="col-md-8 col-md-offset-2">
-        <h2>Login with Google Analytics</h2>
         
-        To see your Dashboard, you have to login with Google Analytics and allow Open Services site to:
+        <div class="row">
         
-        <ul type="disc">
-        	<li>
-            	know who you are on Google;
-            </li>
+        	<div class="col-md-2 col-md-offset-0">
+        		<div class="alert alert-success">OK</div>
+       		</div>
+        	<br/>
+       		Now, you can see your statistics on
+        	<a href="http://www.google.com/analytics/">Google Analytics site</a>
+        
+        	<div class="col-md-4 col-md-offset-8">
+       			<a href="dashboard/enable" class="btn btn-info btn-block">Edit Tracking ID</a>
+       		</div>
+        
+        </div>
+        
+        <br/>
+        
+        <div class="row">
+        	<h2>API Google Analytics Dashboard</h2>
+        
+        	GA collects and analyzed a broad spectrum of data. To better visualize trends in your
+        	API performance, you can import our customize API dashboard: click the 
+        	<a href="#">link</a> and select the view corrisponding to the saved Tracking ID.
+        
+        </div>
+        
+        <br/>
+        
+        <div class="row">
+        	<h2>Login with Google Analytics</h2>
+        
+        	<ul type="disc">
+        		<li>
+            		know who you are on Google;
+            	</li>
             
-            <br/>
+            	<br/>
             
-            <li>
-            	view your email address;	
-            </li>
+            	<li>
+            		view your email address;	
+            	</li>
             
-            <br/>
+            	<br/>
             
-            <li>
-            	view your Google Analytics data.
-            </li>
+            	<li>
+            		view your Google Analytics data.
+            	</li>
            
-		</ul>
-        
-       <form name="main" novalidate role="form" ng-submit="submit()"> 
-       <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Access Google Analytics</button>
-       
-       <button type="button" ng-click="back()" class="pull-right btn btn-default">Go back</button>
-        
-       </form>
-       
-       <div class="col-md-4 col-md-offset-0">
-       		<a href="dashboard/enable" class="btn btn-info btn-block">Edit Tracking ID</a>
+			</ul>
        </div>
+       
+       <br/>
+        
+        <div class="row">
+       		<form name="main" novalidate role="form" ng-submit="submit()"> 
+       			<button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Access Google Analytics</button>
+       
+       			<button type="button" ng-click="back()" class="pull-right btn btn-default">Go back</button>
+        
+       		</form>
+       	</div>
        
     </div>
 </div>
