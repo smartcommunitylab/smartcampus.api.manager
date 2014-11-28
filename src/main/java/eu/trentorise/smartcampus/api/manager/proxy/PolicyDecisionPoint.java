@@ -318,10 +318,13 @@ public class PolicyDecisionPoint {
 				//TODO access granted ga
 				if(gatemplate!=null){
 					//event of access granted
+					boolean r;
 					if(resourceId==null){
-						gatemplate.eventTracking("API", "Access Granted", apiName, "1");
+						r = gatemplate.eventTracking("API", "Access Granted", apiName, "1");
 					}else
-						gatemplate.eventTracking("API", "Access Granted", apiName+"/"+rName, "1");
+						r = gatemplate.eventTracking("API", "Access Granted", apiName+"/"+rName, "1");
+				
+					logger.info("Write event {}", r);
 				}
 				
 			}catch(SecurityException s){
@@ -338,9 +341,11 @@ public class PolicyDecisionPoint {
 					
 					if (gatemplate != null) {
 						// TODO access denied ga
-						gatemplate.eventTracking("API", "Access Denied", apiName, "1");
+						boolean r1 = gatemplate.eventTracking("API", "Access Denied", apiName, "1");
 						// TODO exception on api (policy exception) ga
-						gatemplate.exceptionTracking(apiName+ " "+cause, false);
+						boolean r2 = gatemplate.exceptionTracking(apiName+ " "+cause, false);
+						logger.info("Write event {}", r1);
+						logger.info("Write exception {}", r2);
 					}
 					
 					throw new SecurityException("You are not allowed to access this api. "+msg);
@@ -348,9 +353,12 @@ public class PolicyDecisionPoint {
 				else{
 					if (gatemplate != null) {
 						// TODO access denied ga
-						gatemplate.eventTracking("API", "Access Denied", apiName+"/"+rName, "1");
+						boolean r1 = gatemplate.eventTracking("API", "Access Denied", apiName+"/"+rName, "1");
 						// TODO exception on api (policy exception) ga
-						gatemplate.exceptionTracking(apiName+" "+cause, false);
+						boolean r2 = gatemplate.exceptionTracking(apiName+" "+cause, false);
+						
+						logger.info("Write event {}", r1);
+						logger.info("Write exception {}", r2);
 					}
 					
 					throw new SecurityException("You are not allowed to access this resource."
@@ -366,10 +374,13 @@ public class PolicyDecisionPoint {
 			//TODO access granted ga
 			if(gatemplate!=null){
 				//event of access granted
+				boolean r;
 				if(resourceId==null){
-					gatemplate.eventTracking("API", "Access Granted", apiName, "1");
+					r = gatemplate.eventTracking("API", "Access Granted", apiName, "1");
 				}else
-					gatemplate.eventTracking("API", "Access Granted", apiName+"/"+rName, "1");
+					r = gatemplate.eventTracking("API", "Access Granted", apiName+"/"+rName, "1");
+				
+				logger.info("Write event {}", r);
 			}
 		}
 	}
