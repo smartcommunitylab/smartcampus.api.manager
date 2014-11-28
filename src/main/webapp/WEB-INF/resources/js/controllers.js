@@ -1892,9 +1892,7 @@ app.controller('graphsCtrl', ['$scope', '$location', 'Api', 'GGraph',
 			}
 			//if index then delete charts
 			if(index.length > 0){
-				for(var i=0;i<index.length;i++){
-					$scope.charts.splice(index[i],1);
-				}
+				$scope.charts.splice(index[0],3);
 			}
 			//if not, then draw
 			if(index.length === 0){
