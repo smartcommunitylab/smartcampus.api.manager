@@ -27,12 +27,9 @@
 				<div class="col-md-4 col-md-offset-0" ng-repeat="chart in charts">
 					<div ng-show="chart" google-chart chart="chart" style="padding: 0; width: 300px"></div>
 					
-					<div class="alert alert-danger"  ng-show="chart.msg">
+					<div class="alert alert-danger"  ng-show="chart.msg" style="padding: 0; width: 100px">
 						{{chart.msg}}
 					</div>
-					
-					<br/>
-					<br/>
 					
 				</div>
 			
