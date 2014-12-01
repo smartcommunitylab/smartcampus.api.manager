@@ -73,7 +73,7 @@ public class ProxyTest {
 		
 		//policy decision
 		log.info("Policy Decision Port..");
-		pdecision.applyPoliciesBatch(obj);
+		pdecision.applyPoliciesBatch(obj, "GET");
 		
 		log.info("Test end.");
 	}
@@ -93,7 +93,7 @@ public class ProxyTest {
 		
 		//policy decision
 		log.info("Policy Decision Port..");
-		pdecision.applyPoliciesBatch(obj);
+		pdecision.applyPoliciesBatch(obj,"POST");
 		
 		log.info("Test end.");
 	}
@@ -113,7 +113,7 @@ public class ProxyTest {
 		
 		//policy decision
 		log.info("Policy Decision Port..");
-		pdecision.applyPoliciesBatch(obj);
+		pdecision.applyPoliciesBatch(obj,"POST");
 		
 		log.info("Test end.");
 	}
@@ -132,7 +132,7 @@ public class ProxyTest {
 		
 		//policy decision
 		log.info("Policy Decision Port..");
-		pdecision.applyPoliciesBatch(obj);
+		pdecision.applyPoliciesBatch(obj, "POST");
 		
 		log.info("Test end.");
 	}
