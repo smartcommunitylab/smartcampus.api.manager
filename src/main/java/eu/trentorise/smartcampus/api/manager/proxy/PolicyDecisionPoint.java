@@ -83,9 +83,12 @@ public class PolicyDecisionPoint {
 	/**
 	 * Retrieves api policies and resource policies.
 	 * 
+	 * @param apiId : String
+	 * @param resourceId : String
+	 * @param method : String, request method (GET, POST, PUT or DELETE)
 	 * @return list of instance {@link Policy}
 	 */
-	private List<Policy> policiesList(String apiId, String resourceId) {
+	private List<Policy> policiesList(String apiId, String resourceId, String method) {
 		// logger.info("policiesList() - ApiId: {}", apiId);
 
 		List<Policy> pToApply = new ArrayList<Policy>();
@@ -100,10 +103,10 @@ public class PolicyDecisionPoint {
 				throw new SecurityException("You are not allowed to access this api because it does not exist");
 			}
 			
-			//TODO retrieve api name
+			//retrieve api name
 			apiName = api.getName();
 			
-			//TODO retrieve tracking id of user
+			//retrieve tracking id of user
 			String usernameOwner = api.getOwnerId();
 			if(userManager.isTrackingIDSave(usernameOwner)){
 				trackingID = userManager.getTrackingID(usernameOwner);
@@ -119,7 +122,12 @@ public class PolicyDecisionPoint {
 					throw new SecurityException("You are not allowed to access this resource because it does not exist");
 				}
 				
-				//TODO resource name
+				//check verb TODO
+				if(!r.getVerb().equalsIgnoreCase(method)){
+					throw new SecurityException("Method request is wrong. Try again with the correct resource verb.");
+				}
+				
+				//resource name
 				rName = r.getName();
 				
 				// retrieve policy resource
@@ -244,15 +252,17 @@ public class PolicyDecisionPoint {
 	 * Apply policy logic to the request.
 	 * 
 	 * @param obj : instance of {@link RequestHandlerObject}
+	 * @param method : String, request method (GET, POST, PUT or DELETE)
 	 */
-	public void applyPoliciesBatch(RequestHandlerObject obj){
+	public void applyPoliciesBatch(RequestHandlerObject obj, String method){
 		
 		String apiId = obj.getApiId();
 		String resourceId = obj.getResourceId();
 		String appId = obj.getAppId();
 		Map<String, String> headers = obj.getHeaders();
 
-		List<Policy> pToApply = policiesList(apiId, resourceId);
+		//TODO add request method
+		List<Policy> pToApply = policiesList(apiId, resourceId, method);
 		
 		PolicyDatastoreBatch batch = new PolicyDatastoreBatch();
 		
@@ -315,7 +325,7 @@ public class PolicyDecisionPoint {
 				rollback.successfulPolicySP(apiId, resourceId, appId);
 				rollback.successfulPolicyQ(apiId, resourceId, appId);
 				
-				//TODO access granted ga
+				//Access granted ga
 				if(gatemplate!=null){
 					//event of access granted
 					boolean r;
@@ -340,9 +350,9 @@ public class PolicyDecisionPoint {
 				if(resourceId==null){
 					
 					if (gatemplate != null) {
-						// TODO access denied ga
+						//Access denied ga
 						boolean r1 = gatemplate.eventTracking("API", "Access Denied", apiName, "1");
-						// TODO exception on api (policy exception) ga
+						//Exception on api (policy exception) ga
 						boolean r2 = gatemplate.exceptionTracking(apiName+ " "+cause, false);
 						logger.info("Write event {}", r1);
 						logger.info("Write exception {}", r2);
@@ -352,9 +362,9 @@ public class PolicyDecisionPoint {
 				}
 				else{
 					if (gatemplate != null) {
-						// TODO access denied ga
+						//Access denied ga
 						boolean r1 = gatemplate.eventTracking("API", "Access Denied", apiName+"/"+rName, "1");
-						// TODO exception on api (policy exception) ga
+						//Exception on api (policy exception) ga
 						boolean r2 = gatemplate.exceptionTracking(apiName+" "+cause, false);
 						
 						logger.info("Write event {}", r1);
@@ -371,7 +381,7 @@ public class PolicyDecisionPoint {
 			logger.info("Access -> GRANT");
 			//throw new IllegalArgumentException("There is no policies to apply");
 			
-			//TODO access granted ga
+			//Access granted ga
 			if(gatemplate!=null){
 				//event of access granted
 				boolean r;

@@ -79,10 +79,13 @@ public class HomeController {
 		logger.info("-----------------------------------------------");
 		logger.info("----------------START-------------------------------");
 		
+		//TODO Check Resource Verb
+		String method = request.getMethod();
+		
 		logger.info("samlart {}",samlart);
 		try {
 			RequestHandlerObject r = requestHandler.handleRequest(request,samlart);
-			pdp.applyPoliciesBatch(r);
+			pdp.applyPoliciesBatch(r, method);
 
 			logger.info("------------------END-----------------------------");
 			logger.info("-----------------------------------------------");
