@@ -14,7 +14,17 @@ services.factory('Auth', ['$resource', '$http', '$window',
 	                }).error(function (data) {
 	                	 error(data.error);
 	                });
-	            }
+	            },
+	         
+	         redirectLogin: function(error){
+	        	 $http.get('login')
+	            	.success(function(data){
+	                	$window.location.href = data.data;
+	                	
+	                }).error(function (data) {
+	                	 error(data.error);
+	                });
+	         }
         	
 		};
 	}

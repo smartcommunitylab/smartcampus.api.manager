@@ -337,6 +337,8 @@ public class PolicyDecisionPoint {
 					logger.info("Write event {}", r);
 				}
 				
+				//TODO request to api
+				
 			}catch(SecurityException s){
 				String msg = s.getMessage();
 				logger.info("Cause of security exception: {}",msg);
@@ -392,6 +394,8 @@ public class PolicyDecisionPoint {
 				
 				logger.info("Write event {}", r);
 			}
+			
+			//TODO request to api
 		}
 	}
 	

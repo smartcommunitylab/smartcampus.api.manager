@@ -15,13 +15,26 @@
  ******************************************************************************/
 package eu.trentorise.smartcampus.api.manager.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +47,7 @@ import eu.trentorise.smartcampus.api.manager.proxy.RequestHandler;
  * Handles requests for the application home page.
  */
 @Controller
+@PropertySource("classpath:apimanager.properties")
 public class HomeController {
 	/**
 	 * Instance of {@link Logger}.
@@ -49,6 +63,11 @@ public class HomeController {
 	 */
 	@Autowired
 	private PolicyDecisionPoint pdp;
+	/**
+	 * Instance of {@link Environment}
+	 */
+	@Inject
+	private Environment env;
 	
 	/**
 	 * Return "HelloWorld" string
@@ -60,6 +79,67 @@ public class HomeController {
 		return "index";
 	}
 	
+	/**
+	 * Authenticates user and returns home
+	 * 
+	 * @param name : String, a path variable
+	 * @param request : instance of {@link HttpServletRequest}
+	 * @return index jsp
+	 */
+	@RequestMapping(value = "/home/{name}", method = RequestMethod.GET)
+	public String homeCallback(@PathVariable String name, HttpServletRequest request) {
+		logger.info("Hello Home with name: {}",name);
+		/*
+		 * We assume that every logged users in api manager has role
+		 * PROVIDER.
+		 */
+		List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
+		roles.add(new SimpleGrantedAuthority("ROLE_PROVIDER"));
+		//set authentication
+		UserDetails userDetails = new User(name, "", true, true, true, true, roles);
+		Authentication auth = new UsernamePasswordAuthenticationToken(
+				userDetails,userDetails.getPassword(), userDetails.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(auth);
+		request.getSession().setAttribute(
+				HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, 
+				SecurityContextHolder.getContext());
+		
+		return "index";
+	}
+	
+	/**
+	 * Redirect to OpenService login.
+	 * 
+	 * @return instance of {@link ResultData} with openservice login url
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	@ResponseBody
+	public ResultData login(HttpServletResponse response) {
+		logger.info("Login");
+		final String redirectUrl = env.getProperty("redirectUrl");
+		
+		return new ResultData(redirectUrl, HttpServletResponse.SC_FORBIDDEN, 
+				"Authentication on OpenService");
+	}
+	
+	/**
+	 * Callback rest service.
+	 * After login in Openservice, this calls a rest service
+	 * for setting authentication.
+	 * 
+	 * @param username : String, in request body
+	 * @return String, uri of a rest service
+	 */
+	@RequestMapping(value = "/callback", method = RequestMethod.POST, 
+			produces = "application/json")
+	@ResponseBody
+	public String callback(@RequestBody String username){
+		logger.info("Api manager Callback");
+		
+		String url = env.getProperty("callbackUrl")+username;
+		
+		return url;
+	}
 	/**
 	 * Try Request Handler class, with retrieving api url from request
 	 * and saml 2.0 assertion from request body.
@@ -80,6 +160,7 @@ public class HomeController {
 		logger.info("----------------START-------------------------------");
 		
 		//TODO Check Resource Verb
+		//check samlart now is in body, but in headers?
 		String method = request.getMethod();
 		
 		logger.info("samlart {}",samlart);

@@ -1,7 +1,12 @@
 'use strict';
-app.controller('homeCtrl', ['$http', '$scope', '$rootScope', '$location',
-    function ($http, $scope, $rootScope, $location) {
-        
+app.controller('homeCtrl', ['$http', '$scope', '$rootScope', '$location', 'Auth',
+    function ($http, $scope, $rootScope, $location, Auth) {
+    
+		/*Auth.redirectLogin({},
+				function(data){
+					console.log(data);
+		});*/
+	
     }
 ]);
 
@@ -15,12 +20,21 @@ app.controller('breadCtrl', [
     function () {}
 ]);
 
-app.controller('apisCtrl', ['$scope', '$location', '$route', 'Api',
-    function($scope, $location, $route, Api){
-    	Api.list({
+app.controller('apisCtrl', ['$scope', '$location', '$route', 'Api', 'Auth',
+    function($scope, $location, $route, Api, Auth){
+    	
+		Api.list({
     		//ownerId : '1'
     	}, function(data){
-    		$scope.apisList = data.data;
+    		if(data.status===403){
+    			Auth.redirectLogin({},
+    					function(data){
+    						console.log(data);
+    			});
+    		}else{
+    			$scope.apisList = data.data;
+    		}
+    		
     	});
     	
     	$scope.deleteApi = function (id) {
@@ -33,11 +47,19 @@ app.controller('apisCtrl', ['$scope', '$location', '$route', 'Api',
     }
 ]);
 
-app.controller('appsCtrl', ['$scope', '$location', '$route', 'App',
-    function($scope, $location, $route, App){
+app.controller('appsCtrl', ['$scope', '$location', '$route', 'App', 'Auth',
+    function($scope, $location, $route, App, Auth){
+		
 		App.list({
         }, function(data){
-            $scope.appsList = data.data;
+        	if(data.status===403){
+    			Auth.redirectLogin({},
+    					function(data){
+    						console.log(data);
+    			});
+    		}else{
+    			$scope.appsList = data.data;
+    		}
         });
                        	
 		$scope.deleteApp = function (id) {
@@ -1757,21 +1779,32 @@ app.controller('addResourcePolicyCtrl', ['$scope', '$location', '$routeParams', 
 
 //Dashboard
 
-app.controller('startCtrl', ['$scope', '$location', 'Stat', 'GGraph',
-    function($scope, $location, Stat, GGraph){
+app.controller('startCtrl', ['$scope', '$location', 'Stat', 'GGraph', 'Auth',
+    function($scope, $location, Stat, GGraph, Auth){
 	
 		Stat.isDashEnabled({
 		}, function(data){
-			if(data.data===true){
-				GGraph.enabled({
-				},function(data){
-					if(data.data===true){
-						$location.path('/dashboard/graphs');
-					}else{
-						$location.path('/dashboard/login');
-					}
+			
+			if(data.status===403){
+    			Auth.redirectLogin({},
+    					function(data){
+    						console.log(data);
+    			});
+    			
+    		}else{
+			
+    			if(data.data===true){
+    				GGraph.enabled({
+    				},function(data){
+    					if(data.data===true){
+    						$location.path('/dashboard/graphs');
+    					}else{
+    						$location.path('/dashboard/login');
+    					}
 				});
 			}
+			
+    		}
 		});
 		
 		//Google Chart
