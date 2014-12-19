@@ -27,11 +27,20 @@
 											<p>{{api.basePath}}</p>
 											
 											<button type="button" class="pull-right btn btn-default btn-sm" 
-											ng-click="deleteApi(api.id)">
+												title="Delete api"
+												ng-click="deleteApi(api.id)">
     											<i class="fa fa-trash-o"></i>
     										</button>
+    										
+                    						<a href="publish/{{api.id}}" 
+    											title="Publish api" 
+    											class="pull-right btn btn-default btn-sm orgbtn">
+    											<i class="fa fa-check-circle-o"></i>
+    										</a>
+    										
     										<a href="edit/api/{{api.id}}" 
-    										class="pull-right btn btn-default btn-sm orgbtn">
+    											title="Edit api" 
+    											class="pull-right btn btn-default btn-sm orgbtn">
     											<i class="fa fa-edit"></i>
     										</a>
 										

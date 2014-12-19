@@ -47,6 +47,20 @@ app.controller('apisCtrl', ['$scope', '$location', '$route', 'Api', 'Auth',
     }
 ]);
 
+app.controller('publishApiCtrl', ['$scope', '$location', '$route', '$routeParams', 'Api',
+    function($scope, $location, $route, $routeParams, Api){
+		var apiid = $routeParams.apiId;
+		
+		Api.getApi({
+			apiId : apiid
+		}, function(data){
+			$scope.api = data.data;
+		});
+		
+		
+	}
+]);
+
 app.controller('appsCtrl', ['$scope', '$location', '$route', 'App', 'Auth',
     function($scope, $location, $route, App, Auth){
 		

@@ -104,6 +104,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', 'hljsService
         	templateUrl: 'partials/policy/edit.html',
         	access: access.public
         }).
+        when('/publish/:apiId',{
+        	controller: 'publishApiCtrl',
+        	templateUrl: 'partials/apis/publish.html',
+        	access: access.public
+        }).
         when('/apps',{
         	controller: 'appsCtrl',
         	templateUrl: 'partials/app/list.html',

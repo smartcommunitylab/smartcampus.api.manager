@@ -18,29 +18,18 @@
 								<ul class="list-unstyled" ng-if="appsList.length > 0">
 									<li ng-repeat="app in appsList"
 										class="animated fadeIn service-row">
-											<!-- 
-											<span class="badge pull-right">
-												Id: {{app.id}}
-											</span> 
-											 -->
 											<h3>
 												<b><a href="app/{{app.id}}" >{{app.name}}</a></b>
 											</h3>
-											<!-- <p>{{app.key}}</p> -->
 											
 											<button type="button" class="pull-right btn 
 													btn-default btn-sm" 
+												title="Delete app" 
     											ng-confirm-click="deleteApp(app.id)"
     											ng-confirm-message="Are you sure that you want to delete this app?"
     											ng-confirm-condition="true">
     											<i class="fa fa-trash-o"></i>
     										</button>
-    										<!-- 
-    										<a href="edit/app/{{app.id}}" 
-    										class="pull-right btn btn-default btn-sm orgbtn">
-    											<i class="fa fa-edit"></i>
-    										</a>
-											 -->
 										
 										</li>
 								</ul>

@@ -1,0 +1,152 @@
+<div class="row animated fadeIn">
+    <div ng-hide="!errorMsg" class="alert alert-danger">{{errorMsg}}</div>
+    <div class="col-md-6 col-md-offset-3">
+        <h2>Publish Api to OpenService</h2>
+        <form name="main" novalidate role="form" ng-submit="submit()">
+            <div class="form-group" show-validation>
+                <label for="servicename">Service Name</label>
+                <input ng-disabled="service.id != null" type="text" class="form-control" id="servicename" placeholder="Service Name" ng-model="service.name" required>
+            </div>
+            <div class="form-group" show-validation>
+                <label for="authority">Organization</label>
+                <select ng-disabled="service.id != null" ng-options="org.id as org.name for org in orgs" id="org" class="form-control" ng-model="service.organizationId" required>
+                </select>
+            </div>
+            <div class="form-group" show-validation>
+                <label for="orgdesc">Description</label>
+                <input type="text" class="form-control" id="orgdesc" placeholder="Description" ng-model="service.description" required>
+            </div>
+            <div class="form-group" show-validation>
+                <label for="tags">Tags (comma separated)</label>
+                <input type="text" class="form-control" id="tags" placeholder="tag1,tag2" ng-model="service.tags" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select ng-options="cat.id as cat.name for cat in categories" id="category" class="form-control" ng-model="service.category">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="license">License</label>
+                <input type="text" class="form-control" id="license" ng-model="service.license">
+            </div>
+            <div class="form-group" show-validation>
+                <label for="license">Version</label>
+                <input type="text" class="form-control" id="version" ng-model="service.version" required>
+            </div>
+            <div class="form-group">
+                <label for="documentation">Documentation</label>
+                <input type="text" class="form-control" id="documentation" placeholder="http://yourdocs.com/doc" ng-model="service.documentation">
+            </div>
+            <div class="form-group">
+                <label for="expires">Expiration date</label>
+                <input data-provide="datepicker" data-date-format="yyyy-mm-dd" class="form-control" id="expiration" ng-model="service.expiration">
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Access Information</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#myModal">
+                            Authentication
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="accesspolicies">Access Policies</label>
+                        <input type="text" class="form-control" id="accesspolicies" placeholder="" ng-model="service.accessInformation.accessPolicies">
+                    </div>
+                    <div class="form-group">
+                        <label for="tendpoint">Testing Endpoint</label>
+                        <input type="text" class="form-control" id="tendpoint" placeholder="http://tendpoint.com/api" ng-model="service.accessInformation.testingEndpoint">
+                    </div>
+                    <div class="form-group">
+                        <label for="pendpoint">Production Endpoint</label>
+                        <input type="text" class="form-control" id="pendpoint" placeholder="http://pendpoint.com/api" ng-model="service.accessInformation.productionEndpoint">
+                    </div>
+                    <div class="form-group">
+                        <label for="formats">Formats</label>
+                        <select ng-options="format for format in formats" id="formats" class="form-control" ng-model="service.accessInformation.formats" ></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="protocols">Protocols</label>
+                        <input type="text" class="form-control" id="protocols" placeholder="rest, soap" ng-model="service.accessInformation.protocols">
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Implementation Information</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="env">Execution Environment</label>
+                        <input type="text" class="form-control" id="env" placeholder="example: java" ng-model="service.implementation.executionEnvironment">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hosting">Hosting</label>
+                        <input type="text" class="form-control" id="hosting" placeholder="SmartCampus" ng-model="service.implementation.hosting">
+                    </div>
+                    <div class="form-group">
+                        <label for="sourcecode">Source Code</label>
+                        <input type="text" class="form-control" id="sourcecode" placeholder="http://mysource.com" ng-model="service.implementation.sourceCode">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Save</button>
+            <button ng-click="back()" class="pull-right btn btn-default">Go back</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Authentication</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="protocol">Protocol</label>
+                    <select ng-options="protocol for protocol in protocols" id="protocol" class="form-control" ng-model="accessInformation.authentication.accessProtocol" />
+                </div>
+                <div ng-show="accessInformation.authentication.accessProtocol === 'OAuth2'">
+                    <form name="form" class="css-form" novalidate>
+                        <div class="form-group" show-validation>
+                            <label for="clientid">Client ID</label>
+                            <input type="text" class="form-control" id="clientid" placeholder="fcb1cb23-12a3-1234-1f23-12a3f45e6789" ng-model="accessInformation.authentication.accessAttributes.client_id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clientid">Client Secret</label>
+                            <input ng-disabled="accessInformation.authentication.accessAttributes.grant_type === 'implicit'" type="text" class="form-control" id="clientid" placeholder="fcb1cb23-12a3-1234-1f23-12a3f45e6789" ng-model="accessInformation.authentication.accessAttributes.client_secret">
+                        </div>
+                        <div class="form-group">
+                            <label for="scope">Scope (comma separated)</label>
+                            <input type="text" class="form-control" id="scope" placeholder="profile.email, profile.photo" ng-model="accessInformation.authentication.accessAttributes.scope">
+                        </div>
+                        <div class="form-group" show-validation>
+                            <label for="responsetype">Response Type</label>
+                            <select ng-options="response_type for response_type in ['token','code']" id="responsetype" class="form-control" ng-model="accessInformation.authentication.accessAttributes.response_type" required/>
+                        </div>
+                        <div class="form-group" show-validation>
+                            <label for="authurl">Authorization URL</label>
+                            <input type="text" class="form-control" id="authurl" placeholder="https://vas-dev.smartcampuslab.it/aac/eauth/authorize" ng-model="accessInformation.authentication.accessAttributes.authorizationUrl" required>
+                        </div>
+                        <div class="form-group" show-validation>
+                            <label for="granttype">Grant Type</label>
+                            <select ng-options="grant_type for grant_type in ['implicit','authorization_code','client_credentials']" id="responsetype" class="form-control" ng-model="accessInformation.authentication.accessAttributes.grant_type" required/>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="cancel()" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" ng-click="keep()" ng-disabled="form.$invalid && accessInformation.authentication.accessProtocol === 'OAuth2'" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
