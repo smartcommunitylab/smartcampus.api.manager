@@ -209,6 +209,14 @@ public class PersistenceManager {
 			throw new IllegalArgumentException("Basepath is not valid. Ex: /sample/v1");
 		}
 		
+		//backend service url pattern
+		if(api.getBsurl()!=null){
+			UrlValidator urlValidator = new UrlValidator();
+			if(!urlValidator.isValid(api.getBsurl())){
+				throw new IllegalArgumentException("Backend service url is not valid. Ex: http://your-domain.it/path");
+			}
+		}
+		
 		//check name
 		Api savedApiName = getApiByName(api.getName());
 		
@@ -253,6 +261,23 @@ public class PersistenceManager {
 		if(api.getName()==null || api.getBasePath()==null || api.getOwnerId()==null){
 			throw new IllegalArgumentException("Api name, base path and owner id are required.");
 		}
+		
+		// basepath pattern
+		UriValidation uriValidator = new UriValidation();
+		if (!uriValidator.validate(api.getBasePath())) {
+			throw new IllegalArgumentException(
+					"Basepath is not valid. Ex: /sample/v1");
+		}
+
+		// backend service url pattern
+		if (api.getBsurl() != null) {
+			UrlValidator urlValidator = new UrlValidator();
+			if (!urlValidator.isValid(api.getBsurl())) {
+				throw new IllegalArgumentException(
+						"Backend service url is not valid. Ex: http://your-domain.it/path");
+			}
+		}
+
 		//check api basepath
 		List<Api> savedApi = getApiByBasePath(api.getBasePath());
 		if(savedApi!=null && savedApi.size()>0){

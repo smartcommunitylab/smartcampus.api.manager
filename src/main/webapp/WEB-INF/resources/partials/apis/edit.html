@@ -10,7 +10,11 @@
             </div>
             <div class="form-group" show-validation>
                 <label for="apibasepath">Base path</label>
-                <input type="text" id="apibasepath" class="form-control" ng-model="api.basePath" required />
+                <input type="text" id="apibasepath" class="form-control" ng-model="api.basePath" placeholder="/api_basepath" required />
+            </div>
+            <div class="form-group">
+                <label for="apibasepath">Backend Service Url</label>
+                <input type="text" id="apibsurl" class="form-control" ng-model="api.bsurl" placeholder="http://your-domain.it/path"/>
             </div>
     
             <button type="submit" ng-disabled="main.$invalid" class="btn btn-info">Save</button>

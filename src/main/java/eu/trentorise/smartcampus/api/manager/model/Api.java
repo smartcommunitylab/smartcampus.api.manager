@@ -35,7 +35,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * app : list of app,
  * owner id : String,
  * creationTime : String,
- * updateTime : String.
+ * updateTime : String,
+ * bsurl : String, backend service url.
  * 
  * @author Giulia Canobbio
  *
@@ -55,6 +56,8 @@ public class Api implements Serializable{
 	@Field
 	@Indexed(unique=true)
 	private String basePath;
+	@Field
+	private String bsurl;
 	@Field
 	private List<Resource> resource;
 	@Field
@@ -208,5 +211,19 @@ public class Api implements Serializable{
 	 */
 	public void setStatus(List<Status> status) {
 		this.status = status;
+	}
+	/**
+	 * 
+	 * @return backend service url : String
+	 */
+	public String getBsurl() {
+		return bsurl;
+	}
+	/**
+	 * 
+	 * @param bsurl : String, backend service url
+	 */
+	public void setBsurl(String bsurl) {
+		this.bsurl = bsurl;
 	}
 }
