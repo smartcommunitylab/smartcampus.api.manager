@@ -1,12 +1,7 @@
 'use strict';
 app.controller('homeCtrl', ['$http', '$scope', '$rootScope', '$location', 'Auth',
     function ($http, $scope, $rootScope, $location, Auth) {
-    
-		/*Auth.redirectLogin({},
-				function(data){
-					console.log(data);
-		});*/
-	
+		
     }
 ]);
 
@@ -47,16 +42,102 @@ app.controller('apisCtrl', ['$scope', '$location', '$route', 'Api', 'Auth',
     }
 ]);
 
-app.controller('publishApiCtrl', ['$scope', '$location', '$route', '$routeParams', 'Api',
-    function($scope, $location, $route, $routeParams, Api){
+app.controller('publishApiCtrl', ['$scope', '$location', '$route', '$routeParams', 'Api', 'Service',
+    function($scope, $location, $route, $routeParams, Api, Service){
 		var apiid = $routeParams.apiId;
+		
+		$scope.protocols = ['OAuth2', 'OpenID', 'Public'];
+        $scope.formats = ['json', 'xml', 'yaml', 'txt'];
+        $scope.accessInformation = {
+            authentication: {
+                accessProtocol: null,
+                accessAttributes: {
+                    client_id: null,
+                    response_type: null,
+                    authorizationUrl: null,
+                    grant_type: null
+                }
+            }
+        };
+        
+        $scope.service = {
+				name : null,
+				organizationId: null,
+				description: null,
+				tags: null,
+				category: null,
+				license: null,
+				version: null,
+				documentation: null,
+				expiration: null,
+				
+				accessInformation:{ 
+					
+					authentication: {
+		                accessProtocol: null,
+		                accessAttributes: {
+		                    client_id: null,
+		                    response_type: null,
+		                    authorizationUrl: null,
+		                    grant_type: null
+		                }
+					},
+					
+					accessPolicies: null,
+					testingEndpoint: null,
+					productionEndpoint: null,
+					formats: null,
+					protocols: null
+				},
+				
+				implementation:{
+					executionEnvironment: null,
+					hosting: null,
+					sourceCode: null
+				}
+		};
 		
 		Api.getApi({
 			apiId : apiid
 		}, function(data){
-			$scope.api = data.data;
+			var api = data.data;
+			var domain = window.location.protocol+"//:"+window.location.host+"/"+window.location.pathname.split('/')[1];
+
+			$scope.service.name = api.name;
+			$scope.service.accessInformation.testingEndpoint = domain+api.basePath;
+			$scope.service.accessInformation.productionEndpoint= domain+api.basePath;
+			
+			
 		});
 		
+		Service.categories({}, function (data) {
+            $scope.categories = data.data;
+        });
+
+        Service.organizations({}, function (data) {
+            $scope.orgs = data.data;
+        });
+
+        $scope.submit = function () {
+            if ($scope.service.expiration) {
+                $scope.service.expiration = new Date($scope.service.expiration).getTime();
+            } else {
+                $scope.service.expiration = null;
+            }
+            if (typeof $scope.service.tags == 'string') {
+                $scope.service.tags = $scope.service.tags.split(',');
+            }
+            Service.publish($scope.service,
+                function () {
+                    $location.path('api/'+apiid);
+                },
+                function (res) {
+                    $scope.errorMsg = res.data.error;
+                });
+        };
+        $scope.keep = function () {
+            $scope.service.accessInformation.authentication = $scope.accessInformation.authentication;
+        };
 		
 	}
 ]);

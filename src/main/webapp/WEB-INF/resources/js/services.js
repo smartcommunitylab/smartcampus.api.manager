@@ -308,6 +308,26 @@ services.factory('GGraph', ['$resource',
 	}
 ]);
 
+services.factory('Service', ['$resource',
+    function($resource){
+		return $resource('api/ga', {}, {
+			categories:{
+				 method: 'GET',
+	             url: 'http://localhost:8080/openservice/api/category/',
+			},
+			organizations:{
+				 method: 'GET',
+	             url: 'http://localhost:8080/openservice/api/org/my',
+			},
+			publish:{
+				method: 'POST',
+                url: 'http://localhost:8080/openservice/api/service/add'
+			},
+			
+		});
+	}
+]);
+
 services.factory('Gravatar', ['$http', '$rootScope',
     function ($http, $rootScope) {
 
