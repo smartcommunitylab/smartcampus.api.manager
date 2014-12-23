@@ -107,6 +107,36 @@ app.controller('publishApiCtrl', ['$scope', '$location', '$route', '$routeParams
 			$scope.service.accessInformation.testingEndpoint = domain+api.basePath;
 			$scope.service.accessInformation.productionEndpoint= domain+api.basePath;
 			
+			//Policy
+			if(!api.policy){
+				$scope.service.accessInformation.accessPolicies = "No restrictions";
+			}else{
+				$scope.service.accessInformation.accessPolicies = "";
+				
+				for(var i=0;i<api.policy.length;i++){
+					var type = api.policy[i].type;
+					
+					if(type=='Spike Arrest'){
+						$scope.service.accessInformation.accessPolicies=$scope.service.accessInformation.accessPolicies.concat("Spike Arrest, ");
+					}
+					else if(type=='Quota'){
+						$scope.service.accessInformation.accessPolicies=$scope.service.accessInformation.accessPolicies.concat("Quota, ");
+					}
+					else if(type=='IP Access Control'){
+						$scope.service.accessInformation.accessPolicies=$scope.service.accessInformation.accessPolicies.concat("IP Access Control, ");
+					}
+					else if(type=='Verify App Key'){
+						$scope.service.accessInformation.accessPolicies=$scope.service.accessInformation.accessPolicies.concat("Verify App Key, ");
+					}
+					else if(type=='OAuth'){
+						$scope.service.accessInformation.accessPolicies=$scope.service.accessInformation.accessPolicies.concat("OAuth, ");
+					}
+					else if(type=='SAML'){
+						$scope.service.accessInformation.accessPolicies=$scope.service.accessInformation.accessPolicies.concat("SAML, ");
+					}
+				}
+			}
+			
 			
 		});
 		
